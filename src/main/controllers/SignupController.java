@@ -21,13 +21,13 @@ public class SignupController {
     @FXML
     private void handleSignup() {
         String name = nameField.getText();
-        String type = accountType.getValue();
+        String type = accountType.getValue();//customer, user, musician
         String password = passwordField.getText();
 
-        // Register the user in the database
+        //register user in the database
         if (Database.registerUser(name, password, type)) {
             System.out.println("Signup successful, redirecting to login...");
-            // Redirect to login or user dashboard
+            //redirect to login or user dashboard
         } else {
             System.out.println("Signup failed.");
         }

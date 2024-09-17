@@ -23,10 +23,10 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // Simulated database lookup (will later implement DB queries)
+        //simulated database lookup
         if (Database.loginUser(username, password)) {
             System.out.println("Login successful, loading user dashboard...");
-            // Transition to the user/musician dashboard
+            //transition to the user/musician dashboard
         } else {
             errorMessage.setText("Invalid username or password");
         }
