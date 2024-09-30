@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class HelloApplication extends Application {
     @Override
@@ -24,8 +25,14 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         //launch();
 
+        ArrayList<Artist> artistArrayList = new ArrayList<Artist>();
         SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
         sql.testConnection();
+
+        artistArrayList = sql.GetDBArtistsProfiles();
+        for(int i = 0; i < artistArrayList.size(); i++) {
+            System.out.println(artistArrayList.get(i).toString());
+        }
 
         //sql.CreateArtist("Beyoncé", "Knowles", "Beyoncé", "1981-09-04", "1505 Hadley St", "77002", "Houston", "TX", "beyonce@example.com", "Password123");
         //sql.CreateArtist("Elvis", "Presley", "Elvis", "1935-01-08", "3764 Elvis Presley Blvd", "38116", "Memphis", "TN", "elvispresley@example.com", "Password123");

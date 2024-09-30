@@ -7,18 +7,20 @@ public class Artist {
     private String stageName;
     private String DOB;
     private String address;
+    private String zipCode;
     private String city;
     private String state;
     private String email;
     private String password;
 
-    public Artist(int id, String firstName, String stageName, String lastName, String DOB, String address, String city, String state, String email, String password) {
+    public Artist(int id, String firstName, String stageName, String lastName, String DOB, String address, String zipCode, String city, String state, String email, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.stageName = stageName;
         this.DOB = DOB;
         this.address = address;
+        this.zipCode = zipCode;
         this.city = city;
         this.state = state;
         this.email = email;
@@ -73,6 +75,10 @@ public class Artist {
         this.address = address;
     }
 
+    public String getZipCode() { return zipCode; }
+
+    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+
     public String getCity() {
         return city;
     }
@@ -104,4 +110,23 @@ public class Artist {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "Artist{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", stageName='" + stageName + '\'' +
+                ", DOB='" + DOB + '\'' +
+                ", address='" + address + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
+
+

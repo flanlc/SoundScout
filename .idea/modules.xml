@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SoundScout.iml" filepath="$PROJECT_DIR$/.idea/SoundScout.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SoundScoutFX/SoundScoutFX.iml" filepath="$PROJECT_DIR$/SoundScoutFX/SoundScoutFX.iml" />
     </modules>
   </component>
 </project>

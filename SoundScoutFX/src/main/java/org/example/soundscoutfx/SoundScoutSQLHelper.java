@@ -1,10 +1,12 @@
 package org.example.soundscoutfx;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SoundScoutSQLHelper {
     Connection conn;
     boolean status = false;
+    ArrayList<Artist> artistArrayList = new ArrayList<Artist>();
 
     public Connection establishConnection() {
         {
@@ -88,4 +90,36 @@ public class SoundScoutSQLHelper {
             return;
         }
     }
+
+    protected ArrayList<Artist> GetDBArtistsProfiles() {
+        String getArtistQuery = "SELECT * FROM Artist Where ActiveStatus = 'Active';";
+        Statement statement = null;
+        Artist artist;
+        try {
+            statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(getArtistQuery);
+            while(rs.next()) {
+                int id = rs.getInt("ArtistID");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String stageName = rs.getString("StageName");
+                String DOB = rs.getString("DOB");
+                String address = rs.getString("StreetAddress");
+                String zipCode = rs.getString("ZipCode");
+                String city = rs.getString("City");
+                String state = rs.getString("State");
+                String email = rs.getString("Email");
+                String password = rs.getString("Password");
+                artist = new Artist(id,firstName,lastName,stageName,DOB,address, zipCode, city,state,email,password);
+                artistArrayList.add(artist);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+        return artistArrayList;
+    }
+
 }
