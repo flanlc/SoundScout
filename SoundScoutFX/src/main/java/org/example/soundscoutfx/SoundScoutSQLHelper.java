@@ -110,7 +110,8 @@ public class SoundScoutSQLHelper {
                 String state = rs.getString("State");
                 String email = rs.getString("Email");
                 String password = rs.getString("Password");
-                artist = new Artist(id,firstName,lastName,stageName,DOB,address, zipCode, city,state,email,password);
+                String joinDate = rs.getString("JoinDate");
+                artist = new Artist(id,firstName,lastName,stageName,DOB,address, zipCode, city,state,email,password,joinDate,null);
                 artistArrayList.add(artist);
             }
         } catch (SQLException e) {

@@ -17,6 +17,10 @@ public class Profile {
         this.activeStatus = activeStatus;
     }
 
+    public Profile() {
+
+    }
+
     public int getProfileID() {
         return profileID;
     }

@@ -11,6 +11,7 @@ module org.example.soundscoutfx {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires javafx.media;
 
     opens org.example.soundscoutfx to javafx.fxml;
     exports org.example.soundscoutfx;

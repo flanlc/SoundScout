@@ -12,8 +12,10 @@ public class Artist {
     private String state;
     private String email;
     private String password;
+    private String joinDate;
+    private Profile profile;
 
-    public Artist(int id, String firstName, String stageName, String lastName, String DOB, String address, String zipCode, String city, String state, String email, String password) {
+    public Artist(int id, String firstName, String stageName, String lastName, String DOB, String address, String zipCode, String city, String state, String email, String password, String joinDate, Profile profile) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,6 +27,8 @@ public class Artist {
         this.state = state;
         this.email = email;
         this.password = password;
+        this.joinDate = joinDate;
+        this.profile = profile;
     }
 
     public int getId() {
@@ -33,14 +37,6 @@ public class Artist {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getStageName() {
-        return stageName;
-    }
-
-    public void setStageName(String stageName) {
-        this.stageName = stageName;
     }
 
     public String getFirstName() {
@@ -59,6 +55,14 @@ public class Artist {
         this.lastName = lastName;
     }
 
+    public String getStageName() {
+        return stageName;
+    }
+
+    public void setStageName(String stageName) {
+        this.stageName = stageName;
+    }
+
     public String getDOB() {
         return DOB;
     }
@@ -75,9 +79,13 @@ public class Artist {
         this.address = address;
     }
 
-    public String getZipCode() { return zipCode; }
+    public String getZipCode() {
+        return zipCode;
+    }
 
-    public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
 
     public String getCity() {
         return city;
@@ -111,6 +119,22 @@ public class Artist {
         this.password = password;
     }
 
+    public String getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(String joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
     @Override
     public String toString() {
         return "Artist{" +
@@ -125,8 +149,7 @@ public class Artist {
                 ", state='" + state + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", joinDate='" + joinDate + '\'' +
                 '}';
     }
 }
-
-
