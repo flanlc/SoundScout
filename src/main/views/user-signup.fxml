@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.soundscoutfx.UserSignupController"
+      alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+        <Label text="User Signup" style="-fx-font-size: 18px;" />
+
+    <TextField fx:id="firstNameField" promptText="First Name" />
+    <TextField fx:id="lastNameField" promptText="Last Name" />
+    
+    <!-- account type selection -->
+    <RadioButton fx:id="personalRadio" text="Personal" onAction="#handleAccountType" selected="true" />
+    <RadioButton fx:id="businessRadio" text="Business" onAction="#handleAccountType" />
+
+    <TextField fx:id="cityField" promptText="City" />
+    <TextField fx:id="zipCodeField" promptText="Zip Code" />
+
+    <!-- only visible if account type is business -->
+    <TextField fx:id="businessAddressField" promptText="Business Address" visible="false" />
+    
+    <TextField fx:id="emailField" promptText="Email" />
+    <PasswordField fx:id="passwordField" promptText="Password" />
+
+    <Button text="Sign Up" onAction="#handleSignup" />
+
+    <Label fx:id="errorMessage" style="-fx-text-fill: red;" />
+
+</VBox>

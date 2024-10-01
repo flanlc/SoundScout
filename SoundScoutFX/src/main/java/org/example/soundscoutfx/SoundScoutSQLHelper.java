@@ -63,6 +63,47 @@ public class SoundScoutSQLHelper {
         }
     }
 
+ public void CreateUser(String firstName, String lastName, String accountType, String businessAddress, String city, String zipCode, String businessAddress, String email, String password) {
+        if (!status) {
+            System.out.println("ERROR: Connection Not Created");
+            return;
+        }
+
+        String query;
+        if ("Business".equals(accountType)) {
+            query = "INSERT INTO User (FirstName, LastName, AccountType, BusinessAddress, City, ZipCode, Email, Password, JoinDate) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            query = "INSERT INTO Users (FirstName, LastName, AccountType, City, ZipCode, Email, Password, JoinDate) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE())";
+        }
+
+        try {
+            PreparedStatement userInsertStatement = conn.prepareStatement(query);
+            userInsertStatement.setString(1, firstName);
+            userInsertStatement.setString(2, lastName);
+            userInsertStatement.setString(3, accountType);
+            userInsertStatement.setString(4, city);
+            userInsertStatement.setString(5, zipCode);
+            
+            if ("Business".equals(accountType)) {
+                userInsertStatement.setString(6, businessAddress);
+                userInsertStatement.setString(7, email);
+                userInsertStatement.setString(8, password);
+                //userInsertStatement.setString(9, String.valueOf(java.time.LocalDateTime.now())); // Join date
+            } else {
+                userInsertStatement.setString(6, email);
+                userInsertStatement.setString(7, password);
+                //userInsertStatement.setString(8, String.valueOf(java.time.LocalDateTime.now())); // Join date
+            }
+
+            userInsertStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while inserting user: " + e.getMessage());
+        }
+    }
+}
+
     protected void CreateNewProfile() {
         int artistID = -1;
 

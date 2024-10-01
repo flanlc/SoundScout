@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.soundscoutfx.SplashController"
+      alignment="CENTER" spacing="20" style="-fx-padding: 50;">
+    <Label text="Welcome to SoundScout!" style="-fx-font-size: 24px;" />
+    
+    <Button text="Login" onAction="#handleLogin" style="-fx-font-size: 16px;" />
+
+    <Button text="Signup" onAction="#handleSignup" style="-fx-font-size: 16px;" />
+    
+    <Label text="Find the right sound for you!" style="-fx-font-size: 14px; -fx-text-fill: gray;" />
+</VBox>

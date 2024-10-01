@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.soundscoutfx.ArtistSignupController"
+      alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+    <Label text="Artist Signup" style="-fx-font-size: 18px;"/>
+    
+    <TextField fx:id="firstNameField" promptText="First Name" />
+    <TextField fx:id="lastNameField" promptText="Last Name" />
+    <TextField fx:id="stageNameField" promptText="Stage Name" />
+    <TextField fx:id="dobField" promptText="Date of Birth (YYYY-MM-DD)" />
+    <TextField fx:id="streetAddressField" promptText="Street Address" />
+    <TextField fx:id="zipCodeField" promptText="Zip Code" />
+    <TextField fx:id="cityField" promptText="City" />
+    <TextField fx:id="stateField" promptText="State" />
+    <TextField fx:id="emailField" promptText="Email" />
+    <PasswordField fx:id="passwordField" promptText="Password" />
+    
+    <Button text="Sign Up" onAction="#handleSignup" />
+    <Label fx:id="errorMessage" style="-fx-text-fill: red;" />
+</VBox>
