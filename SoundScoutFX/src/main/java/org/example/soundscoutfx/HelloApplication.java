@@ -23,7 +23,7 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
-        //launch();
+        launch();
 
         ArrayList<Artist> artistArrayList = new ArrayList<Artist>();
         SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
