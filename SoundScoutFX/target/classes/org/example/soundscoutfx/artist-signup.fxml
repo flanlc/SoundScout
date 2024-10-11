@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.DatePicker?>
+
+<VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.soundscoutfx.ArtistSignupController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <ImageView fitHeight="50.0" fitWidth="150.0">
+        <image>
+            <Image url="@../../../icons/soundscout.png"/>
+        </image>
+    </ImageView>
+
+    <!--Title-->
+    <Label text="Artist Signup" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10" alignment="CENTER">
+        <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="firstNameField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Stage Name:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="stageNameField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Date of Birth:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <DatePicker fx:id="dobPicker" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <Label text="Street Address:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <TextField fx:id="streetAddressField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+        <Label text="City:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <TextField fx:id="cityField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+        <Label text="State:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <ComboBox fx:id="stateComboBox"/>
+            <TextField fx:id="otherStateField" promptText="Specify state" visible="false"/>
+        </VBox>
+
+        <Label text="Zip Code:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        <TextField fx:id="zipCodeField" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+        <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+
+        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+        <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+
+        <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="10" GridPane.columnSpan="2">
+            <Button text="Signup" onAction="#handleSignup"/>
+        </HBox>
+
+        <Label fx:id="errorMessage" style="-fx-text-fill: red;" GridPane.columnIndex="0" GridPane.rowIndex="11" GridPane.columnSpan="2"/>
+    </GridPane>
+
+    <Button text="Back" onAction="#handleBack"/>
+</VBox>
