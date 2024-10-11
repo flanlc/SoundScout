@@ -51,7 +51,7 @@ public class DashboardController {
         if (selectedIndex >= 0 && selectedIndex < items.size()) {
             Artist selectedArtist = items.get(selectedIndex);
             nameField.setText(selectedArtist.getStageName());
-            joinDateField.setText(selectedArtist.getJoinDate());
+            //joinDateField.setText(selectedArtist.getJoinDate());
             // genreField.setText(selectedArtist.getGenre());
         }
     }

@@ -2,6 +2,8 @@ package org.example.soundscoutfx;
 
 import java.sql.*;
 import java.util.ArrayList;
+import org.example.soundscoutfx.UserInfo;
+
 
 public class SoundScoutSQLHelper {
     Connection conn;
@@ -32,17 +34,46 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    public UserInfo verifyUserCredentials(String email, String password) {
+        String query = "SELECT ArtistID AS ID, FirstName, 'Artist' AS UserType FROM Artist WHERE Email = ? AND Password = ? " +
+                "UNION " +
+                "SELECT UserID AS ID, FirstName, 'User' AS UserType FROM Users WHERE Email = ? AND Password = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+            statement.setString(3, email);
+            statement.setString(4, password);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                //login successful, create and return a UserInfo object
+                int id = resultSet.getInt("ID");
+                String firstName = resultSet.getString("FirstName");
+                String userType = resultSet.getString("UserType");
+                return new UserInfo(id, firstName, userType);
+            } else {
+                //if no matching user found
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     protected void CreateArtist(String firstName, String lastName, String stageName, String DOB, String streetAddress, String zipCode, String city, String state, String email, String password) {
         if(!status) {
             System.out.println("ERROR: Connection Not Created");
             return;
         }
 
-        //String of the Query for Inserting an Artist
+        //string of the query for Inserting an Artist
         String query = "INSERT INTO Artist (FirstName, LastName, StageName, DOB, StreetAddress, ZipCode, City, State, Email, Password, JoinDate, ActiveStatus) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            //Using a prepared statement mitigated the risk of a sql injection attack
+            //using a prepared statement mitigated the risk of a sql injection attack
             PreparedStatement artistInsertStatement = conn.prepareStatement(query);
             artistInsertStatement.setString(1, firstName);
             artistInsertStatement.setString(2, lastName);
@@ -60,6 +91,51 @@ public class SoundScoutSQLHelper {
             CreateNewProfile();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+    public void CreateUser(String firstName, String lastName, String accountType, String city, String zipCode, String businessAddress, String email, String password) {
+        if (!status) {
+            System.out.println("ERROR: Connection Not Created");
+            return;
+        }
+
+        String query;
+        if ("Business".equals(accountType)) {
+            //query for BUSINESS users (YES BusinessAddress)
+            query = "INSERT INTO Users (FirstName, LastName, AccountType, BusinessAddress, City, ZipCode, Email, Password, JoinDate) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())";
+        } else {
+            //query for PERSONAL users (NO BusinessAddress)
+            query = "INSERT INTO Users (FirstName, LastName, AccountType, City, ZipCode, Email, Password, JoinDate) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE())";
+        }
+
+        try {
+            PreparedStatement userInsertStatement = conn.prepareStatement(query);
+            userInsertStatement.setString(1, firstName);
+            userInsertStatement.setString(2, lastName);
+            userInsertStatement.setString(3, accountType);
+
+            if ("Business".equals(accountType)) {
+                //set the parameters in the correct order for Business users
+                userInsertStatement.setString(4, businessAddress); // BusinessAddress
+                userInsertStatement.setString(5, city);            // City
+                userInsertStatement.setString(6, zipCode);         // ZipCode
+                userInsertStatement.setString(7, email);           // Email
+                userInsertStatement.setString(8, password);        // Password
+            } else {
+                //set the parameters in the correct order for Personal users
+                userInsertStatement.setString(4, city);            // City
+                userInsertStatement.setString(5, zipCode);         // ZipCode
+                userInsertStatement.setString(6, email);           // Email
+                userInsertStatement.setString(7, password);        // Password
+            }
+
+            userInsertStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while inserting user: " + e.getMessage());
         }
     }
 
@@ -117,7 +193,6 @@ public class SoundScoutSQLHelper {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
 
 
         return artistArrayList;

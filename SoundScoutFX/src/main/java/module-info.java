@@ -12,6 +12,7 @@ module org.example.soundscoutfx {
     requires com.almasb.fxgl.all;
     requires java.sql;
     requires javafx.media;
+    requires java.desktop;
 
     opens org.example.soundscoutfx to javafx.fxml;
     exports org.example.soundscoutfx;
