@@ -64,4 +64,6 @@ public class Profile {
     public void setActiveStatus(String activeStatus) {
         this.activeStatus = activeStatus;
     }
+
+
 }

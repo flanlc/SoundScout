@@ -3,7 +3,11 @@ package org.example.soundscoutfx;
 import java.sql.*;
 import java.util.ArrayList;
 import org.example.soundscoutfx.UserInfo;
-
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
+import io.github.cdimascio.dotenv.Dotenv;
+import java.util.Map;
+import java.io.IOException;
 
 public class SoundScoutSQLHelper {
     Connection conn;
@@ -34,7 +38,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
-    public UserInfo verifyUserCredentials(String email, String password) {
+    protected UserInfo verifyUserCredentials(String email, String password) {
         String query = "SELECT ArtistID AS ID, FirstName, 'Artist' AS UserType FROM Artist WHERE Email = ? AND Password = ? " +
                 "UNION " +
                 "SELECT UserID AS ID, FirstName, 'User' AS UserType FROM Users WHERE Email = ? AND Password = ?";
@@ -94,8 +98,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
-
-    public void CreateUser(String firstName, String lastName, String accountType, String city, String zipCode, String businessAddress, String email, String password) {
+    protected void CreateUser(String firstName, String lastName, String accountType, String city, String zipCode, String businessAddress, String email, String password) {
         if (!status) {
             System.out.println("ERROR: Connection Not Created");
             return;
@@ -139,6 +142,53 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /* code for this method was created following the guide on https://cloudinary.com/documentation/java_quickstart **/
+    protected void UploadToCloudinary(int artistID, String filePath) {
+        Dotenv dotenv = Dotenv.load();
+        Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
+        System.out.println(cloudinary.config.cloudName);
+
+        String uploadURL = null;
+        String sqlQuery = "UPDATE ArtistProfile SET ProfilePicture = ? WHERE ArtistID = ?;";
+
+        Map<String, Object> params1 = ObjectUtils.asMap(
+                "use_filename", true,
+                "unique_filename", false,
+                "overwrite", true
+        );
+
+        try {
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(filePath, params1);
+            uploadURL = (String) uploadResult.get("url");
+        } catch (IOException e) {
+            throw new RuntimeException("Error Uploading", e);
+        }
+
+        try (PreparedStatement artistUpdateStatement = conn.prepareStatement(sqlQuery)) {
+            artistUpdateStatement.setString(1, uploadURL);
+            artistUpdateStatement.setInt(2, artistID);
+
+            artistUpdateStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error Updating", e);
+        }
+    }
+
+    protected void UpdatePerformance(int artistID, String uploadURL) {
+        String sqlQuery = "UPDATE ArtistProfile SET FeaturedPerformance = ? WHERE ArtistID = ?;";
+
+        try (PreparedStatement artistUpdateStatement = conn.prepareStatement(sqlQuery)) {
+            artistUpdateStatement.setString(1, uploadURL);
+            artistUpdateStatement.setInt(2, artistID);
+
+            artistUpdateStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     protected void CreateNewProfile() {
         int artistID = -1;
 
@@ -169,10 +219,14 @@ public class SoundScoutSQLHelper {
 
     protected ArrayList<Artist> GetDBArtistsProfiles() {
         String getArtistQuery = "SELECT * FROM Artist Where ActiveStatus = 'Active';";
+        String getProfileQuery = "SELECT * FROM ArtistProfile WHERE ArtistID = ?;";
         Statement statement = null;
+        PreparedStatement profileStatement = null;
         Artist artist;
+        Profile profile;
         try {
             statement = conn.createStatement();
+            profileStatement = conn.prepareStatement(getProfileQuery);
             ResultSet rs = statement.executeQuery(getArtistQuery);
             while(rs.next()) {
                 int id = rs.getInt("ArtistID");
@@ -187,13 +241,35 @@ public class SoundScoutSQLHelper {
                 String email = rs.getString("Email");
                 String password = rs.getString("Password");
                 String joinDate = rs.getString("JoinDate");
-                artist = new Artist(id,firstName,lastName,stageName,DOB,address, zipCode, city,state,email,password,joinDate,null);
+
+                profileStatement.setInt(1, id);
+                ResultSet profileSet = profileStatement.executeQuery();
+
+                if(profileSet.next()) {
+                    int pID = profileSet.getInt("ProfileID");
+                    String genre = profileSet.getString("Genre");
+                    String profilePicture = profileSet.getString("ProfilePicture");
+                    String featuredPerformance = profileSet.getString("FeaturedPerformance");
+                    String activeStatus = profileSet.getString("ActiveStatus");
+
+                    profile = new Profile(pID, id, genre, profilePicture, featuredPerformance, activeStatus);
+                } else {
+                    profile = null;
+                }
+
+                artist = new Artist(id,firstName,lastName,stageName,DOB,address, zipCode, city,state,email,password,joinDate, profile);
                 artistArrayList.add(artist);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
+        try {
+            if (statement != null) statement.close();
+            if (profileStatement != null) profileStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         return artistArrayList;
     }

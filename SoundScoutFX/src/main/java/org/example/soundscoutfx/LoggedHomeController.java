@@ -70,6 +70,9 @@ public class LoggedHomeController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
             Parent root = loader.load();
 
+            DashboardController dashboardController = loader.getController();
+            dashboardController.setUserID(this.userID);
+
             //switch to new scene
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));

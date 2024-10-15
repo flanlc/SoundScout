@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
+<?import javafx.scene.web.WebView?>
 
 <AnchorPane prefHeight="613.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
    <children>
@@ -41,7 +42,7 @@
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="85.0">
+                  <Button mnemonicParsing="false" onAction="#navigateToProfile" prefHeight="30.0" prefWidth="85.0">
                      <graphic>
                         <VBox alignment="CENTER" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
@@ -123,6 +124,7 @@
                   <TextField fx:id="joinDateField" layoutX="238.0" layoutY="102.0" />
                   <TextField fx:id="genreField" layoutX="238.0" layoutY="139.0" />
                   <ListView fx:id="listView" layoutX="621.0" layoutY="15.0" onMouseClicked="#handleMouseClick" prefHeight="545.0" prefWidth="200.0" />
+                  <WebView fx:id="webView" layoutX="14.0" layoutY="236.0" prefHeight="325.0" prefWidth="435.0" />
                </children>
             </AnchorPane>
          </center>

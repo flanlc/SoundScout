@@ -13,6 +13,9 @@ module org.example.soundscoutfx {
     requires java.sql;
     requires javafx.media;
     requires java.desktop;
+    //requires cloudinary.taglib;
+    requires cloudinary.core;
+    requires dotenv.java;
 
     opens org.example.soundscoutfx to javafx.fxml;
     exports org.example.soundscoutfx;

@@ -16,7 +16,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/org/example/soundscoutfx/hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 320, 320);
         stage.setTitle("SoundScout");
         stage.setScene(scene);
         stage.show();
@@ -24,18 +24,6 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) {
         launch();
-
-        //ArrayList<Artist> artistArrayList = new ArrayList<Artist>();
-        SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
-        sql.testConnection();
-
-        ArrayList<Artist> artistArrayList = sql.GetDBArtistsProfiles();
-        for (Artist artist : artistArrayList) {
-            System.out.println(artist);
-        }
-        /*for(int i = 0; i < artistArrayList.size(); i++) {
-            System.out.println(artistArrayList.get(i).toString());
-        }*/
 
         //sql.CreateArtist("Beyoncé", "Knowles", "Beyoncé", "1981-09-04", "1505 Hadley St", "77002", "Houston", "TX", "beyonce@example.com", "Password123");
         //sql.CreateArtist("Elvis", "Presley", "Elvis", "1935-01-08", "3764 Elvis Presley Blvd", "38116", "Memphis", "TN", "elvispresley@example.com", "Password123");
