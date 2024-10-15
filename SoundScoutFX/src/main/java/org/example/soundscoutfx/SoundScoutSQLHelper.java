@@ -203,11 +203,12 @@ public class SoundScoutSQLHelper {
                 return;
             }
 
-            String query = "INSERT INTO ArtistProfile (ArtistID, ActiveStatus) VALUES (?, ?);";
+            String query = "INSERT INTO ArtistProfile (ArtistID, ProfilePicture, ActiveStatus) VALUES (?, ?, ?);";
 
             PreparedStatement profileInsertStatement = conn.prepareStatement(query);
             profileInsertStatement.setInt(1, artistID);
-            profileInsertStatement.setString(2, "Active");
+            profileInsertStatement.setString(2, "http://res.cloudinary.com/dbvmjemlj/image/upload/v1728860327/profile-icon-design-free-vector.jpg");
+            profileInsertStatement.setString(3, "Active");
             profileInsertStatement.execute();
 
         } catch (SQLException e) {

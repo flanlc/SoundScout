@@ -93,6 +93,8 @@ public class DashboardController {
             if (video != null && !video.isEmpty()) {
                 String youtubeURL = video.replace("watch?v=", "embed/");
                 webView.getEngine().load(youtubeURL);
+            } else {
+                webView.getEngine().load(null);
             }
         }
     }
