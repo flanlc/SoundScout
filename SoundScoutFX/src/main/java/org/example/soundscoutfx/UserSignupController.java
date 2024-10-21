@@ -42,7 +42,7 @@ public class UserSignupController {
     private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
     public void initialize() {
-        // Create a ToggleGroup and assign it to both radio buttons
+        //create a ToggleGroup and assign it to both radio buttons
         ToggleGroup accountTypeGroup = new ToggleGroup();
         personalRadio.setToggleGroup(accountTypeGroup);
         businessRadio.setToggleGroup(accountTypeGroup);
@@ -55,7 +55,7 @@ public class UserSignupController {
 
     @FXML
     protected void handleAccountType() {
-        // Show or hide the business address field based on the account type selection
+        //show or hide the business address field based on the account type selection
         boolean isBusiness = businessRadio.isSelected();
         businessAddressField.setVisible(isBusiness);
     }
@@ -75,7 +75,6 @@ public class UserSignupController {
 
     @FXML
     protected void handleSignup() {
-        // Collect form data
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
         String accountType = businessRadio.isSelected() ? "Business" : "Personal";
@@ -84,7 +83,7 @@ public class UserSignupController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        // Gather the business-specific information
+        //business-specific information
         String businessAddress = businessRadio.isSelected() ? businessAddressField.getText() : null;
 
         //simple input validation
@@ -111,13 +110,12 @@ public class UserSignupController {
             sqlHelper.CreateUser(firstName, lastName, accountType, city, zipCode, businessAddress, email, password);
             errorMessage.setText("Signup successful!");
             clearForm();
-            navigateToLogin(); // Navigate to the login page after signup
+            navigateToLogin();
         } catch (Exception e) {
             errorMessage.setText("Signup failed: " + e.getMessage());
         }
     }
 
-    //methods for validation
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         Pattern pattern = Pattern.compile(emailRegex);
@@ -140,14 +138,14 @@ public class UserSignupController {
         emailField.clear();
         passwordField.clear();
         personalRadio.setSelected(true);
-        handleAccountType(); // Reset visibility of business fields
+        handleAccountType(); //reset visibility of business fields
     }
 
     private void navigateTo(String fxmlFile, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-            Stage stage = (Stage) emailField.getScene().getWindow(); // Adjust as needed
+            Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle(title);
             stage.show();

@@ -17,10 +17,6 @@ public class LoggedHomeController {
     private Label welcomeLabel;
     @FXML
     private Button editProfileButton;
-    @FXML
-    private Button editArtistProfileButton;   // Button for artists
-    @FXML
-    private Button editUserProfileButton;
 
     private int userID;
     private String userType;
@@ -33,8 +29,8 @@ public class LoggedHomeController {
     public void setWelcomeMessage(String firstName, int userID) {
         System.out.println("setWelcomeMessage called with: " + firstName + ", ID: " + userID);
 
-        this.artistName = firstName;  // Store artist's name
-        this.userID = userID;      // Store artist's ID
+        this.artistName = firstName;
+        this.userID = userID;
         welcomeLabel.setText("Welcome, " + firstName + "! Your ID is: " + userID);
 
     //hide the "Edit Artist Profile" button if the user is a guest (ID = 0)
@@ -74,25 +70,23 @@ public class LoggedHomeController {
         try {
             FXMLLoader loader;
 
-            // Determine which profile page to load based on the user type
+            //determine which profile page to load based on user type
             if ("Artist".equalsIgnoreCase(userType)) {
-                loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));  // Artist Profile
+                loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));
             } else {
-                loader = new FXMLLoader(getClass().getResource("edit-user-profile.fxml"));  // User Profile
+                loader = new FXMLLoader(getClass().getResource("edit-user-profile.fxml"));
             }
 
             Parent root = loader.load();
 
             if ("Artist".equalsIgnoreCase(userType)) {
                 EditProfileController editProfileController = loader.getController();
-                editProfileController.setArtistDetails(this.artistName, this.userID);  // Set artist name and ID
+                editProfileController.setArtistDetails(this.artistName, this.userID);
             } else {
                 EditUserProfileController editUserProfileController = loader.getController();
-                // Pass all user details, not placeholders
                 editUserProfileController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             }
 
-            // Switch to the profile edit scene
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Profile");
@@ -110,15 +104,6 @@ public class LoggedHomeController {
         this.userID = userID;
     }
 
-    /*use the userID and userType for other functions (user-specific data, etc)
-    public void loadUserContent() {
-        if ("Artist".equals(userType)) {
-            //artist-specific content
-        } else {
-            //content specific to any other user
-        }
-    }
-*/
     private void navigateTo(String fxmlFile, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
@@ -135,12 +120,12 @@ public class LoggedHomeController {
     public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
         System.out.println("setUserDetails called with: " + firstName + ", " + lastName + ", " + email + ", " + city + ", " + zipCode + ", ID: " + userID);
 
-        this.artistName = firstName;  // Store first name
-        this.lastName = lastName;     // Store last name
-        this.email = email;           // Store email
-        this.city = city;             // Store city
-        this.zipCode = zipCode;       // Store zip code
-        this.userID = userID;         // Store user ID
+        this.artistName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.userID = userID;
 
         welcomeLabel.setText("Welcome, " + firstName + "! Your ID is: " + userID);
     }
@@ -150,9 +135,8 @@ public class LoggedHomeController {
     @FXML
     private void navigateToDashboard() {
         try {
-            //System.out.println("Navigating to Dashboard with userType: " + this.userType);  // Debug statement
+            //System.out.println("Navigating to Dashboard with userType: " + this.userType);  //debug statement
 
-            //load Dashboard.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
             Parent root = loader.load();
 
@@ -161,7 +145,6 @@ public class LoggedHomeController {
             dashboardController.setUserName(this.artistName);
             dashboardController.setUserType(this.userType);
 
-            //switch to new scene
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Dashboard");

@@ -3,7 +3,7 @@ package org.example.soundscoutfx;
 public class UserInfo {
     private int id;
     private String firstName;
-    private String userType; // "Artist" or "User"
+    private String userType;
 
     public UserInfo(int id, String firstName, String userType) {
         this.id = id;

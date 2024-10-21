@@ -40,10 +40,8 @@ public class SignupSelectionController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = fxmlLoader.load();
 
-            //get current stage from the event source
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
 
-            //set new scene and title
             stage.setScene(new Scene(root));
             stage.setTitle(title);
             stage.show();

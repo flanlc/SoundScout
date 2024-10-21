@@ -123,17 +123,17 @@ public class SoundScoutSQLHelper {
 
             if ("Business".equals(accountType)) {
                 //set the parameters in the correct order for Business users
-                userInsertStatement.setString(4, businessAddress); // BusinessAddress
-                userInsertStatement.setString(5, city);            // City
-                userInsertStatement.setString(6, zipCode);         // ZipCode
-                userInsertStatement.setString(7, email);           // Email
-                userInsertStatement.setString(8, password);        // Password
+                userInsertStatement.setString(4, businessAddress);
+                userInsertStatement.setString(5, city);
+                userInsertStatement.setString(6, zipCode);
+                userInsertStatement.setString(7, email);
+                userInsertStatement.setString(8, password);
             } else {
                 //set the parameters in the correct order for Personal users
-                userInsertStatement.setString(4, city);            // City
-                userInsertStatement.setString(5, zipCode);         // ZipCode
-                userInsertStatement.setString(6, email);           // Email
-                userInsertStatement.setString(7, password);        // Password
+                userInsertStatement.setString(4, city);
+                userInsertStatement.setString(5, zipCode);
+                userInsertStatement.setString(6, email);
+                userInsertStatement.setString(7, password);
             }
 
             userInsertStatement.execute();

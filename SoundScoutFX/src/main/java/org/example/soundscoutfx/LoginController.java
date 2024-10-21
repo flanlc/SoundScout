@@ -32,7 +32,6 @@ public class LoginController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        //clear previous error message
         setErrorMessage("", "");
 
         if (email.isEmpty() || password.isEmpty()) {
