@@ -142,6 +142,29 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    public void updateUserProfile(int userID, String firstName, String lastName, String email, String city, String zipCode) throws SQLException {
+        String updateQuery = "UPDATE Users SET FirstName = ?, LastName = ?, Email = ?, City = ?, ZipCode = ? WHERE UserID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(updateQuery)) {
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setString(3, email);
+            statement.setString(4, city);
+            statement.setString(5, zipCode);
+            statement.setInt(6, userID);
+            statement.executeUpdate();
+        }
+    }
+
+    public void updateSingleField(String fieldName, String fieldValue, int userID) throws SQLException {
+        String query = "UPDATE Users SET " + fieldName + " = ? WHERE UserID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, fieldValue);
+            statement.setInt(2, userID);
+            statement.executeUpdate();
+        }
+    }
+
     /* code for this method was created following the guide on https://cloudinary.com/documentation/java_quickstart **/
     protected void UploadToCloudinary(int artistID, String filePath) {
         Dotenv dotenv = Dotenv.load();
@@ -203,11 +226,12 @@ public class SoundScoutSQLHelper {
                 return;
             }
 
-            String query = "INSERT INTO ArtistProfile (ArtistID, ActiveStatus) VALUES (?, ?);";
+            String query = "INSERT INTO ArtistProfile (ArtistID, ProfilePicture, ActiveStatus) VALUES (?, ?, ?);";
 
             PreparedStatement profileInsertStatement = conn.prepareStatement(query);
             profileInsertStatement.setInt(1, artistID);
-            profileInsertStatement.setString(2, "Active");
+            profileInsertStatement.setString(2, "http://res.cloudinary.com/dbvmjemlj/image/upload/v1728860327/profile-icon-design-free-vector.jpg");
+            profileInsertStatement.setString(3, "Active");
             profileInsertStatement.execute();
 
         } catch (SQLException e) {

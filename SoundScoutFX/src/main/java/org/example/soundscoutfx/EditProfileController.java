@@ -21,6 +21,7 @@ public class EditProfileController {
     @FXML
     TextField videoField;
     private int userID;
+    private String artistName;
     SoundScoutSQLHelper sql;
     @FXML
     AnchorPane anchorField;
@@ -31,6 +32,11 @@ public class EditProfileController {
 
     public void setConnection(SoundScoutSQLHelper sql) {
         this.sql = sql;
+    }
+
+    public void setArtistDetails(String artistName, int userID) {
+        this.artistName = artistName;
+        this.userID = userID;
     }
 
     /* code for this method was created with code originally written in Professor Hoskeys CSC 211 class **/
@@ -65,33 +71,32 @@ public class EditProfileController {
     }
 
     @FXML
-    private void returnToDashboard() {
+    private void returnToLoggedHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
 
-            DashboardController dashboardController = loader.getController();
-            dashboardController.setUserID(this.userID);
-            dashboardController.sql = this.sql;
+            LoggedHomeController loggedHomeController = loader.getController();
+            loggedHomeController.setWelcomeMessage(this.artistName, this.userID);  // Pass back the artist's name and ID
+            loggedHomeController.setUserType("Artist");
 
             Stage stage = (Stage) anchorField.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Dashboard");
+            stage.setTitle("Home");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     @FXML
     private void handleSubmit() {
-        if(genreField != null) {
+        if (genreField != null) {
 
         }
-        if(videoField != null && videoField.getText().toLowerCase().contains("youtube")) {
+        if (videoField != null && videoField.getText().toLowerCase().contains("youtube")) {
             sql.UpdatePerformance(this.userID, videoField.getText());
         }
     }
-
-
 }

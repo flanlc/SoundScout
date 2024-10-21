@@ -21,19 +21,31 @@ import java.io.IOException;
 public class DashboardController {
     SoundScoutSQLHelper sql;
     private int userID;
+    private String artistName;
+    private String userName;
 
     public void setUserID(int userID) {
         this.userID = userID;
     }
 
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    private String userType;
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
     @FXML
     public void initialize() {
-        // Establish SQL connection
+        //establish SQL connection
         sql = new SoundScoutSQLHelper();
         sql.establishConnection();
         sql.testConnection();
 
-        // Populate observable list with artist list data
+        //populate observable list with artist list data
         ObservableList<Artist> artistList = FXCollections.observableArrayList(sql.GetDBArtistsProfiles());
         listView.setItems(artistList);
     }
@@ -93,6 +105,8 @@ public class DashboardController {
             if (video != null && !video.isEmpty()) {
                 String youtubeURL = video.replace("watch?v=", "embed/");
                 webView.getEngine().load(youtubeURL);
+            } else {
+                webView.getEngine().load(null);
             }
         }
     }
@@ -112,6 +126,27 @@ public class DashboardController {
             Stage stage = (Stage) listView.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Profile");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void navigateToHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
+            Parent root = loader.load();
+
+            LoggedHomeController loggedHomeController = loader.getController();
+            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
+
+            loggedHomeController.setUserType(this.userType);
+
+            Stage stage = (Stage) listView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Home");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

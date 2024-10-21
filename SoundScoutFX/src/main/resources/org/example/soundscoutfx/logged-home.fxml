@@ -30,6 +30,7 @@
             <children>
                 <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
                 <Button text="Available Artists" onAction="#navigateToDashboard"/>
+                <Button fx:id="editProfileButton" text="Edit Profile" onAction="#navigateToEditProfile"/>
                 <Button text="Logout" onAction="#handleLogout"/>
             </children>
         </VBox>

@@ -90,6 +90,7 @@
                         </VBox>
                      </graphic>
                   </Button>
+                  <Button text="Homepage" onAction="#navigateToHome" />
                </children>
                <BorderPane.margin>
                   <Insets top="15.0" />
