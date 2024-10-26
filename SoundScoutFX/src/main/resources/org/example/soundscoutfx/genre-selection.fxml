@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.control.Label?>
+<AnchorPane fx:id="anchorField" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.GenreSelectionController">
+    <children>
+        <Text layoutX="200.0" layoutY="20.0" text="Select Your Genre(s)" style="-fx-font-size: 24px;"/>
+
+        <VBox layoutX="50.0" layoutY="60.0" spacing="15">
+            <CheckBox fx:id="rockCheckBox" text="Rock"/>
+            <CheckBox fx:id="popCheckBox" text="Pop"/>
+            <CheckBox fx:id="rapCheckBox" text="Rap"/>
+            <CheckBox fx:id="rnbCheckBox" text="RnB"/>
+            <CheckBox fx:id="countryCheckBox" text="Country"/>
+            <CheckBox fx:id="bluesCheckBox" text="Blues" />
+            <CheckBox fx:id="electronicCheckBox" text="Electronic" />
+            <CheckBox fx:id="jazzCheckBox" text="Jazz" />
+            <CheckBox fx:id="indieCheckBox" text="Indie" />
+            <CheckBox fx:id="alternativeCheckBox" text="Alternative" />
+        </VBox>
+
+        <Button layoutX="250.0" layoutY="500.0" mnemonicParsing="false" onAction="#finalizeSignup" text="Finish Signup"/>
+        <Label fx:id="successMessageLabel" layoutX="200.0" layoutY="550.0" text="" style="-fx-text-fill: green; -fx-font-size: 14px;" visible="false"/>
+
+    </children>
+</AnchorPane>
