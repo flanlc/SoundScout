@@ -3,18 +3,24 @@ package org.example.soundscoutfx;
 public class Profile {
     private int profileID;
     private int artistID;
-    private String genere;
+    private String genre;
     private String profilePicture;
     private String featuredPerformance;
     private String activeStatus;
+    private double rate;
+    private double latitude;
+    private double longitude;
 
-    public Profile(int profileID, int artistID, String genere, String profilePicture, String featuredPerformance, String activeStatus) {
+    public Profile(int profileID, int artistID, String genre, String profilePicture, String featuredPerformance, String activeStatus, double rate, double latitude, double longitude) {
         this.profileID = profileID;
         this.artistID = artistID;
-        this.genere = genere;
+        this.genre = genre;
         this.profilePicture = profilePicture;
         this.featuredPerformance = featuredPerformance;
         this.activeStatus = activeStatus;
+        this.rate = rate;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public int getProfileID() {
@@ -33,12 +39,36 @@ public class Profile {
         this.artistID = artistID;
     }
 
-    public String getGenere() {
-        return genere;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setGenere(String genere) {
-        this.genere = genere;
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getProfilePicture() {

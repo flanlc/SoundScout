@@ -29,11 +29,13 @@ public class ArtistSignupController {
     @FXML
     private TextField cityField;
     @FXML
-    private ComboBox<String> stateComboBox; //dropdown for states
+    private ComboBox<String> stateComboBox;
     @FXML
-    private TextField otherStateField; //for states not listed
+    private TextField otherStateField;
     @FXML
     private TextField zipCodeField;
+    @FXML
+    private TextField rateField;
     @FXML
     private TextField emailField;
     @FXML
@@ -57,7 +59,6 @@ public class ArtistSignupController {
                 "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming", "Other"
         ));
 
-        //adds a listener to the stateComboBox to show the "otherStateField" if "Other" is selected
         stateComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             otherStateField.setVisible("Other".equals(newValue));
         });
@@ -81,7 +82,15 @@ public class ArtistSignupController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        //validation and SQL interaction here
+        double rate = 0;
+        try {
+            rate = Double.parseDouble(rateField.getText());
+            if (rate < 0) throw new NumberFormatException();
+        } catch (NumberFormatException e) {
+            errorMessage.setText("Please enter a valid rate.");
+            return;
+        }
+
         if (firstName.isEmpty() || lastName.isEmpty() || stageName.isEmpty() ||
                 dob.isEmpty() || streetAddress.isEmpty() || city.isEmpty() ||
                 state.isEmpty() || zipCode.isEmpty() || email.isEmpty() || password.isEmpty()) {
@@ -89,21 +98,55 @@ public class ArtistSignupController {
             return;
         }
 
+        //geocoding
+        String fullAddress = streetAddress + ", " + city + ", " + state + " " + zipCode;
+        double latitude = 0.0;
+        double longitude = 0.0;
+
+        //grab coordinates
+        try {
+            double[] coordinates = LocationHelper.getCoordinates(fullAddress);
+            latitude = coordinates[0];
+            longitude = coordinates[1];
+        } catch (Exception e) {
+            errorMessage.setText("Unable to fetch coordinates for the provided location.");
+            return;
+        }
+
+        int newArtistID = 0;
         try {
             sqlHelper.establishConnection();
-            sqlHelper.CreateArtist(firstName, lastName, stageName, dob, streetAddress, zipCode, city, state, email, password);
+            newArtistID = sqlHelper.CreateArtist(firstName, lastName, stageName, dob, streetAddress, zipCode, city, state, rate, email, password);
+            sqlHelper.updateArtistLocation(newArtistID, latitude, longitude);
             errorMessage.setText("Signup successful!");
 
-            //set a delay before navigating to the login screen to show messages
-            PauseTransition delay = new PauseTransition(Duration.seconds(2)); //2 second delay
-            delay.setOnFinished(event -> navigateToLogin());
+            PauseTransition delay = new PauseTransition(Duration.seconds(2)); //2 seconds
+            //delay.setOnFinished(event -> navigateToGenreSelection());
             delay.play();
         } catch (Exception e) {
             errorMessage.setText("Signup failed: " + e.getMessage());
         }
+
+        navigateToGenreSelection(newArtistID);
     }
 
-    private void navigateToLogin() {
+    private void navigateToGenreSelection(int artistID) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("genre-selection.fxml"));
+            Parent root = loader.load();
+            GenreSelectionController genreController = loader.getController();
+            genreController.setArtistID(artistID);
+
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Select Your Genre");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*private void navigateToLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
             Parent root = loader.load();
@@ -114,13 +157,13 @@ public class ArtistSignupController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void navigateTo(String fxmlFile, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-            Stage stage = (Stage) emailField.getScene().getWindow(); //can adjust if needed
+            Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle(title);
             stage.show();

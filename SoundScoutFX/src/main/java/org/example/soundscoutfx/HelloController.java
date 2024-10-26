@@ -33,7 +33,7 @@ public class HelloController {
 
             //get the controller and set the welcome message
             LoggedHomeController controller = loader.getController();
-            controller.setWelcomeMessage(name, 0); // Passing 0 as the ID for a guest
+            controller.setWelcomeMessage(name, 0); //passes 0 as the ID for a guest
 
             //get the stage from the event source (Button)
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();

@@ -47,7 +47,7 @@ public class LoginController {
                 setErrorMessage("Login successful!", "green");
                 new Thread(() -> {
                     try {
-                        Thread.sleep(1000); // 1 second delay
+                        Thread.sleep(1000); //1 second delay
                         javafx.application.Platform.runLater(() -> navigateToLoggedHome(userInfo));
                     } catch (InterruptedException e) {
                         e.printStackTrace();

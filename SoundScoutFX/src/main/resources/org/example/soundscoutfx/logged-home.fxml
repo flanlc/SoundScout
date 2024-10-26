@@ -2,7 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -11,24 +15,56 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
     <top>
-        <HBox alignment="CENTER" spacing="20">
+        <VBox alignment="CENTER" spacing="10">
             <children>
                 <ImageView fitHeight="50.0" fitWidth="150.0">
                     <image>
                         <Image url="@../../../icons/soundscout.png"/>
                     </image>
-                    <HBox.margin>
-                        <Insets top="20.0" right="0.0" bottom="20.0" left="0.0"/>
-                    </HBox.margin>
                 </ImageView>
+
+                <!--initially hidden Filters panel-->
+                <VBox fx:id="filterPane" visible="false" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" spacing="5">
+                    <Label text="Filter Options" style="-fx-font-weight: bold;"/>
+
+                    <HBox spacing="10" alignment="CENTER">
+                        <CheckBox fx:id="rockGenreCheckBox" text="Rock" />
+                        <CheckBox fx:id="popGenreCheckBox" text="Pop" />
+                        <CheckBox fx:id="rapGenreCheckBox" text="Rap" />
+                        <CheckBox fx:id="jazzGenreCheckBox" text="Jazz" />
+                        <CheckBox fx:id="rnbCheckBox" text="RnB" />
+                        <CheckBox fx:id="countryCheckBox" text="Country" />
+                        <CheckBox fx:id="bluesCheckBox" text="Blues" />
+                        <CheckBox fx:id="electronicCheckBox" text="Electronic" />
+                        <CheckBox fx:id="indieCheckBox" text="Indie" />
+                        <CheckBox fx:id="alternativeCheckBox" text="Alternative" />
+                    </HBox>
+
+                    <Label text="Max Price (Rate per hour in $):" />
+                    <TextField fx:id="maxPriceField" promptText="Enter max price" />
+
+                    <Label text="Distance (miles):" />
+                    <Slider fx:id="distanceSlider" min="0" max="100" value="0" showTickLabels="true" showTickMarks="true" majorTickUnit="25" minorTickCount="4" blockIncrement="5" />
+                    <Label fx:id="distanceLabel" text="None" />
+                    <Button fx:id="applyFiltersButton" text="Apply Filters" onAction="#handleApplyFilters"/>
+                </VBox>
             </children>
-        </HBox>
+        </VBox>
     </top>
 
     <center>
-        <VBox alignment="CENTER" spacing="20">
+        <VBox alignment="CENTER" spacing="10">
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
             <children>
-                <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+                <HBox spacing="10">
+                    <TextField fx:id="searchField" promptText="Search artists..." onKeyReleased="#handleSearch" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="filterButton" text="Filters" onAction="#toggleFilterPane"/>
+                </HBox>
+
+                <!-- <ListView fx:id="searchResultsList" onMouseClicked="#handleArtistSelect" maxHeight="200" visible="false" VBox.vgrow="ALWAYS"/> -->
+                <ListView fx:id="searchResultsList" visible="false" layoutY="150.0" maxHeight="150.0" />
+
+
                 <Button text="Available Artists" onAction="#navigateToDashboard"/>
                 <Button fx:id="editProfileButton" text="Edit Profile" onAction="#navigateToEditProfile"/>
                 <Button text="Logout" onAction="#handleLogout"/>

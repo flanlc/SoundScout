@@ -17,8 +17,7 @@
             <Image url="@../../../icons/soundscout.png"/>
         </image>
     </ImageView>
-
-    <!--Title-->
+    
     <Label text="Artist Signup" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
     <GridPane hgap="10" vgap="10" alignment="CENTER">
@@ -49,13 +48,16 @@
         <Label text="Zip Code:" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
         <TextField fx:id="zipCodeField" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
 
-        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-        <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+        <Label text="Rate (per hour in $):" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+        <TextField fx:id="rateField" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
 
-        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
-        <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+        <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
 
-        <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="10" GridPane.columnSpan="2">
+        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+        <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+
+        <HBox alignment="CENTER" GridPane.columnIndex="0" GridPane.rowIndex="11" GridPane.columnSpan="2">
             <Button text="Signup" onAction="#handleSignup"/>
         </HBox>
 

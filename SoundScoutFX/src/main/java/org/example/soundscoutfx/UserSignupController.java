@@ -104,10 +104,26 @@ public class UserSignupController {
             return;
         }
 
+        //construct for geocoding
+        String fullAddress = city + ", " + zipCode;
+        double latitude = 0.0;
+        double longitude = 0.0;
+
+        //grab coordinates
+        try {
+            double[] coordinates = LocationHelper.getCoordinates(fullAddress);
+            latitude = coordinates[0];
+            longitude = coordinates[1];
+        } catch (Exception e) {
+            errorMessage.setText("Unable to fetch coordinates for the provided location.");
+            return;
+        }
+
         //call the SQL helper to create a new user
         try {
             sqlHelper.establishConnection();
             sqlHelper.CreateUser(firstName, lastName, accountType, city, zipCode, businessAddress, email, password);
+            sqlHelper.updateUserLocation(sqlHelper.getLastInsertedUserID(), latitude, longitude);
             errorMessage.setText("Signup successful!");
             clearForm();
             navigateToLogin();

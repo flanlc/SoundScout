@@ -85,7 +85,7 @@ public class DashboardController {
             Artist selectedArtist = items.get(selectedIndex);
             nameField.setText(selectedArtist.getStageName());
             joinDateField.setText(selectedArtist.getJoinDate());
-            genreField.setText(selectedArtist.getProfile().getGenere());
+            genreField.setText(selectedArtist.getProfile().getGenre());
             String profilePicture = selectedArtist.getProfile().getProfilePicture();
             String video = selectedArtist.getProfile().getFeaturedPerformance();
 
@@ -141,6 +141,7 @@ public class DashboardController {
 
             LoggedHomeController loggedHomeController = loader.getController();
             loggedHomeController.setWelcomeMessage(this.userName, this.userID);
+            loggedHomeController.setUserDetails(this.userName, null, null, null, null, this.userID);
 
             loggedHomeController.setUserType(this.userType);
 
@@ -152,4 +153,32 @@ public class DashboardController {
             e.printStackTrace();
         }
     }
+
+    public void setArtistDetails(Artist artist) {
+        //populate the fields in the Dashboard with the selected artist's details
+        nameField.setText(artist.getStageName());
+        joinDateField.setText(artist.getJoinDate());
+        genreField.setText(artist.getProfile().getGenre());
+
+        String profilePicture = artist.getProfile().getProfilePicture();
+        String video = artist.getProfile().getFeaturedPerformance();
+
+        //load profile picture
+        Image defaultImage = new Image("https://asset.cloudinary.com/dbvmjemlj/3b6de659993c8001449604d2985bcf4f");
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            Image image = new Image(profilePicture, false);
+            imgView.setImage(image.isError() ? defaultImage : image);
+        } else {
+            imgView.setImage(defaultImage);
+        }
+
+        //load video
+        if (video != null && !video.isEmpty()) {
+            String youtubeURL = video.replace("watch?v=", "embed/");
+            webView.getEngine().load(youtubeURL);
+        } else {
+            webView.getEngine().load(null);
+        }
+    }
+
 }

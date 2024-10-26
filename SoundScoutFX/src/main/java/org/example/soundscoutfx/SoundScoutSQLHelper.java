@@ -2,10 +2,14 @@ package org.example.soundscoutfx;
 
 import java.sql.*;
 import java.util.ArrayList;
-import org.example.soundscoutfx.UserInfo;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
 import io.github.cdimascio.dotenv.Dotenv;
+
+import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 
@@ -30,10 +34,9 @@ public class SoundScoutSQLHelper {
         Connection con;
         con = establishConnection();
 
-        if(con != null) {
+        if (con != null) {
             System.out.println("Works");
-        }
-        else {
+        } else {
             System.out.println("ERROR: Connection Not Created");
         }
     }
@@ -67,18 +70,17 @@ public class SoundScoutSQLHelper {
     }
 
 
-    protected void CreateArtist(String firstName, String lastName, String stageName, String DOB, String streetAddress, String zipCode, String city, String state, String email, String password) {
-        if(!status) {
+    protected int CreateArtist(String firstName, String lastName, String stageName, String DOB, String streetAddress, String zipCode, String city, String state, double rate, String email, String password) {
+        if (!status) {
             System.out.println("ERROR: Connection Not Created");
-            return;
+            return -1;
         }
 
-        //string of the query for Inserting an Artist
-        String query = "INSERT INTO Artist (FirstName, LastName, StageName, DOB, StreetAddress, ZipCode, City, State, Email, Password, JoinDate, ActiveStatus) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Artist (FirstName, LastName, StageName, DOB, StreetAddress, ZipCode, City, State, Email, Password, JoinDate, ActiveStatus) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), 'Active')";
 
         try {
-            //using a prepared statement mitigated the risk of a sql injection attack
-            PreparedStatement artistInsertStatement = conn.prepareStatement(query);
+            PreparedStatement artistInsertStatement = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             artistInsertStatement.setString(1, firstName);
             artistInsertStatement.setString(2, lastName);
             artistInsertStatement.setString(3, stageName);
@@ -89,12 +91,24 @@ public class SoundScoutSQLHelper {
             artistInsertStatement.setString(8, state);
             artistInsertStatement.setString(9, email);
             artistInsertStatement.setString(10, password);
-            artistInsertStatement.setString(11, String.valueOf(java.time.LocalDateTime.now()));
-            artistInsertStatement.setString(12, "Active");
-            artistInsertStatement.execute();
-            CreateNewProfile();
+
+            int affectedRows = artistInsertStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating artist failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = artistInsertStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int newArtistID = generatedKeys.getInt(1);
+                    CreateNewProfile(newArtistID, rate);
+                    return newArtistID;
+                } else {
+                    throw new SQLException("Creating artist failed, no ID obtained.");
+                }
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error while creating artist: " + e.getMessage(), e);
         }
     }
 
@@ -211,8 +225,7 @@ public class SoundScoutSQLHelper {
     }
 
 
-
-    protected void CreateNewProfile() {
+    protected void CreateNewProfile(int newArtistID, double rate) {
         int artistID = -1;
 
         String getArtistIDQuery = "SELECT MAX(ArtistID) FROM Artist";
@@ -226,12 +239,13 @@ public class SoundScoutSQLHelper {
                 return;
             }
 
-            String query = "INSERT INTO ArtistProfile (ArtistID, ProfilePicture, ActiveStatus) VALUES (?, ?, ?);";
+            String query = "INSERT INTO ArtistProfile (ArtistID, ProfilePicture, ActiveStatus, Rate) VALUES (?, ?, ?, ?);";
 
             PreparedStatement profileInsertStatement = conn.prepareStatement(query);
             profileInsertStatement.setInt(1, artistID);
             profileInsertStatement.setString(2, "http://res.cloudinary.com/dbvmjemlj/image/upload/v1728860327/profile-icon-design-free-vector.jpg");
             profileInsertStatement.setString(3, "Active");
+            profileInsertStatement.setDouble(4, rate);
             profileInsertStatement.execute();
 
         } catch (SQLException e) {
@@ -252,7 +266,7 @@ public class SoundScoutSQLHelper {
             statement = conn.createStatement();
             profileStatement = conn.prepareStatement(getProfileQuery);
             ResultSet rs = statement.executeQuery(getArtistQuery);
-            while(rs.next()) {
+            while (rs.next()) {
                 int id = rs.getInt("ArtistID");
                 String firstName = rs.getString("FirstName");
                 String lastName = rs.getString("LastName");
@@ -269,19 +283,23 @@ public class SoundScoutSQLHelper {
                 profileStatement.setInt(1, id);
                 ResultSet profileSet = profileStatement.executeQuery();
 
-                if(profileSet.next()) {
+                if (profileSet.next()) {
                     int pID = profileSet.getInt("ProfileID");
                     String genre = profileSet.getString("Genre");
                     String profilePicture = profileSet.getString("ProfilePicture");
                     String featuredPerformance = profileSet.getString("FeaturedPerformance");
                     String activeStatus = profileSet.getString("ActiveStatus");
+                    Double rate = profileSet.getDouble("Rate");
+                    Double latitude = profileSet.getDouble("Latitude");
+                    Double longitude = profileSet.getDouble("Longitude");
 
-                    profile = new Profile(pID, id, genre, profilePicture, featuredPerformance, activeStatus);
+                    profile = new Profile(pID, id, genre, profilePicture, featuredPerformance, activeStatus, rate, latitude, longitude);
+
                 } else {
                     profile = null;
                 }
 
-                artist = new Artist(id,firstName,lastName,stageName,DOB,address, zipCode, city,state,email,password,joinDate, profile);
+                artist = new Artist(id, firstName, lastName, stageName, DOB, address, zipCode, city, state, email, password, joinDate, profile);
                 artistArrayList.add(artist);
             }
         } catch (SQLException e) {
@@ -298,4 +316,190 @@ public class SoundScoutSQLHelper {
         return artistArrayList;
     }
 
+    public void updateArtistRate(int artistID, double rate) throws SQLException {
+        String query = "UPDATE ArtistProfile SET Rate = ? WHERE ArtistID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setDouble(1, rate);
+            statement.setInt(2, artistID);
+            statement.executeUpdate();
+        }
+    }
+
+    public ObservableList<Artist> searchArtists(String searchText) {
+        ObservableList<Artist> searchResults = FXCollections.observableArrayList();
+
+        if (conn == null) {
+            establishConnection();
+        }
+
+        String query = "SELECT a.ArtistID, a.FirstName, a.LastName, a.StageName, ap.Genre, a.City, ap.ProfilePicture, ap.FeaturedPerformance, a.JoinDate, ap.ActiveStatus, ap.Rate, ap.Latitude, ap.Longitude " +
+                "FROM Artist a " +
+                "JOIN ArtistProfile ap ON a.ArtistID = ap.ArtistID " +
+                "WHERE (a.FirstName LIKE ? OR a.LastName LIKE ? OR a.StageName LIKE ? OR ap.Genre LIKE ?) " +
+                "AND a.ActiveStatus = 'Active' AND ap.ActiveStatus = 'Active'";
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            String searchPattern = "%" + searchText + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            stmt.setString(3, searchPattern);
+            stmt.setString(4, searchPattern);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("ArtistID");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String stageName = rs.getString("StageName");
+                String genre = rs.getString("Genre");
+                String city = rs.getString("City");
+                String profilePicture = rs.getString("ProfilePicture");
+                String featuredPerformance = rs.getString("FeaturedPerformance");
+                String joinDate = rs.getString("JoinDate");
+                String activeStatus = rs.getString("ActiveStatus");
+                Double rate = rs.getDouble("Rate");
+                Double latitude = rs.getDouble("latitude");
+                Double longitude = rs.getDouble("Longitude");
+
+                //create a Profile object with video and profile picture
+                Profile profile = new Profile(0, id, genre, profilePicture, featuredPerformance, activeStatus, rate, latitude, longitude);
+
+                //create an Artist object with the retrieved data
+                Artist artist = new Artist(id, firstName, lastName, stageName, null, null, null, city, null, null, null, joinDate, profile);
+
+                searchResults.add(artist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return searchResults;
+    }
+
+    public void updateArtistGenres(int artistID, String genres) throws SQLException {
+        String query = "UPDATE ArtistProfile SET Genre = ? WHERE ArtistID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, genres);
+            statement.setInt(2, artistID);
+            statement.executeUpdate();
+        }
+    }
+
+    public void updateArtistLocation(int artistID, double latitude, double longitude) throws SQLException {
+        String query = "UPDATE ArtistProfile SET Latitude = ?, Longitude = ? WHERE ArtistID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setDouble(1, latitude);
+            statement.setDouble(2, longitude);
+            statement.setInt(3, artistID);
+            statement.executeUpdate();
+        }
+    }
+
+    public void updateUserLocation(int userID, double latitude, double longitude) throws SQLException {
+        String query = "UPDATE Users SET Latitude = ?, Longitude = ? WHERE UserID = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setDouble(1, latitude);
+            statement.setDouble(2, longitude);
+            statement.setInt(3, userID);
+            statement.executeUpdate();
+        }
+    }
+
+    public double getUserLatitude(int userID) {
+        try (PreparedStatement statement = conn.prepareStatement("SELECT Latitude FROM Users WHERE UserID = ?")) {
+            statement.setInt(1, userID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble("Latitude");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public double getUserLongitude(int userID) {
+        try (PreparedStatement statement = conn.prepareStatement("SELECT Longitude FROM Users WHERE UserID = ?")) {
+            statement.setInt(1, userID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getDouble("Longitude");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public List<UserInfo> getAllUsers() {
+        List<UserInfo> users = new ArrayList<>();
+        String query = "SELECT UserID, FirstName, LastName, City, ZipCode, Latitude, Longitude FROM Users";
+
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int id = rs.getInt("UserID");
+                String firstName = rs.getString("FirstName");
+                String userType = rs.getString("UserType");
+                /*String lastName = rs.getString("LastName");
+                String city = rs.getString("City");
+                String zipCode = rs.getString("ZipCode");*/
+                String city = rs.getString("City");
+                double latitude = rs.getDouble("Latitude");
+                double longitude = rs.getDouble("Longitude");
+
+                UserInfo user = new UserInfo(id, firstName, userType, latitude, longitude, city);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public int getLastInsertedUserID() {
+        String query = "SELECT MAX(UserID) AS LastUserID FROM Users";
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next()) {
+                return rs.getInt("LastUserID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; //if something went wrong
+    }
+
+    public List<Artist> getAllArtists() {
+        List<Artist> artists = new ArrayList<>();
+        String query = "SELECT a.ArtistID, a.FirstName, a.LastName, a.StageName, a.City, a.State, a.ZipCode, " +
+                "ap.Genre, ap.Rate, ap.Latitude, ap.Longitude, ap.ProfilePicture, ap.FeaturedPerformance, ap.ActiveStatus " +
+                "FROM Artist a " +
+                "JOIN ArtistProfile ap ON a.ArtistID = ap.ArtistID";
+
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                int id = rs.getInt("ArtistID");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String stageName = rs.getString("StageName");
+                String city = rs.getString("City");
+                String state = rs.getString("State");
+                String zipCode = rs.getString("ZipCode");
+                String genres = rs.getString("Genre");
+                double rate = rs.getDouble("Rate");
+                double latitude = rs.getDouble("Latitude");
+                double longitude = rs.getDouble("Longitude");
+                String profilePicture = rs.getString("ProfilePicture");
+                String featuredPerformance = rs.getString("FeaturedPerformance");
+                String activeStatus = rs.getString("ActiveStatus");
+
+                Profile profile = new Profile(id, id, genres, profilePicture, featuredPerformance, activeStatus, rate, latitude, longitude);
+
+                Artist artist = new Artist(id, firstName, lastName, stageName, city, state, zipCode, profile);
+                artists.add(artist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return artists;
+    }
 }

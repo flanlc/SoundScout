@@ -16,6 +16,7 @@ module org.example.soundscoutfx {
     //requires cloudinary.taglib;
     requires cloudinary.core;
     requires dotenv.java;
+    requires org.json;
 
     opens org.example.soundscoutfx to javafx.fxml;
     exports org.example.soundscoutfx;

@@ -5,12 +5,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class EditUserProfileController {
 
@@ -32,6 +34,9 @@ public class EditUserProfileController {
     @FXML
     private Label successMessage;
 
+    @FXML
+    private TextField locationField;
+
     private int userID;
     private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
     private String firstName;
@@ -39,11 +44,12 @@ public class EditUserProfileController {
     private String email;
     private String city;
     private String zipCode;
+    SoundScoutSQLHelper sql;
 
    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
 
         this.userID = userID;
-        this.firstName = firstName; // Set the user's first name as userName
+        this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.city = city;
@@ -57,6 +63,47 @@ public class EditUserProfileController {
         zipCodeField.setText(zipCode);
 
         //System.out.println("First name set to: " + this.firstName); //debug statement
+    }
+
+    public void setConnection(SoundScoutSQLHelper sql) {
+        this.sql = sql;
+    }
+
+    @FXML
+    private void handleUpdateLocation() {
+        String location = locationField.getText();
+        if (location == null || location.isEmpty()) {
+            showErrorMessage("Please enter a valid location.");
+            return;
+        }
+
+        double[] coordinates = LocationHelper.getCoordinates(location);
+        double latitude = coordinates[0];
+        double longitude = coordinates[1];
+
+        try {
+            sql.updateUserLocation(this.userID, latitude, longitude);
+            showSuccessMessage("Location updated successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Error updating location.");
+        }
+    }
+
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showSuccessMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML

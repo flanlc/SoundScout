@@ -14,6 +14,8 @@ public class Artist {
     private String password;
     private String joinDate;
     private Profile profile;
+    private double latitude;
+    private double longitude;
 
     public Artist(int id, String firstName, String stageName, String lastName, String DOB, String address, String zipCode, String city, String state, String email, String password) {
         this.id = id;
@@ -42,6 +44,29 @@ public class Artist {
         this.email = email;
         this.password = password;
         this.joinDate = joinDate;
+        this.profile = profile;
+    }
+
+    public Artist(int id, String firstName, String lastName, String stageName, String genre, String city, String profilePicture, String joinDate, Profile profile) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.stageName = stageName;
+        this.profile = profile;
+        this.city = city;
+        this.joinDate = joinDate;
+        this.profile.getGenre();
+        this.profile.setProfilePicture(profilePicture);
+    }
+
+    public Artist(int id, String firstName, String lastName, String stageName, String city, String state, String zipCode, Profile profile) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.stageName = stageName;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
         this.profile = profile;
     }
 
@@ -144,6 +169,14 @@ public class Artist {
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
+
+    public double getLatitude() { return latitude; }
+
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
+
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
     @Override
     public String toString() {
