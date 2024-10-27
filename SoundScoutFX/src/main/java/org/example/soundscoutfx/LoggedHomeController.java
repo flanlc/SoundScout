@@ -105,17 +105,20 @@ public class LoggedHomeController {
         Artist selectedArtist = searchResultsList.getSelectionModel().getSelectedItem();
 
         if (selectedArtist != null) {
-            //navigate to artist profile with selected artist's details
+            // Debug statement to check selected artist's data
+            System.out.println("Selected Artist: " + selectedArtist.toString());
+
+            // Navigate to artist profile with selected artist's details
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
                 Parent root = loader.load();
 
                 DashboardController dashboardController = loader.getController();
 
-                //set the artist details in the Dashboard
+                // Set the artist details in the Dashboard
                 dashboardController.setArtistDetails(selectedArtist);
 
-                //pass the logged-in user's information to the Dashboard
+                // Pass the logged-in user's information to the Dashboard
                 dashboardController.setUserID(this.userID);
                 dashboardController.setUserName(this.artistName);
                 dashboardController.setUserType(this.userType);

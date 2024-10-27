@@ -66,6 +66,12 @@ public class DashboardController {
     private TextField genreField;
 
     @FXML
+    private TextField rateField;
+
+    @FXML
+    private TextField locationField;
+
+    @FXML
     private ImageView imgView;
 
     @FXML
@@ -86,6 +92,11 @@ public class DashboardController {
             nameField.setText(selectedArtist.getStageName());
             joinDateField.setText(selectedArtist.getJoinDate());
             genreField.setText(selectedArtist.getProfile().getGenre());
+            rateField.setText(String.valueOf(selectedArtist.getProfile().getRate()));
+
+            String locationText = selectedArtist.getCity() + ", " + selectedArtist.getZipCode();
+            locationField.setText(locationText);
+
             String profilePicture = selectedArtist.getProfile().getProfilePicture();
             String video = selectedArtist.getProfile().getFeaturedPerformance();
 
@@ -159,6 +170,10 @@ public class DashboardController {
         nameField.setText(artist.getStageName());
         joinDateField.setText(artist.getJoinDate());
         genreField.setText(artist.getProfile().getGenre());
+        rateField.setText(String.valueOf(artist.getProfile().getRate()));
+
+        String locationText = artist.getCity() + ", " + artist.getZipCode();
+        locationField.setText(locationText);
 
         String profilePicture = artist.getProfile().getProfilePicture();
         String video = artist.getProfile().getFeaturedPerformance();

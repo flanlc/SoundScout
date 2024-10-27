@@ -62,7 +62,7 @@
                 </HBox>
 
                 <!-- <ListView fx:id="searchResultsList" onMouseClicked="#handleArtistSelect" maxHeight="200" visible="false" VBox.vgrow="ALWAYS"/> -->
-                <ListView fx:id="searchResultsList" visible="false" layoutY="150.0" maxHeight="150.0" />
+                <ListView fx:id="searchResultsList" onMouseClicked="#handleArtistSelect" visible="false" layoutY="150.0" maxHeight="150.0" />
 
 
                 <Button text="Available Artists" onAction="#navigateToDashboard"/>

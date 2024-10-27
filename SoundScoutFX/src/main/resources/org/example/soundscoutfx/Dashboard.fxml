@@ -124,6 +124,8 @@
                   <TextField fx:id="nameField" layoutX="238.0" layoutY="64.0" />
                   <TextField fx:id="joinDateField" layoutX="238.0" layoutY="102.0" />
                   <TextField fx:id="genreField" layoutX="238.0" layoutY="139.0" />
+                  <TextField fx:id="rateField" layoutX="238.0" layoutY="176.0" />
+                  <TextField fx:id="locationField" layoutX="238.0" layoutY="213.0" />
                   <ListView fx:id="listView" layoutX="621.0" layoutY="15.0" onMouseClicked="#handleMouseClick" prefHeight="545.0" prefWidth="200.0" />
                   <WebView fx:id="webView" layoutX="14.0" layoutY="236.0" prefHeight="325.0" prefWidth="435.0" />
                </children>
