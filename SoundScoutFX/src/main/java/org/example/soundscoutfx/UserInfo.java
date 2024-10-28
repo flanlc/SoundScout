@@ -23,6 +23,14 @@ public class UserInfo {
         this.city = city;
     }
 
+    public UserInfo(int id, String firstName,  double latitude, double longitude, String city) {
+        this.id = id;
+        this.firstName = firstName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.city = city;
+    }
+
     public int getId() {
         return id;
     }

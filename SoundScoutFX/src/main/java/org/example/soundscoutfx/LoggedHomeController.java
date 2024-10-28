@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -133,7 +134,6 @@ public class LoggedHomeController {
         }
     }
 
-
     private int userID;
     private String userType;
     private String artistName;
@@ -252,8 +252,6 @@ public class LoggedHomeController {
 
         welcomeLabel.setText("Welcome, " + firstName + "! Your ID is: " + userID);
     }
-
-
 
     @FXML
     private void navigateToDashboard() {
@@ -394,12 +392,17 @@ public class LoggedHomeController {
                     user.setLatitude(coordinates[0]);
                     user.setLongitude(coordinates[1]);
                     sqlHelper.updateUserLocation(user.getId(), user.getLatitude(), user.getLongitude());
+                }
+            } catch (SQLException e) {
+                System.err.println("SQL Error while updating user location for user ID: " + user.getId());
+                e.printStackTrace();
             } catch (Exception e) {
+                System.err.println("General error while updating user location for user ID: " + user.getId());
                 e.printStackTrace();
             }
         }
-    }*/
-
+    }
+*/
     @FXML
     private void handleApplyFilters() {
         List<String> selectedGenres = new ArrayList<>();

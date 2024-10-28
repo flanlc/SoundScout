@@ -439,7 +439,7 @@ public class SoundScoutSQLHelper {
             while (rs.next()) {
                 int id = rs.getInt("UserID");
                 String firstName = rs.getString("FirstName");
-                String userType = rs.getString("UserType");
+                //String userType = rs.getString("UserType");
                 /*String lastName = rs.getString("LastName");
                 String city = rs.getString("City");
                 String zipCode = rs.getString("ZipCode");*/
@@ -447,7 +447,7 @@ public class SoundScoutSQLHelper {
                 double latitude = rs.getDouble("Latitude");
                 double longitude = rs.getDouble("Longitude");
 
-                UserInfo user = new UserInfo(id, firstName, userType, latitude, longitude, city);
+                UserInfo user = new UserInfo(id, firstName, latitude, longitude, city);
                 users.add(user);
             }
         } catch (SQLException e) {
