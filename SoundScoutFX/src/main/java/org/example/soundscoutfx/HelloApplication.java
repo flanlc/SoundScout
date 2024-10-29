@@ -16,7 +16,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/org/example/soundscoutfx/hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 320);
+        Scene scene = new Scene(fxmlLoader.load(), 750, 500);
         stage.setTitle("SoundScout");
         stage.setScene(scene);
         stage.show();

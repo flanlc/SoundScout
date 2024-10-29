@@ -9,42 +9,19 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="613.0" prefWidth="920.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
+<AnchorPane prefHeight="613.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
    <children>
-      <BorderPane prefHeight="613.0" prefWidth="920.0">
+      <BorderPane prefHeight="613.0" prefWidth="873.0">
          <left>
-            <VBox prefHeight="613.0" prefWidth="85.0" spacing="10" BorderPane.alignment="CENTER"> <!-- Added spacing here -->
+            <VBox prefHeight="559.0" prefWidth="83.0" spacing="10" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="541.0">
+                  <Button mnemonicParsing="false" onAction="#navigateToProfile" prefHeight="50.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                      <graphic>
-                        <VBox alignment="CENTER" spacing="2">
-                           <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@../../../icons/Menu.png" />
-                              </image>
-                           </ImageView>
-                        </VBox>
-                     </graphic>
-                  </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="541.0">
-                     <graphic>
-                        <VBox alignment="CENTER" prefHeight="9.0" prefWidth="69.0" spacing="2">
-                           <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@../../../icons/Plus.png" />
-                              </image>
-                           </ImageView>
-                        </VBox>
-                     </graphic>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#navigateToProfile" prefHeight="30.0" prefWidth="85.0">
-                     <graphic>
-                        <VBox alignment="CENTER" spacing="2">
+                        <VBox alignment="CENTER" prefHeight="42.0" prefWidth="47.0" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                               <image>
                                  <Image url="@../../../icons/Info.png" />
@@ -54,7 +31,7 @@
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="541.0">
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                      <graphic>
                         <VBox alignment="CENTER" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
@@ -66,7 +43,7 @@
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="541.0">
+                  <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                      <graphic>
                         <VBox alignment="CENTER" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
@@ -78,7 +55,7 @@
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="541.0">
+                  <Button mnemonicParsing="false" onAction="#navigateToHome" prefHeight="52.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                      <graphic>
                         <VBox alignment="CENTER" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
@@ -86,51 +63,49 @@
                                  <Image url="@../../../icons/Info.png" />
                               </image>
                            </ImageView>
-                           <Label text="Explore" />
+                           <Label text="Homepage" />
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button text="Homepage" onAction="#navigateToHome" />
                </children>
                <BorderPane.margin>
                   <Insets top="15.0" />
                </BorderPane.margin>
             </VBox>
          </left>
-         <top>
-            <HBox prefHeight="38.0" prefWidth="920.0" BorderPane.alignment="CENTER">
-               <children>
-                  <ImageView fitHeight="43.0" fitWidth="207.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../icons/soundscout.png" />
-                     </image>
-                     <HBox.margin>
-                        <Insets left="100.0" />
-                     </HBox.margin>
-                  </ImageView>
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets></HBox>
-         </top>
          <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="570.0" prefWidth="823.0" BorderPane.alignment="CENTER">
                <children>
                   <ImageView fx:id="imgView" fitHeight="189.0" fitWidth="195.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../icons/profile-icon-design-free-vector.jpg" />
-                     </image></ImageView>
-                  <MediaView fx:id="mediaView" fitHeight="320.0" fitWidth="430.0" layoutX="14.0" layoutY="236.0" />
-                  <TextField fx:id="nameField" layoutX="238.0" layoutY="64.0" />
-                  <TextField fx:id="joinDateField" layoutX="238.0" layoutY="102.0" />
-                  <TextField fx:id="genreField" layoutX="238.0" layoutY="139.0" />
-                  <TextField fx:id="rateField" layoutX="238.0" layoutY="176.0" />
-                  <TextField fx:id="locationField" layoutX="238.0" layoutY="213.0" />
-                  <ListView fx:id="listView" layoutX="621.0" layoutY="15.0" onMouseClicked="#handleMouseClick" prefHeight="545.0" prefWidth="200.0" />
-                  <WebView fx:id="webView" layoutX="14.0" layoutY="236.0" prefHeight="325.0" prefWidth="435.0" />
+                     </image>
+                  </ImageView>
+
+                  <ListView fx:id="searchResultsList" layoutX="414.0" layoutY="-4.0" maxHeight="394.0" onMouseClicked="#handleArtistSelect" prefHeight="156.0" prefWidth="390.0" visible="false" />
+
+                  <Text fx:id="nameField" layoutX="212.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
+                  <Text fx:id="joinDateField" layoutX="212.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
+                  <Text fx:id="genreField" layoutX="212.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
+                  <Text fx:id="rateField" layoutX="212.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
+                  <Text fx:id="locationField" layoutX="212.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
+                  <WebView fx:id="webView" layoutX="14.0" layoutY="230.0" prefHeight="304.0" prefWidth="395.0" />
                </children>
             </AnchorPane>
          </center>
+         <top>
+            <AnchorPane prefHeight="36.0" prefWidth="1695.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="41.0" fitWidth="149.0" layoutX="100.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../icons/soundscout.png" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="805.0" layoutY="6.0" onAction="#handleSearch" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Search" />
+                  <TextField fx:id="searchField" layoutX="498.0" layoutY="5.0" prefHeight="27.0" onKeyReleased="#handleSearch" prefWidth="295.0" promptText="Search artists..." style="-fx-border-color: #D6C8EB;" />
+               </children>
+            </AnchorPane>
+         </top>
       </BorderPane>
    </children>
 </AnchorPane>

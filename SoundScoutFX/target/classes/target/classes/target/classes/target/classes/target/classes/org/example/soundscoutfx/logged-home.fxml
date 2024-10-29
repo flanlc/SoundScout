@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -13,64 +11,62 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
+<?import javafx.scene.control.ListView?>
+<BorderPane style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
     <top>
-        <VBox alignment="CENTER" spacing="10">
+        <VBox alignment="CENTER" prefWidth="750.0" spacing="10">
             <children>
                 <ImageView fitHeight="50.0" fitWidth="150.0">
                     <image>
-                        <Image url="@../../../icons/soundscout.png"/>
+                        <Image url="@../../../icons/soundscout.png" />
                     </image>
                 </ImageView>
 
-                <!-- Filters Panel: Initially hidden -->
-                <VBox fx:id="filterPane" visible="false" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" spacing="5">
-                    <Label text="Filter Options" style="-fx-font-weight: bold;"/>
+                <!--initially hidden Filters panel-->
+                <VBox fx:id="filterPane" spacing="5" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" visible="false">
+                    <Label style="-fx-font-weight: bold;" text="Filter Options" />
 
-                    <HBox spacing="10" alignment="CENTER">
-                        <CheckBox fx:id="rockGenreCheckBox" text="Rock" />
-                        <CheckBox fx:id="popGenreCheckBox" text="Pop" />
-                        <CheckBox fx:id="rapGenreCheckBox" text="Rap" />
-                        <CheckBox fx:id="jazzGenreCheckBox" text="Jazz" />
-                        <CheckBox fx:id="rnbCheckBox" text="RnB" />
-                        <CheckBox fx:id="countryCheckBox" text="Country" />
-                        <CheckBox fx:id="bluesCheckBox" text="Blues" />
-                        <CheckBox fx:id="electronicCheckBox" text="Electronic" />
-                        <CheckBox fx:id="indieCheckBox" text="Indie" />
-                        <CheckBox fx:id="alternativeCheckBox" text="Alternative" />
+                    <HBox alignment="CENTER" spacing="10">
+                        <CheckBox fx:id="rockGenreCheckBox" text="Rock" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="popGenreCheckBox" text="Pop" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="rapGenreCheckBox" text="Rap" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="jazzGenreCheckBox" text="Jazz" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="rnbCheckBox" text="RnB" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="countryCheckBox" text="Country" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="bluesCheckBox" text="Blues" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="electronicCheckBox" text="Electronic" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="indieCheckBox" text="Indie" style="-fx-text-fill: #4e238d;" />
+                        <CheckBox fx:id="alternativeCheckBox" text="Alternative" style="-fx-text-fill: #4e238d;" />
                     </HBox>
 
-                    <Label text="Max Price (Rate per hour in $):" />
-                    <TextField fx:id="maxPriceField" promptText="Enter max price" />
+                    <Label text="Max Price (Rate per hour in $):" style="-fx-text-fill: #4e238d;" />
+                    <TextField fx:id="maxPriceField" promptText="Enter max price" style="-fx-border-color: #D6C8EB;" />
 
-                    <Label text="Distance (miles):" />
-                    <Slider fx:id="distanceSlider" min="0" max="100" value="0" showTickLabels="true" showTickMarks="true" majorTickUnit="25" minorTickCount="4" blockIncrement="5" />
-                    <Label fx:id="distanceLabel" text="None" />
-                    <Button fx:id="applyFiltersButton" text="Apply Filters" onAction="#handleApplyFilters"/>
+                    <Label text="Distance (miles):" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
+                    <Slider fx:id="distanceSlider" blockIncrement="5" majorTickUnit="25" max="100" min="0" minorTickCount="4" showTickLabels="true" showTickMarks="true" value="0" />
+                    <Label fx:id="distanceLabel" text="None" style="-fx-text-fill: #4e238d;" />
+                    <Button fx:id="applyFiltersButton" onAction="#handleApplyFilters" text="Apply Filters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
                 </VBox>
             </children>
         </VBox>
     </top>
-
-    <center>
-        <VBox alignment="CENTER" spacing="10">
-            <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+   <left>
+        <VBox alignment="CENTER" prefHeight="244.0" prefWidth="750.0" spacing="10" BorderPane.alignment="CENTER">
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
             <children>
-                <!-- HBox to hold Search bar and Filter button side by side -->
                 <HBox spacing="10">
-                    <TextField fx:id="searchField" promptText="Search artists..." onKeyReleased="#handleSearch" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="filterButton" text="Filters" onAction="#toggleFilterPane"/>
+                    <TextField fx:id="searchField" onKeyReleased="#handleSearch" promptText="Search artists..." HBox.hgrow="ALWAYS" style="-fx-border-color: #D6C8EB;" />
+                    <Button fx:id="filterButton" onAction="#toggleFilterPane" text="Filters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
                 </HBox>
 
-                <!-- ListView for displaying search results -->
                 <!-- <ListView fx:id="searchResultsList" onMouseClicked="#handleArtistSelect" maxHeight="200" visible="false" VBox.vgrow="ALWAYS"/> -->
-                <ListView fx:id="searchResultsList" visible="false" layoutY="150.0" maxHeight="150.0" />
+                <ListView fx:id="searchResultsList" layoutY="150.0" maxHeight="150.0" onMouseClicked="#handleArtistSelect" visible="false" />
 
 
-                <Button text="Available Artists" onAction="#navigateToDashboard"/>
-                <Button fx:id="editProfileButton" text="Edit Profile" onAction="#navigateToEditProfile"/>
-                <Button text="Logout" onAction="#handleLogout"/>
+                <Button onAction="#navigateToDashboard" text="Available Artists" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
+                <Button fx:id="editProfileButton" onAction="#navigateToEditProfile" text="Edit Profile" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
+                <Button onAction="#handleLogout" text="Logout" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
             </children>
         </VBox>
-    </center>
+   </left>
 </BorderPane>
