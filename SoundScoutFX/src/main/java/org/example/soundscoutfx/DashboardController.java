@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -27,6 +28,10 @@ public class DashboardController {
     private String artistName;
     private String userName;
     private String userType;
+    private String lastName;
+    private String email;
+    private String city;
+    private String zipCode;
 
     @FXML
     private TextField searchField;
@@ -114,18 +119,47 @@ public class DashboardController {
         }
     }
 
+    private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
+
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Access Denied");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
     private void navigateToProfile() {
+        //if Guest account
+        if (this.userID == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return; //can't proceed
+        }
+
         try {
-            //load edit-profile.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));
+            FXMLLoader loader;
+
+            //determine which profile page to load based on user type
+            if ("Artist".equalsIgnoreCase(userType)) {
+                loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));
+            } else {
+                loader = new FXMLLoader(getClass().getResource("edit-user-profile.fxml"));
+            }
+
             Parent root = loader.load();
 
-            EditProfileController editProfileController = loader.getController();
-            editProfileController.setUserID(this.userID);
-            editProfileController.setConnection(this.sql);
+            if ("Artist".equalsIgnoreCase(userType)) {
+                EditProfileController editProfileController = loader.getController();
+                editProfileController.setConnection(this.sqlHelper);
+                editProfileController.setArtistDetails(this.artistName, this.userID);
+            } else {
+                EditUserProfileController editUserProfileController = loader.getController();
+                editUserProfileController.setConnection(this.sqlHelper);
+                editUserProfileController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            }
 
-            //switch to new scene
+            // Switch to the new scene
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Profile");
