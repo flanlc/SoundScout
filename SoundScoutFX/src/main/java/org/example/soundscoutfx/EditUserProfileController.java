@@ -47,7 +47,6 @@ public class EditUserProfileController {
     SoundScoutSQLHelper sql;
 
    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
-
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -55,14 +54,11 @@ public class EditUserProfileController {
         this.city = city;
         this.zipCode = zipCode;
 
-
         firstNameField.setText(firstName);
         lastNameField.setText(lastName);
         emailField.setText(email);
         cityField.setText(city);
         zipCodeField.setText(zipCode);
-
-        //System.out.println("First name set to: " + this.firstName); //debug statement
     }
 
     public void setConnection(SoundScoutSQLHelper sql) {

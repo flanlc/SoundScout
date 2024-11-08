@@ -39,23 +39,23 @@ public class EditProfileController {
     private TextField rateField;
 
     /*
-    //sub-genre checkboxes for Rock
+    sub-genre checkboxes for Rock
     @FXML
     private CheckBox punkRockCheckBox, rock60sCheckBox, rock70sCheckBox, rock80sCheckBox, rock90sCheckBox, rock2000sCheckBox, altRockCheckBox, rockNRollCheckBox, bluesRockCheckBox, southernRockCheckBox, hardRockCheckBox, psychedelicRockCheckBox, indieRockCheckBox;
 
-    //sub-genre checkboxes for Pop
+    sub-genre checkboxes for Pop
     @FXML
     private CheckBox electropopCheckBox, synthPopCheckBox, folkPopCheckBox, teenPopCheckBox, radioPopCheckBox;
 
-    //sub-genre checkboxes for Rap
+    sub-genre checkboxes for Rap
     @FXML
     private CheckBox hipHopCheckBox, trapCheckBox, oldSchoolRapCheckBox, gangstaRapCheckBox, rapRockCheckBox;
 
-    //sub-genre checkboxes for R&B
+    sub-genre checkboxes for R&B
     @FXML
     private CheckBox soulCheckBox, funkCheckBox, contemporaryCheckBox, progressiveSoulCheckBox, alternativeCheckBox;
 
-    //sub-genre checkboxes for Country
+    sub-genre checkboxes for Country
     @FXML
     private CheckBox popCountryCheckBox, folkCountryCheckBox, altCountryCheckBox, outlawCountryCheckBox, honkyTonkCheckBox, bluegrassCheckBox, countryBluesCheckBox, bakersfieldSoundCheckBox;
 
@@ -65,6 +65,10 @@ public class EditProfileController {
 
     private int userID;
     private String artistName;
+    private String lastName;
+    private String email;
+    private String city;
+    private String zipCode;
     SoundScoutSQLHelper sql;
 
     public void setUserID(int userID) {
@@ -112,7 +116,7 @@ public class EditProfileController {
     }
 
     /*
-    //toggle visibility of sub-genres
+    toggle visibility of sub-genres
     @FXML
     private void toggleSubGenres(ActionEvent event) {
         if (event.getSource() == rockCheckBox) {
@@ -169,7 +173,7 @@ public class EditProfileController {
             Parent root = loader.load();
 
             LoggedHomeController loggedHomeController = loader.getController();
-            loggedHomeController.setWelcomeMessage(this.artistName, this.userID);  //PASSES BACK the artist's name and ID
+            loggedHomeController.setWelcomeMessage(this.artistName, this.userID, this.lastName, this.email, this.city, this.zipCode);  //PASSES BACK the artist's name and ID
             loggedHomeController.setUserType("Artist");
 
             Stage stage = (Stage) anchorField.getScene().getWindow();
@@ -191,7 +195,6 @@ public class EditProfileController {
         //checks if genres are selected before updating
         if (!selectedGenres.isEmpty()) {
             try {
-                //comma-separated string
                 String genres = String.join(", ", selectedGenres);
 
                 sql.updateArtistGenres(this.userID, genres);
@@ -221,7 +224,6 @@ public class EditProfileController {
 
         try {
             sql.updateArtistRate(this.userID, rate);
-
             successMessageLabel.setText("Success! Rate has been updated!");
             successMessageLabel.setVisible(true);
 
@@ -252,7 +254,6 @@ public class EditProfileController {
         }
     }
 
-
     /*@FXML
     private void handleSubmit() {
         List<String> selectedGenres = getSelectedGenres();
@@ -266,7 +267,7 @@ public class EditProfileController {
             return;
         }
 
-        //if the genres are selected, update the database
+        if the genres are selected, update the database
         if (!selectedGenres.isEmpty()) {
             try {
                 String genres = String.join(", ", selectedGenres);

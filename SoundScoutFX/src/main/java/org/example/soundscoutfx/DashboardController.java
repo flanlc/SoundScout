@@ -159,7 +159,7 @@ public class DashboardController {
                 editUserProfileController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             }
 
-            // Switch to the new scene
+
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Profile");

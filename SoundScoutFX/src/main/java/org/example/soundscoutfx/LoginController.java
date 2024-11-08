@@ -107,7 +107,7 @@ public class LoginController {
             Parent root = loader.load();
 
             LoggedHomeController controller = loader.getController();
-            controller.setWelcomeMessage(userInfo.getFirstName(), userInfo.getId());
+            controller.setWelcomeMessage(userInfo.getFirstName(), userInfo.getId(), userInfo.getLastName(), userInfo.getEmail(), userInfo.getCity(), userInfo.getZipCode());
             controller.setUserID(userInfo.getId());
             controller.setUserType(userInfo.getUserType());
 

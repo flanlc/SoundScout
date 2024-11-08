@@ -1,6 +1,7 @@
 package org.example.soundscoutfx;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -42,9 +43,11 @@ public class SoundScoutSQLHelper {
     }
 
     protected UserInfo verifyUserCredentials(String email, String password) {
-        String query = "SELECT ArtistID AS ID, FirstName, 'Artist' AS UserType FROM Artist WHERE Email = ? AND Password = ? " +
+        String query = "SELECT ArtistID AS ID, FirstName, LastName, Email, City, ZipCode, 'Artist' AS UserType " +
+                "FROM Artist WHERE Email = ? AND Password = ? " +
                 "UNION " +
-                "SELECT UserID AS ID, FirstName, 'User' AS UserType FROM Users WHERE Email = ? AND Password = ?";
+                "SELECT UserID AS ID, FirstName, LastName, Email, City, ZipCode, 'User' AS UserType " +
+                "FROM Users WHERE Email = ? AND Password = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, email);
@@ -54,11 +57,13 @@ public class SoundScoutSQLHelper {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                //login successful, create and return a UserInfo object
                 int id = resultSet.getInt("ID");
                 String firstName = resultSet.getString("FirstName");
+                String lastName = resultSet.getString("LastName");
+                String city = resultSet.getString("City");
+                String zipCode = resultSet.getString("ZipCode");
                 String userType = resultSet.getString("UserType");
-                return new UserInfo(id, firstName, userType);
+                return new UserInfo(id, firstName, lastName, email, city, zipCode, userType);
             } else {
                 //if no matching user found
                 return null;
@@ -501,5 +506,22 @@ public class SoundScoutSQLHelper {
             e.printStackTrace();
         }
         return artists;
+    }
+
+    public boolean isArtistAvailable(int artistId, List<LocalDate> dates) {
+        String query = "SELECT COUNT(*) FROM Reservation WHERE ArtistID = ? AND bookingDate = ? AND status = 'Active'";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            for (LocalDate date : dates) {
+                statement.setInt(1, artistId);
+                statement.setDate(2, Date.valueOf(date));
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next() && resultSet.getInt(1) > 0) {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

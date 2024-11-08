@@ -41,12 +41,7 @@ public class LocationHelper {
 
             JSONObject json = new JSONObject(response.toString());
 
-            // Debug: Print the entire response for troubleshooting
-            // System.out.println("API Response: " + json.toString());
-
-            // Check if results array is empty
             if (json.getJSONArray("results").length() == 0) {
-                // No results found for location
                 return coordinates;
             }
 
@@ -65,8 +60,7 @@ public class LocationHelper {
     }
 
     public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        // Haversine formula to calculate distance between two points
-        final int R = 6371; // Radius of the earth in km
+        final int R = 6371;
 
         double latDistance = Math.toRadians(lat2 - lat1);
         double lonDistance = Math.toRadians(lon1 - lon2);
@@ -77,7 +71,7 @@ public class LocationHelper {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        double distance = R * c; // Distance in kilometers
-        return distance * 0.621371; // Convert to miles (if needed)
+        double distance = R * c;
+        return distance * 0.621371;
     }
 }

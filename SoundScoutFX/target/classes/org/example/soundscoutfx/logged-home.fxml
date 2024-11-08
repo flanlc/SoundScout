@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.DatePicker?>
 <BorderPane style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
     <top>
         <VBox alignment="CENTER" prefWidth="750.0" spacing="10">
@@ -24,7 +25,7 @@
 
                 <!--initially hidden Filters panel-->
                 <VBox fx:id="filterPane" spacing="5" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" visible="false">
-                    <Label style="-fx-font-weight: bold;" text="Filter Options" />
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Filter Options" />
 
                     <HBox alignment="CENTER" spacing="10">
                         <CheckBox fx:id="rockGenreCheckBox" text="Rock" style="-fx-text-fill: #4e238d;" />
@@ -39,12 +40,16 @@
                         <CheckBox fx:id="alternativeCheckBox" text="Alternative" style="-fx-text-fill: #4e238d;" />
                     </HBox>
 
-                    <Label text="Max Price (Rate per hour in $):" style="-fx-text-fill: #4e238d;" />
+                    <Label text="Max Price (Rate per hour in $):" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
                     <TextField fx:id="maxPriceField" promptText="Enter max price" style="-fx-border-color: #D6C8EB;" />
 
-                    <Label text="Distance (miles):" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
+                    <Label text="Distance (miles):" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
                     <Slider fx:id="distanceSlider" blockIncrement="5" majorTickUnit="25" max="100" min="0" minorTickCount="4" showTickLabels="true" showTickMarks="true" value="0" />
                     <Label fx:id="distanceLabel" text="None" style="-fx-text-fill: #4e238d;" />
+
+                    <Label text="Select Available Dates" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
+                    <DatePicker fx:id="availabilityDatePicker" showWeekNumbers="true" onAction="#handleAvailabilitySelect" />
+
                     <Button fx:id="applyFiltersButton" onAction="#handleApplyFilters" text="Apply Filters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
                 </VBox>
             </children>
