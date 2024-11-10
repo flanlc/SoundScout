@@ -524,4 +524,50 @@ public class SoundScoutSQLHelper {
         }
         return true;
     }
+
+    public List<Reservation> getAllReservations() {
+        List<Reservation> reservations = new ArrayList<>();
+        String Query = "SELECT * FROM Reservation Where status = 'Active'";
+
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(Query)) {
+            while (rs.next()) {
+                int resID = rs.getInt("ReservationID");
+                int ArtistID = rs.getInt("ArtistID");
+                int userID = rs.getInt("UserID");
+                String day = rs.getString("bookingDate");
+                String status = rs.getString("status");
+
+                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status);
+                reservations.add(reservation);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return reservations;
+    }
+
+    protected void CreateNewReservation(Reservation reservation) {
+        if(reservation.getArtistID() == 0) {
+            System.out.println("ERROR: No artist selected");
+            return;
+        }
+
+        String query = "INSERT INTO Reservation (ArtistID, UserID, BookingDate, Status) VALUES (?, ?, ?, ?);";
+
+        PreparedStatement profileInsertStatement = null;
+        try {
+            profileInsertStatement = conn.prepareStatement(query);
+            profileInsertStatement.setInt(1, reservation.getArtistID());
+            profileInsertStatement.setInt(2, reservation.getUserID());
+            profileInsertStatement.setString(3, reservation.getDate());
+            profileInsertStatement.setString(4, reservation.getActiveStatus());
+            profileInsertStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }

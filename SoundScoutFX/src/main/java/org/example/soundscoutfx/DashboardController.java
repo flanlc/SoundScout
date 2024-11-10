@@ -6,25 +6,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DashboardController {
     SoundScoutSQLHelper sql;
     private int userID;
+    private int currentArtistID;
     private String artistName;
     private String userName;
     private String userType;
@@ -32,15 +34,18 @@ public class DashboardController {
     private String email;
     private String city;
     private String zipCode;
+    private List<Reservation> reservationStringList;
+    private List<LocalDate> reservationDates = new ArrayList<>();
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    @FXML
+    DatePicker datePicker = new DatePicker();
 
     @FXML
     private TextField searchField;
 
     @FXML
     private ListView<Artist> searchResultsList;
-
-    @FXML
-    private ListView<Artist> listView;
 
     @FXML
     private Text nameField;
@@ -62,6 +67,8 @@ public class DashboardController {
 
     @FXML
     private WebView webView;
+
+    private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
     public void setUserID(int userID) {
         this.userID = userID;
@@ -85,6 +92,13 @@ public class DashboardController {
         sql = new SoundScoutSQLHelper();
         sql.establishConnection();
         sql.testConnection();
+
+        reservationStringList = sql.getAllReservations();
+
+        for (Reservation reservation : reservationStringList) {
+            LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
+            reservationDates.add(tempDate);
+        }
 
         searchResultsList.setVisible(false);
     }
@@ -112,14 +126,23 @@ public class DashboardController {
     }
 
     @FXML
+    public void SubmitReservation() {
+        if(userID != 0) {
+            String date = null;
+            date = String.valueOf(datePicker.getValue());
+            Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, date, "Active");
+            sql.CreateNewReservation(reservation);
+            reservationDates.add(datePicker.getValue());
+        }
+    }
+
+    @FXML
     private void handleArtistSelect(MouseEvent event) {
         Artist selectedArtist = searchResultsList.getSelectionModel().getSelectedItem();
         if (selectedArtist != null) {
             setArtistDetails(selectedArtist);
         }
     }
-
-    private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -159,7 +182,7 @@ public class DashboardController {
                 editUserProfileController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             }
 
-
+            // Switch to the new scene
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Profile");
@@ -193,6 +216,7 @@ public class DashboardController {
 
     public void setArtistDetails(Artist artist) {
         //populate the fields in the Dashboard with the selected artist's details
+        currentArtistID = (artist.getId());
         nameField.setText(artist.getStageName());
         joinDateField.setText(artist.getJoinDate());
         genreField.setText(artist.getProfile().getGenre());
@@ -222,6 +246,40 @@ public class DashboardController {
         } else {
             webView.getEngine().load(null);
         }
+
+        reservationDates.clear();
+        for (Reservation reservation : reservationStringList) {
+            if (reservation.getArtistID() == currentArtistID) {
+                LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
+                reservationDates.add(tempDate);
+            }
+        }
+
+        setCalendarReservations();
+    }
+
+
+    //https://docs.oracle.com/javase/8/javafx/user-interface-tutorial/date-picker.htm#CCHHJBEA Implementing a Day Cell Factory to Disable Some Days
+    public void setCalendarReservations() {
+        final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
+            @Override
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (!empty && item != null && reservationDates.contains(item) || Objects.requireNonNull(item).isBefore(LocalDate.now())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: grey; -fx-text-fill: white;");
+                        }
+                    }
+                };
+            }
+        };
+
+        datePicker.setDayCellFactory(dayCellFactory);
+
     }
 
 }
