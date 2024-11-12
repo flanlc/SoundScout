@@ -285,6 +285,11 @@ public class DashboardController {
 
     @FXML
     private void NavigateToReservations() {
+        if (this.userID == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return; //can't proceed
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
             Parent root = loader.load();
