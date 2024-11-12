@@ -55,4 +55,9 @@ public class Reservation {
     public void setActiveStatus(String activeStatus) {
         this.activeStatus = activeStatus;
     }
+
+    @Override
+    public String toString() {
+        return "Artist ID: " + artistID + ", User ID: " + userID + ", Date: " + date;
+    }
 }

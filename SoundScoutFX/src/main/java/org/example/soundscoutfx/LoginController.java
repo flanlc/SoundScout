@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class LoginController {
 
@@ -110,6 +111,10 @@ public class LoginController {
             controller.setWelcomeMessage(userInfo.getFirstName(), userInfo.getId(), userInfo.getLastName(), userInfo.getEmail(), userInfo.getCity(), userInfo.getZipCode());
             controller.setUserID(userInfo.getId());
             controller.setUserType(userInfo.getUserType());
+
+            if(Objects.equals(userInfo.getUserType(), "Artist")) {
+                controller.SetArtistID(userInfo.getId());
+            }
 
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root));

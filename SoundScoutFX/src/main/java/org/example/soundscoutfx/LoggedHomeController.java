@@ -138,6 +138,7 @@ public class LoggedHomeController {
     private int userID;
     private String userType;
     private String artistName;
+    private int artistID;
     private String lastName;
     private String email;
     private String city;
@@ -283,6 +284,7 @@ public class LoggedHomeController {
 
             DashboardController dashboardController = loader.getController();
             dashboardController.setUserID(this.userID);
+            dashboardController.SetArtistID(this.artistID);
             dashboardController.setUserName(this.artistName);
             dashboardController.setUserType(this.userType);
 
@@ -464,5 +466,9 @@ public class LoggedHomeController {
             selectedDates.add(selectedDate);
             handleApplyFilters();
         }
+    }
+
+    void SetArtistID(int artistID) {
+        this.artistID = artistID;
     }
 }

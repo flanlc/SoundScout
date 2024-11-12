@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -281,5 +282,37 @@ public class DashboardController {
         datePicker.setDayCellFactory(dayCellFactory);
 
     }
+
+    @FXML
+    private void NavigateToReservations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
+            Parent root = loader.load();
+
+            ReservationController reservationController = loader.getController();
+
+            if(Objects.equals(userType, "Artist")) {
+                reservationController.SetUserType(this.userType);
+                reservationController.SetArtistID(this.currentArtistID);
+            } else if (Objects.equals(userType, "User")) {
+                reservationController.SetUserType(this.userType);
+                reservationController.SetUserID(this.userID);
+            }
+
+            reservationController.initializeReservations();
+
+
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void SetArtistID(int artistID) {
+        this.currentArtistID = artistID;
+    }
+
 
 }

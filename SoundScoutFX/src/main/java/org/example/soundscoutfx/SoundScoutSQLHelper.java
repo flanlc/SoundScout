@@ -568,6 +568,19 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    public void CancelReservation(int reservationID) {
+        String query = "UPDATE Reservation SET status = 'Cancelled' WHERE ReservationID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, reservationID);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
 }
