@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="558.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationController">
+<AnchorPane prefHeight="558.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationController">
    <children>
       <MenuBar layoutX="-1.0" layoutY="2.0" prefHeight="25.0" prefWidth="600.0">
         <menus>
@@ -29,7 +29,8 @@
          </image>
       </ImageView>
       <Button layoutX="238.0" layoutY="494.0" mnemonicParsing="false" onAction="#NavigateToDashboard" text="Return To Homepage" />
-      <Button layoutX="277.0" layoutY="456.0" mnemonicParsing="false" onAction="#SubmitCancel" text="Cancel" textFill="RED" />
+      <Button fx:id="approveButton" layoutX="239.0" layoutY="457.0" mnemonicParsing="false" onAction="#SubmitCancel" text="Approve" textFill="#03bc12" />
       <Button layoutX="265.0" layoutY="418.0" mnemonicParsing="false" onAction="#DisplayReservationDescription" text="Description" />
+      <Button fx:id="cancelButton" layoutX="316.0" layoutY="457.0" mnemonicParsing="false" onAction="#SubmitCancel" text="Cancel" textFill="RED" />
    </children>
 </AnchorPane>

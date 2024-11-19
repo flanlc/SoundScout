@@ -5,8 +5,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
@@ -28,8 +30,13 @@ public class ReservationController {
     List<Reservation> pendingResList = new ArrayList<>();
     List<Reservation> cancelledResList = new ArrayList<>();
     ObservableList<Reservation> reservationsList;
-
     private String resDate;
+
+    @FXML
+    Button cancelButton;
+
+    @FXML
+    Button approveButton;
 
 
     @FXML
@@ -43,16 +50,56 @@ public class ReservationController {
         for (Reservation reservation : activeResList) {
             if (reservation.getResID() == this.reservationID) {
                 toRemove.add(reservation);
+                reservation.setActiveStatus("Cancelled");
+            }
+        }
+
+        for (Reservation reservation : pendingResList) {
+            if (reservation.getResID() == this.reservationID) {
+                toRemove.add(reservation);
+                reservation.setActiveStatus("Cancelled");
             }
         }
 
         activeResList.removeAll(toRemove);
+        pendingResList.removeAll(toRemove);
         cancelledResList.addAll(toRemove);
 
         sql.CancelReservation(this.reservationID);
 
+
+        if (listView.getItems().equals(FXCollections.observableArrayList(activeResList))) {
+            reservationsList = FXCollections.observableArrayList(activeResList);
+        } else if (listView.getItems().equals(FXCollections.observableArrayList(pendingResList))) {
+            reservationsList = FXCollections.observableArrayList(pendingResList);
+        }
+
         ObservableList<Reservation> items = listView.getItems();
         items.removeAll(toRemove);
+        listView.getItems();
+    }
+
+    @FXML
+    public void SubmitApprove() {
+        if(Objects.equals(this.activeStatus, "Active")) {
+            System.out.println("ERROR: Reservation has already been Activated");
+            return;
+        }
+
+        List<Reservation> toAdd = new ArrayList<>();
+        for (Reservation reservation : activeResList) {
+            if (reservation.getResID() == this.reservationID) {
+                toAdd.add(reservation);
+            }
+        }
+
+        activeResList.addAll(toAdd);
+        pendingResList.removeAll(toAdd);
+
+        sql.CancelReservation(this.reservationID);
+
+        ObservableList<Reservation> items = listView.getItems();
+        items.removeAll(toAdd);
     }
 
     public void SetUserID(int userID) {
@@ -77,7 +124,7 @@ public class ReservationController {
         sql.establishConnection();
 
         PopulateListView();
-
+        FilterToActive();
     }
 
     @FXML
@@ -117,18 +164,23 @@ public class ReservationController {
     private void FilterToActive() {
         reservationsList = FXCollections.observableArrayList(activeResList);
         listView.setItems(reservationsList);
+        approveButton.setVisible(false);
     }
 
     @FXML
     private void FilterToPending() {
         reservationsList = FXCollections.observableArrayList(pendingResList);
         listView.setItems(reservationsList);
+        approveButton.setVisible(true);
+        cancelButton.setVisible(true);
     }
 
     @FXML
     private void FilterToCancelled() {
         reservationsList = FXCollections.observableArrayList(cancelledResList);
         listView.setItems(reservationsList);
+        approveButton.setVisible(false);
+        cancelButton.setVisible(false);
     }
 
     @FXML
@@ -154,16 +206,31 @@ public class ReservationController {
 
     @FXML
     private void DisplayReservationDescription() {
-        Popup ReservationDesc = new Popup();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationDescription.fxml"));
-        ReservationDescriptionView resControl = loader.getController();
 
-        resControl.setArtistName("Pop Smoke");
-        resControl.setResDate(this.resDate);
-        resControl.setTime("4:44");
-        resControl.setDuration("30 Hours");
-        resControl.setAddress("Tomato Town");
-        resControl.setDescription("testing description on" + this.artistID);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationDescription.fxml"));
+            Parent root = loader.load();
+
+            ReservationDescriptionView resControl = loader.getController();
+
+            resControl.setArtistName("Pop Smoke");
+            resControl.setResDate(this.resDate);
+            resControl.setTime("4:44");
+            resControl.setDuration("30 Hours");
+            resControl.setAddress("Tomato Town");
+            resControl.setDescription("testing description on" + this.artistID);
+
+            resControl.Populate();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

@@ -113,6 +113,6 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <TextArea fx:id="descriptionBox" layoutX="25.0" layoutY="233.0" prefHeight="181.0" prefWidth="333.0" />
+      <TextArea fx:id="descriptionBox" editable="false" layoutX="25.0" layoutY="233.0" prefHeight="181.0" prefWidth="333.0" />
    </children>
 </AnchorPane>

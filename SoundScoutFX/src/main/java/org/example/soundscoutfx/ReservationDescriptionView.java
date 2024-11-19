@@ -28,8 +28,7 @@ public class ReservationDescriptionView {
     @FXML
     private TextArea descriptionBox;
 
-    @FXML
-    public void initialize() {
+    public void Populate() {
         nameField.setText(artistName);
         dateField.setText(resDate);
         timeField.setText(time);
