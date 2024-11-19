@@ -68,7 +68,7 @@
                 <ListView fx:id="searchResultsList" layoutY="150.0" maxHeight="150.0" onMouseClicked="#handleArtistSelect" visible="false" />
 
 
-                <Button onAction="#navigateToDashboard" text="Available Artists" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
+                <Button onAction="#navigateToDashboard" text="Dashboard" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
                 <Button fx:id="editProfileButton" onAction="#navigateToEditProfile" text="Edit Profile" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
                 <Button onAction="#handleLogout" text="Logout" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" />
             </children>

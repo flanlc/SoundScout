@@ -527,7 +527,7 @@ public class SoundScoutSQLHelper {
 
     public List<Reservation> getAllReservations() {
         List<Reservation> reservations = new ArrayList<>();
-        String Query = "SELECT * FROM Reservation Where status = 'Active'";
+        String Query = "SELECT * FROM Reservation";
 
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(Query)) {
             while (rs.next()) {
@@ -570,6 +570,18 @@ public class SoundScoutSQLHelper {
 
     public void CancelReservation(int reservationID) {
         String query = "UPDATE Reservation SET status = 'Cancelled' WHERE ReservationID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, reservationID);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void UpdateReservation(int reservationID) {
+        String query = "UPDATE Reservation SET status = 'Active' WHERE ReservationID = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, reservationID);

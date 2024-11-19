@@ -131,7 +131,7 @@ public class DashboardController {
         if(userID != 0) {
             String date = null;
             date = String.valueOf(datePicker.getValue());
-            Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, date, "Active");
+            Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, date, "Pending");
             sql.CreateNewReservation(reservation);
             reservationDates.add(datePicker.getValue());
         }

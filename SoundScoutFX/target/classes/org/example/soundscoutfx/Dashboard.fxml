@@ -44,7 +44,7 @@
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
+                  <Button mnemonicParsing="false" onAction="#NavigateToReservations" prefHeight="52.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                      <graphic>
                         <VBox alignment="CENTER" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">

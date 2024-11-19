@@ -58,6 +58,6 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Artist ID: " + artistID + ", User ID: " + userID + ", Date: " + date;
+        return "Artist: " + artistID + ", User ID: " + userID + ", Date: " + date + ", Status: " + activeStatus;
     }
 }
