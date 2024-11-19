@@ -536,8 +536,13 @@ public class SoundScoutSQLHelper {
                 int userID = rs.getInt("UserID");
                 String day = rs.getString("bookingDate");
                 String status = rs.getString("status");
+                String startTime = rs.getString("startTime");
+                double duration = rs.getDouble("duration");
+                String venueType = rs.getString("venueType");
+                String address = rs.getString("Address");
+                String description = rs.getString("Description");
 
-                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status);
+                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status, startTime, duration, venueType, address, description);
                 reservations.add(reservation);
             }
         } catch (SQLException e) {

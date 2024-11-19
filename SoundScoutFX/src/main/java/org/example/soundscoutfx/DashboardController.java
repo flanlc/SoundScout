@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -38,6 +39,12 @@ public class DashboardController {
     private List<Reservation> reservationStringList;
     private List<LocalDate> reservationDates = new ArrayList<>();
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private String startTime = "";
+    private double duration = 0;
+    private String venueType = "";
+    private String address = "";
+    private String description = "";
 
     @FXML
     DatePicker datePicker = new DatePicker();
@@ -131,7 +138,7 @@ public class DashboardController {
         if(userID != 0) {
             String date = null;
             date = String.valueOf(datePicker.getValue());
-            Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, date, "Pending");
+            Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, date, "Pending", this.startTime, this.duration, this.venueType, this.address, this.description);
             sql.CreateNewReservation(reservation);
             reservationDates.add(datePicker.getValue());
         }
@@ -317,6 +324,28 @@ public class DashboardController {
 
     void SetArtistID(int artistID) {
         this.currentArtistID = artistID;
+    }
+
+    void DisplayReservationPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationDescription.fxml"));
+            Parent root = loader.load();
+
+            ReservationDescriptionView resControl = loader.getController();
+
+
+
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
     }
 
 
