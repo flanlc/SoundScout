@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="645.0" prefWidth="464.0" spacing="10" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionInputController">
+<VBox alignment="CENTER" prefHeight="558.0" prefWidth="455.0" spacing="10" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionInputController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -26,10 +26,11 @@
     </ImageView>
 
     <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" text="Create Reservation" />
+   <Label fx:id="dateDisplayLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
 
     <GridPane alignment="CENTER" hgap="10" prefHeight="405.0" prefWidth="515.0" vgap="10">
         <Label style="-fx-text-fill: #4e238d;" text="Start Time:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="timeField" promptText="Ex: 12:00 PM" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <TextField fx:id="timeField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <Label style="-fx-text-fill: #4e238d;" text="Duration:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <TextField fx:id="lastNameField" promptText="Ex: 1, 1.5" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -40,11 +41,11 @@
         <Label style="-fx-text-fill: #4e238d;" text="Venue Type" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
         <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="12">
-            <Button style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Submit" textFill="#4e238d" />
+            <Button onAction="#SubmitReservation" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Submit" textFill="#4e238d" />
         </HBox>
 
         <Label fx:id="errorMessage" style="-fx-text-fill: red;" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-      <TextField fx:id="durationField" promptText="Ex: 1, 1.5" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="durationField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="13" />
       <TextArea fx:id="descBox" prefHeight="439.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
       <Label style="-fx-text-fill: #4e238d;" text="Description:" GridPane.rowIndex="5" />
@@ -80,5 +81,4 @@
          <RowConstraints />
         </rowConstraints>
     </GridPane>
-   <Button style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Back" textFill="#4e238d" />
 </VBox>

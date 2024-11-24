@@ -8,12 +8,12 @@ public class Reservation {
     private String date;
     private String activeStatus;
     private String startTime;
-    private double duration;
+    private String duration;
     private String venueType;
     private String address;
     private String description;
 
-    public Reservation(int resID, int artistID, int userID, String date, String activeStatus, String startTime, double duration, String venueType, String address, String description) {
+    public Reservation(int resID, int artistID, int userID, String date, String activeStatus, String startTime, String duration, String venueType, String address, String description) {
         this.resID = resID;
         this.artistID = artistID;
         this.userID = userID;
@@ -74,11 +74,11 @@ public class Reservation {
         this.startTime = startTime;
     }
 
-    public double getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(double duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 

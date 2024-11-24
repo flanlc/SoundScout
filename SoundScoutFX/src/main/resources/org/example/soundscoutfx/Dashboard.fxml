@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="613.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
+<AnchorPane prefHeight="613.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
    <children>
       <BorderPane prefHeight="613.0" prefWidth="873.0">
          <left>
@@ -77,7 +77,7 @@
          <center>
             <AnchorPane prefHeight="570.0" prefWidth="823.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button layoutX="722.0" layoutY="9.0" onAction="#SubmitReservation" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Reserve" />
+                  <Button layoutX="722.0" layoutY="9.0" onAction="#DisplayReservationPopup" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Reserve" />
                   <ImageView fx:id="imgView" fitHeight="189.0" fitWidth="195.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../icons/profile-icon-design-free-vector.jpg" />

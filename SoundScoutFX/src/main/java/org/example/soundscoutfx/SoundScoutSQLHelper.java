@@ -537,7 +537,7 @@ public class SoundScoutSQLHelper {
                 String day = rs.getString("bookingDate");
                 String status = rs.getString("status");
                 String startTime = rs.getString("startTime");
-                double duration = rs.getDouble("duration");
+                String duration = rs.getString("duration");
                 String venueType = rs.getString("venueType");
                 String address = rs.getString("Address");
                 String description = rs.getString("Description");
@@ -558,7 +558,7 @@ public class SoundScoutSQLHelper {
             return;
         }
 
-        String query = "INSERT INTO Reservation (ArtistID, UserID, BookingDate, Status) VALUES (?, ?, ?, ?);";
+        String query = "INSERT INTO Reservation (ArtistID, UserID, BookingDate, Status, Starttime, duration, venuetype, address, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         PreparedStatement profileInsertStatement = null;
         try {
@@ -567,6 +567,11 @@ public class SoundScoutSQLHelper {
             profileInsertStatement.setInt(2, reservation.getUserID());
             profileInsertStatement.setString(3, reservation.getDate());
             profileInsertStatement.setString(4, reservation.getActiveStatus());
+            profileInsertStatement.setString(5, reservation.getStartTime());
+            profileInsertStatement.setString(6, reservation.getDuration());
+            profileInsertStatement.setString(7, reservation.getVenueType());
+            profileInsertStatement.setString(8, reservation.getAddress());
+            profileInsertStatement.setString(9, reservation.getDescription());
             profileInsertStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
