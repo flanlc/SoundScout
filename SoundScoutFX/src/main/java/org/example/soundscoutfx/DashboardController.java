@@ -336,6 +336,7 @@ public class DashboardController {
                 resControl.setSql(sql);
                 resControl.setSelectedDate(selectedDate);
                 resControl.setCurrentArtistID(currentArtistID);
+                resControl.setCurrentArtistStageName(artistName);
                 resControl.setUserID(userID);
                 resControl.setReservationDates(reservationDates);
                 resControl.setDashboardController(this);

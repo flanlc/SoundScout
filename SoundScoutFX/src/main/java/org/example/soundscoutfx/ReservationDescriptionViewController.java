@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
-public class ReservationDescriptionView {
+public class ReservationDescriptionViewController {
     protected String artistName;
     protected String resDate;
     protected String time;

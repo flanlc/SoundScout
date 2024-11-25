@@ -27,6 +27,7 @@ public class ReservationDescriptionInputController {
 
     private int userID;
     private int currentArtistID;
+    private String currentArtistStageName;
     private String selectedDate;
     private SoundScoutSQLHelper sql;
     private List<LocalDate> reservationDates;
@@ -58,7 +59,7 @@ public class ReservationDescriptionInputController {
             venueType = "Private";
         }
 
-        Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, selectedDate, "Pending", startTime, duration, venueType, address, description);
+        Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, selectedDate, "Pending", startTime, duration, venueType, address, description, currentArtistStageName);
         sql.CreateNewReservation(reservation);
 
         reservationDates.add(LocalDate.parse(selectedDate));
@@ -93,5 +94,13 @@ public class ReservationDescriptionInputController {
 
     public void setDashboardController(DashboardController dashboardController) {
         this.dashboardController = dashboardController;
+    }
+
+    public String getCurrentArtistStageName() {
+        return currentArtistStageName;
+    }
+
+    public void setCurrentArtistStageName(String currentArtistStageName) {
+        this.currentArtistStageName = currentArtistStageName;
     }
 }

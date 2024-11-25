@@ -12,8 +12,9 @@ public class Reservation {
     private String venueType;
     private String address;
     private String description;
+    private String stageName;
 
-    public Reservation(int resID, int artistID, int userID, String date, String activeStatus, String startTime, String duration, String venueType, String address, String description) {
+    public Reservation(int resID, int artistID, int userID, String date, String activeStatus, String startTime, String duration, String venueType, String address, String description, String stageName) {
         this.resID = resID;
         this.artistID = artistID;
         this.userID = userID;
@@ -24,6 +25,7 @@ public class Reservation {
         this.venueType = venueType;
         this.address = address;
         this.description = description;
+        this.stageName = stageName;
     }
 
     public int getResID() {
@@ -104,6 +106,14 @@ public class Reservation {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStageName() {
+        return stageName;
+    }
+
+    public void setStageName(String stageName) {
+        this.stageName = stageName;
     }
 
     @Override

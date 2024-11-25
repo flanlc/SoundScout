@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="447.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionView">
+<AnchorPane prefHeight="447.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionViewController">
    <children>
       <VBox layoutX="94.0" layoutY="30.0" prefHeight="181.0" prefWidth="290.0">
          <children>

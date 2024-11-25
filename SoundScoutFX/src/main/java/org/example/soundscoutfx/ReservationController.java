@@ -31,6 +31,7 @@ public class ReservationController {
     List<Reservation> cancelledResList = new ArrayList<>();
     ObservableList<Reservation> reservationsList;
     private String resDate;
+    private int globalSelectedIndex;
 
     @FXML
     Button cancelButton;
@@ -132,6 +133,7 @@ public class ReservationController {
         ObservableList<Reservation> items = listView.getItems();
         int selectedIndex = listView.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0 && selectedIndex < items.size()) {
+            globalSelectedIndex = selectedIndex;
             Reservation selectedRes = items.get(selectedIndex);
             this.reservationID = selectedRes.getResID();
             this.activeStatus = selectedRes.getActiveStatus();
@@ -211,14 +213,15 @@ public class ReservationController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationDescription.fxml"));
             Parent root = loader.load();
 
-            ReservationDescriptionView resControl = loader.getController();
+            ReservationDescriptionViewController resControl = loader.getController();
 
-            resControl.setArtistName("Pop Smoke");
+
+            resControl.setArtistName(this.listView.getItems().get(globalSelectedIndex).getStageName());
             resControl.setResDate(this.resDate);
-            resControl.setTime("4:44");
-            resControl.setDuration("30 Hours");
-            resControl.setAddress("Tomato Town");
-            resControl.setDescription("testing description on" + this.artistID);
+            resControl.setTime(this.listView.getItems().get(globalSelectedIndex).getStartTime());
+            resControl.setDuration(this.listView.getItems().get(globalSelectedIndex).getDuration());
+            resControl.setAddress(this.listView.getItems().get(globalSelectedIndex).getAddress());
+            resControl.setDescription(this.listView.getItems().get(globalSelectedIndex).getDescription());
 
             resControl.Populate();
 

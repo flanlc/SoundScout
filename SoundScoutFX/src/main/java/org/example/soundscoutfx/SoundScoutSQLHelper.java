@@ -527,7 +527,7 @@ public class SoundScoutSQLHelper {
 
     public List<Reservation> getAllReservations() {
         List<Reservation> reservations = new ArrayList<>();
-        String Query = "SELECT * FROM Reservation";
+        String Query = "SELECT * FROM VW_Reservations";
 
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(Query)) {
             while (rs.next()) {
@@ -541,8 +541,9 @@ public class SoundScoutSQLHelper {
                 String venueType = rs.getString("venueType");
                 String address = rs.getString("Address");
                 String description = rs.getString("Description");
+                String stageName = rs.getString("StageName");
 
-                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status, startTime, duration, venueType, address, description);
+                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status, startTime, duration, venueType, address, description, stageName);
                 reservations.add(reservation);
             }
         } catch (SQLException e) {
