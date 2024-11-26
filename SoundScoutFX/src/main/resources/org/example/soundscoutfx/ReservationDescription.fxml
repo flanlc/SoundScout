@@ -7,8 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="447.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionViewController">
+<AnchorPane prefHeight="447.0" prefWidth="383.0" style="-fx-background-color: # F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionViewController">
    <children>
       <VBox layoutX="94.0" layoutY="30.0" prefHeight="181.0" prefWidth="290.0">
          <children>
@@ -61,58 +60,76 @@
       </VBox>
       <VBox layoutY="30.0" prefHeight="181.0" prefWidth="93.0">
          <children>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Name" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Name" textAlignment="CENTER" textFill="#4e238d">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </Label>
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Date" textAlignment="CENTER" textFill="#4e238d">
                <font>
                   <Font size="14.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
             </Label>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Date" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Time" textAlignment="CENTER" textFill="#4e238d">
                <font>
                   <Font size="14.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <padding>
+                  <Insets top="2.0" />
+               </padding>
             </Label>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Time" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Duration" textAlignment="CENTER" textFill="#4e238d">
                <font>
                   <Font size="14.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <padding>
+                  <Insets top="2.0" />
+               </padding>
             </Label>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Duration" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Venue Type" textAlignment="CENTER" textFill="#4e238d">
                <font>
                   <Font size="14.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin>
+               <padding>
+                  <Insets top="2.0" />
+               </padding>
             </Label>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Venue Type" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Address" textAlignment="CENTER" textFill="#4e238d">
                <font>
                   <Font size="14.0" />
                </font>
-               <VBox.margin>
-                  <Insets bottom="5.0" />
-               </VBox.margin>
-            </Label>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="256.0" text="Address" textAlignment="CENTER">
-               <font>
-                  <Font size="14.0" />
-               </font>
+               <padding>
+                  <Insets top="2.0" />
+               </padding>
             </Label>
          </children>
       </VBox>
-      <Label layoutX="160.0" layoutY="201.0" text="Description">
+      <Label layoutX="148.0" layoutY="200.0" text="Description" textFill="#4e238d">
          <font>
-            <Font size="14.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <TextArea fx:id="descriptionBox" editable="false" layoutX="25.0" layoutY="233.0" prefHeight="181.0" prefWidth="333.0" />
+      <TextArea fx:id="descriptionBox" editable="false" layoutX="25.0" layoutY="233.0" prefHeight="181.0" prefWidth="333.0" wrapText="true" />
    </children>
 </AnchorPane>

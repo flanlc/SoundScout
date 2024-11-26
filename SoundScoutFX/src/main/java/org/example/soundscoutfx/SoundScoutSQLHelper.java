@@ -2,6 +2,8 @@ package org.example.soundscoutfx;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -534,6 +536,10 @@ public class SoundScoutSQLHelper {
         String Query = "SELECT * FROM VW_Reservations";
 
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(Query)) {
+            //Used to change from 24hr format to 12hr format in est time
+            DateTimeFormatter input = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSSS");
+            DateTimeFormatter output = DateTimeFormatter.ofPattern("hh:mm a");
+
             while (rs.next()) {
                 int resID = rs.getInt("ReservationID");
                 int ArtistID = rs.getInt("ArtistID");
@@ -541,6 +547,10 @@ public class SoundScoutSQLHelper {
                 String day = rs.getString("bookingDate");
                 String status = rs.getString("status");
                 String startTime = rs.getString("startTime");
+                if (startTime != null && !startTime.isEmpty()) {
+                    LocalTime time = LocalTime.parse(startTime, input);
+                    startTime = time.format(output);
+                }
                 String duration = rs.getString("duration");
                 String venueType = rs.getString("venueType");
                 String address = rs.getString("Address");
