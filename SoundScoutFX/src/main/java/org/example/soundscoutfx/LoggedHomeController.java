@@ -257,17 +257,16 @@ public class LoggedHomeController {
 
             ReservationController reservationController = loader.getController();
 
-            if(Objects.equals(userType, "Artist")) {
+            if ("Artist".equalsIgnoreCase(userType)) {
                 reservationController.SetUserType(this.userType);
-                reservationController.SetArtistID(this.currentArtistID);
-            } else if (Objects.equals(userType, "User")) {
+                reservationController.SetArtistID(this.artistID);
+            } else if ("User".equalsIgnoreCase(userType)) {
                 reservationController.SetUserType(this.userType);
                 reservationController.SetUserID(this.userID);
-                reservationController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+                reservationController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             }
 
             reservationController.initializeReservations();
-
 
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));

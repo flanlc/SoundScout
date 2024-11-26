@@ -14,8 +14,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -28,6 +30,7 @@ public class DashboardController {
     SoundScoutSQLHelper sql;
     private int userID;
     private int currentArtistID;
+
     private String artistName;
     private String userName;
     private String userType;
@@ -38,6 +41,16 @@ public class DashboardController {
     private List<Reservation> reservationStringList;
     private List<LocalDate> reservationDates = new ArrayList<>();
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private String selectedDate;
+
+    private String startTime = "";
+    private String duration = "";
+    private String venueType = "";
+    private String address = "";
+    private String description = "";
+
+    @FXML
+    private Label welcomeLabel;
 
     @FXML
     private Label welcomeLabel;
@@ -171,17 +184,6 @@ public class DashboardController {
             searchResultsList.setVisible(true);
         } else {
             searchResultsList.setVisible(false);
-        }
-    }
-
-    @FXML
-    public void SubmitReservation() {
-        if(userID != 0) {
-            String date = null;
-            date = String.valueOf(datePicker.getValue());
-            Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, date, "Active");
-            sql.CreateNewReservation(reservation);
-            reservationDates.add(datePicker.getValue());
         }
     }
 
@@ -357,7 +359,7 @@ public class DashboardController {
 
             ReservationController reservationController = loader.getController();
 
-            if(Objects.equals(userType, "Artist")) {
+            if (Objects.equals(userType, "Artist")) {
                 reservationController.SetUserType(this.userType);
                 reservationController.SetArtistID(this.currentArtistID);
             } else if (Objects.equals(userType, "User")) {
@@ -381,5 +383,55 @@ public class DashboardController {
         this.currentArtistID = artistID;
     }
 
+    @FXML
+    void DisplayReservationPopup() {
+        try {
+            if (userID != 0) {
+                try {
+                    selectedDate = String.valueOf(datePicker.getValue());
+                } catch (Exception e) {
+                    System.out.println("ERROR: DATE HAS NOT BEEN SELECTED");
+                }
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("InputReservationInfo.fxml"));
+                Parent root = loader.load();
+
+                ReservationDescriptionInputController resControl = loader.getController();
+
+                resControl.setSql(sql);
+                resControl.setSelectedDate(selectedDate);
+                resControl.setCurrentArtistID(currentArtistID);
+                resControl.setCurrentArtistStageName(artistName);
+                resControl.setUserID(userID);
+                resControl.setReservationDates(reservationDates);
+                resControl.setDashboardController(this);
+                resControl.SetLabel();
+
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void ReloadDashboard() {
+        reservationStringList = sql.getAllReservations();
+        reservationDates.clear();
+
+        for (Reservation reservation : reservationStringList) {
+            LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
+            if (!reservationDates.contains(tempDate)) {
+                reservationDates.add(tempDate);
+            }
+        }
+
+        setCalendarReservations();
+    }
 
 }
+

@@ -19,7 +19,6 @@
         <HBox alignment="TOP_LEFT" spacing="20" style="-fx-padding: 10;">
             <VBox prefHeight="559.0" prefWidth="83.0" spacing="10">
                 <children>
-                    <!-- Sidebar Buttons -->
                     <Button mnemonicParsing="false" onAction="#navigateToEditProfile" prefHeight="50.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
                             <VBox alignment="CENTER" prefHeight="42.0" prefWidth="47.0" spacing="2">
@@ -112,7 +111,6 @@
 
     <center>
         <VBox alignment="CENTER" spacing="5" style="-fx-padding: 10;">
-            <!-- Welcome Message and Search Bar Section Moved Up -->
             <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
             <HBox alignment="CENTER" spacing="10">
                 <TextField fx:id="searchField" onKeyReleased="#handleSearch" promptText="Search artists..." prefWidth="300" style="-fx-border-color: #D6C8EB;" />

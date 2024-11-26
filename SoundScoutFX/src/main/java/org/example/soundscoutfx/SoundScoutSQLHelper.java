@@ -2,6 +2,8 @@ package org.example.soundscoutfx;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -531,17 +533,31 @@ public class SoundScoutSQLHelper {
 
     public List<Reservation> getAllReservations() {
         List<Reservation> reservations = new ArrayList<>();
-        String Query = "SELECT * FROM Reservation Where status = 'Active'";
+        String Query = "SELECT * FROM VW_Reservations";
 
         try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(Query)) {
+            //Used to change from 24hr format to 12hr format in est time
+            DateTimeFormatter input = DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSSS");
+            DateTimeFormatter output = DateTimeFormatter.ofPattern("hh:mm a");
+
             while (rs.next()) {
                 int resID = rs.getInt("ReservationID");
                 int ArtistID = rs.getInt("ArtistID");
                 int userID = rs.getInt("UserID");
                 String day = rs.getString("bookingDate");
                 String status = rs.getString("status");
+                String startTime = rs.getString("startTime");
+                if (startTime != null && !startTime.isEmpty()) {
+                    LocalTime time = LocalTime.parse(startTime, input);
+                    startTime = time.format(output);
+                }
+                String duration = rs.getString("duration");
+                String venueType = rs.getString("venueType");
+                String address = rs.getString("Address");
+                String description = rs.getString("Description");
+                String stageName = rs.getString("StageName");
 
-                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status);
+                Reservation reservation = new Reservation(resID, ArtistID, userID, day, status, startTime, duration, venueType, address, description, stageName);
                 reservations.add(reservation);
             }
         } catch (SQLException e) {
@@ -557,7 +573,7 @@ public class SoundScoutSQLHelper {
             return;
         }
 
-        String query = "INSERT INTO Reservation (ArtistID, UserID, BookingDate, Status) VALUES (?, ?, ?, ?);";
+        String query = "INSERT INTO Reservation (ArtistID, UserID, BookingDate, Status, Starttime, duration, venuetype, address, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         PreparedStatement profileInsertStatement = null;
         try {
@@ -566,6 +582,11 @@ public class SoundScoutSQLHelper {
             profileInsertStatement.setInt(2, reservation.getUserID());
             profileInsertStatement.setString(3, reservation.getDate());
             profileInsertStatement.setString(4, reservation.getActiveStatus());
+            profileInsertStatement.setString(5, reservation.getStartTime());
+            profileInsertStatement.setString(6, reservation.getDuration());
+            profileInsertStatement.setString(7, reservation.getVenueType());
+            profileInsertStatement.setString(8, reservation.getAddress());
+            profileInsertStatement.setString(9, reservation.getDescription());
             profileInsertStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -574,6 +595,18 @@ public class SoundScoutSQLHelper {
 
     public void CancelReservation(int reservationID) {
         String query = "UPDATE Reservation SET status = 'Cancelled' WHERE ReservationID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, reservationID);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void UpdateReservation(int reservationID) {
+        String query = "UPDATE Reservation SET status = 'Active' WHERE ReservationID = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setInt(1, reservationID);

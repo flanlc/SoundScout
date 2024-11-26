@@ -5,8 +5,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.collections.FXCollections;
 
@@ -27,7 +30,20 @@ public class ReservationController {
     private String zipCode;
     private SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
     private int reservationID = 0;
-    List<Reservation> resList = new ArrayList<>();
+    private String activeStatus = null;
+    List<Reservation> activeResList = new ArrayList<>();
+    List<Reservation> pendingResList = new ArrayList<>();
+    List<Reservation> cancelledResList = new ArrayList<>();
+    ObservableList<Reservation> reservationsList;
+    private String resDate;
+    private int globalSelectedIndex;
+
+    @FXML
+    Button cancelButton;
+
+    @FXML
+    Button approveButton;
+
 
     public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
         this.userID = userID;
@@ -40,19 +56,73 @@ public class ReservationController {
 
     @FXML
     public void SubmitCancel() {
+        if(Objects.equals(this.activeStatus, "Cancelled")) {
+            System.out.println("ERROR: Reservation has already been Cancelled");
+            return;
+        }
+
         List<Reservation> toRemove = new ArrayList<>();
-        for (Reservation reservation : resList) {
+        for (Reservation reservation : activeResList) {
             if (reservation.getResID() == this.reservationID) {
                 toRemove.add(reservation);
+                reservation.setActiveStatus("Cancelled");
             }
         }
 
-        resList.removeAll(toRemove);
+        for (Reservation reservation : pendingResList) {
+            if (reservation.getResID() == this.reservationID) {
+                toRemove.add(reservation);
+                reservation.setActiveStatus("Cancelled");
+            }
+        }
+
+        activeResList.removeAll(toRemove);
+        pendingResList.removeAll(toRemove);
+        cancelledResList.addAll(toRemove);
 
         sql.CancelReservation(this.reservationID);
 
+
+        if (listView.getItems().equals(FXCollections.observableArrayList(activeResList))) {
+            reservationsList = FXCollections.observableArrayList(activeResList);
+        } else if (listView.getItems().equals(FXCollections.observableArrayList(pendingResList))) {
+            reservationsList = FXCollections.observableArrayList(pendingResList);
+        }
+
         ObservableList<Reservation> items = listView.getItems();
         items.removeAll(toRemove);
+        listView.getItems();
+    }
+
+    @FXML
+    public void SubmitApprove() {
+        if (Objects.equals(this.activeStatus, "Active")) {
+            System.out.println("ERROR: Reservation has already been activated.");
+            return;
+        }
+
+        List<Reservation> toApprove = new ArrayList<>();
+        for (Reservation reservation : pendingResList) {
+            if (reservation.getResID() == this.reservationID) {
+                toApprove.add(reservation);
+                reservation.setActiveStatus("Active");
+            }
+        }
+
+        sql.UpdateReservation(this.reservationID);
+
+        activeResList.addAll(toApprove);
+        pendingResList.removeAll(toApprove);
+
+        if (listView.getItems().equals(FXCollections.observableArrayList(pendingResList))) {
+            listView.setItems(FXCollections.observableArrayList(pendingResList));
+        } else if (listView.getItems().equals(FXCollections.observableArrayList(activeResList))) {
+            listView.setItems(FXCollections.observableArrayList(activeResList));
+        }
+
+        ObservableList<Reservation> items = listView.getItems();
+        items.removeAll(toApprove);
+        listView.getItems();
     }
 
     public void setUserName(String userName) {
@@ -102,7 +172,7 @@ public class ReservationController {
         sql.establishConnection();
 
         PopulateListView();
-
+        FilterToActive();
     }
 
     @FXML
@@ -110,8 +180,11 @@ public class ReservationController {
         ObservableList<Reservation> items = listView.getItems();
         int selectedIndex = listView.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0 && selectedIndex < items.size()) {
-            Reservation selectedArtist = items.get(selectedIndex);
-            this.reservationID = selectedArtist.getResID();
+            globalSelectedIndex = selectedIndex;
+            Reservation selectedRes = items.get(selectedIndex);
+            this.reservationID = selectedRes.getResID();
+            this.activeStatus = selectedRes.getActiveStatus();
+            this.resDate = selectedRes.getDate();
         }
     }
 
@@ -119,14 +192,44 @@ public class ReservationController {
     public void PopulateListView() {
         List<Reservation> allReservations = sql.getAllReservations();
         for (Reservation reservation : allReservations) {
-            if ("User".equals(this.userType) && reservation.getUserID() == this.userID) {
-                resList.add(reservation);
-            } else if ("Artist".equals(userType) && reservation.getArtistID() == this.artistID) {
-                resList.add(reservation);
+            if (!("User".equals(this.userType) && reservation.getUserID() == this.userID) && !("Artist".equals(userType) && reservation.getArtistID() == this.artistID)) {
+                continue;
             }
+
+            if(Objects.equals(reservation.getActiveStatus(), "Active")) {
+                activeResList.add(reservation);
+            } else if(Objects.equals(reservation.getActiveStatus(), "Pending")) {
+                pendingResList.add(reservation);
+            } else if(Objects.equals(reservation.getActiveStatus(), "Cancelled")) {
+                cancelledResList.add(reservation);
+            }
+
         }
-        ObservableList<Reservation> reservationsList = FXCollections.observableArrayList(resList);
+        reservationsList = FXCollections.observableArrayList(activeResList);
         listView.setItems(reservationsList);
+    }
+
+    @FXML
+    private void FilterToActive() {
+        reservationsList = FXCollections.observableArrayList(activeResList);
+        listView.setItems(reservationsList);
+        approveButton.setVisible(false);
+    }
+
+    @FXML
+    private void FilterToPending() {
+        reservationsList = FXCollections.observableArrayList(pendingResList);
+        listView.setItems(reservationsList);
+        approveButton.setVisible(true);
+        cancelButton.setVisible(true);
+    }
+
+    @FXML
+    private void FilterToCancelled() {
+        reservationsList = FXCollections.observableArrayList(cancelledResList);
+        listView.setItems(reservationsList);
+        approveButton.setVisible(false);
+        cancelButton.setVisible(false);
     }
 
     @FXML
@@ -151,6 +254,39 @@ public class ReservationController {
         }
     }
 
+    @FXML
+    private void DisplayReservationDescription() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationDescription.fxml"));
+            Parent root = loader.load();
+
+            ReservationDescriptionViewController resControl = loader.getController();
+
+            Reservation selectedReservation = this.listView.getItems().get(globalSelectedIndex);
+
+            resControl.setArtistName(selectedReservation.getStageName());
+            resControl.setResDate(this.resDate);
+            resControl.setTime(selectedReservation.getStartTime());
+            resControl.setDuration(selectedReservation.getDuration());
+            resControl.setVenueType(selectedReservation.getVenueType());
+            resControl.setAddress(selectedReservation.getAddress());
+            resControl.setDescription(selectedReservation.getDescription());
+
+            resControl.Populate();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
+
 }
-
-

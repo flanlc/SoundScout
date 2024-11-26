@@ -2,19 +2,35 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="493.0" prefWidth="600.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationController">
+<AnchorPane prefHeight="558.0" prefWidth="600.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationController">
    <children>
-      <ListView fx:id="listView" layoutX="7.0" layoutY="97.0" onMouseClicked="#HandleMouseClick" prefHeight="281.0" prefWidth="585.0" />
-      <ImageView fitHeight="59.0" fitWidth="214.0" layoutX="187.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      <MenuBar layoutX="-1.0" layoutY="2.0" prefHeight="25.0" prefWidth="600.0" style="-fx-background-color: #E8DEF8;">
+        <menus>
+          <Menu mnemonicParsing="false" text="Filter">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#FilterToActive" text="Active" />
+                  <MenuItem mnemonicParsing="false" onAction="#FilterToPending" text="Pending" />
+                  <MenuItem mnemonicParsing="false" onAction="#FilterToCancelled" text="Cancelled" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ListView fx:id="listView" layoutX="7.0" layoutY="118.0" onMouseClicked="#HandleMouseClick" prefHeight="278.0" prefWidth="585.0" />
+      <ImageView fitHeight="59.0" fitWidth="214.0" layoutX="193.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../icons/soundscout.png" />
          </image>
       </ImageView>
-      <Button layoutX="238.0" layoutY="454.0" mnemonicParsing="false" onAction="#NavigateToDashboard" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Return To Homepage" textFill="#4e238d" />
-      <Button layoutX="277.0" layoutY="413.0" mnemonicParsing="false" onAction="#SubmitCancel" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Cancel" textFill="#4e238d" />
+      <Button layoutX="238.0" layoutY="494.0" mnemonicParsing="false" onAction="#NavigateToDashboard" style="-fx-background-color: #65558F;" text="Return To Homepage" textFill="WHITE" />
+      <Button fx:id="approveButton" layoutX="239.0" layoutY="457.0" mnemonicParsing="false" onAction="#SubmitApprove" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Approve" textFill="#03bc12" />
+      <Button layoutX="265.0" layoutY="418.0" mnemonicParsing="false" onAction="#DisplayReservationDescription" style="-fx-background-color: #65558F;" text="Description" textFill="WHITE" />
+      <Button fx:id="cancelButton" layoutX="316.0" layoutY="457.0" mnemonicParsing="false" onAction="#SubmitCancel" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Cancel" textFill="RED" />
    </children>
 </AnchorPane>
