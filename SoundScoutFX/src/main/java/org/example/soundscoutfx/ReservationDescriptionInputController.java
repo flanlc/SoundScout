@@ -47,7 +47,7 @@ public class ReservationDescriptionInputController {
 
     @FXML
     public void SubmitReservation() {
-        String venueType = "";
+        String venueType = pubButton.isSelected() ? "Public" : "Private";
         String startTime = timeField.getText();
         String duration = durationField.getText();
         String address = addyField.getText();
@@ -62,7 +62,10 @@ public class ReservationDescriptionInputController {
         Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, selectedDate, "Pending", startTime, duration, venueType, address, description, currentArtistStageName);
         sql.CreateNewReservation(reservation);
 
-        reservationDates.add(LocalDate.parse(selectedDate));
+        LocalDate dateToAdd = LocalDate.parse(selectedDate);
+        if (!reservationDates.contains(dateToAdd)) {
+            reservationDates.add(dateToAdd);
+        }
 
         if (dashboardController != null) {
             dashboardController.ReloadDashboard();

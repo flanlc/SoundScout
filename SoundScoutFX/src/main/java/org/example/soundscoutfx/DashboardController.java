@@ -422,7 +422,9 @@ public class DashboardController {
 
         for (Reservation reservation : reservationStringList) {
             LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
-            reservationDates.add(tempDate);
+            if (!reservationDates.contains(tempDate)) {
+                reservationDates.add(tempDate);
+            }
         }
 
         setCalendarReservations();

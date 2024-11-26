@@ -60,7 +60,7 @@ public class ReservationController {
             System.out.println("ERROR: Reservation has already been Cancelled");
             return;
         }
-        
+
         List<Reservation> toRemove = new ArrayList<>();
         for (Reservation reservation : activeResList) {
             if (reservation.getResID() == this.reservationID) {
@@ -96,25 +96,33 @@ public class ReservationController {
 
     @FXML
     public void SubmitApprove() {
-        if(Objects.equals(this.activeStatus, "Active")) {
-            System.out.println("ERROR: Reservation has already been Activated");
+        if (Objects.equals(this.activeStatus, "Active")) {
+            System.out.println("ERROR: Reservation has already been activated.");
             return;
         }
 
-        List<Reservation> toAdd = new ArrayList<>();
-        for (Reservation reservation : activeResList) {
+        List<Reservation> toApprove = new ArrayList<>();
+        for (Reservation reservation : pendingResList) {
             if (reservation.getResID() == this.reservationID) {
-                toAdd.add(reservation);
+                toApprove.add(reservation);
+                reservation.setActiveStatus("Active");
             }
         }
 
-        activeResList.addAll(toAdd);
-        pendingResList.removeAll(toAdd);
+        sql.UpdateReservation(this.reservationID);
 
-        sql.CancelReservation(this.reservationID);
+        activeResList.addAll(toApprove);
+        pendingResList.removeAll(toApprove);
+
+        if (listView.getItems().equals(FXCollections.observableArrayList(pendingResList))) {
+            listView.setItems(FXCollections.observableArrayList(pendingResList));
+        } else if (listView.getItems().equals(FXCollections.observableArrayList(activeResList))) {
+            listView.setItems(FXCollections.observableArrayList(activeResList));
+        }
 
         ObservableList<Reservation> items = listView.getItems();
-        items.removeAll(toAdd);
+        items.removeAll(toApprove);
+        listView.getItems();
     }
 
     public void setUserName(String userName) {
@@ -255,13 +263,15 @@ public class ReservationController {
 
             ReservationDescriptionViewController resControl = loader.getController();
 
+            Reservation selectedReservation = this.listView.getItems().get(globalSelectedIndex);
 
-            resControl.setArtistName(this.listView.getItems().get(globalSelectedIndex).getStageName());
+            resControl.setArtistName(selectedReservation.getStageName());
             resControl.setResDate(this.resDate);
-            resControl.setTime(this.listView.getItems().get(globalSelectedIndex).getStartTime());
-            resControl.setDuration(this.listView.getItems().get(globalSelectedIndex).getDuration());
-            resControl.setAddress(this.listView.getItems().get(globalSelectedIndex).getAddress());
-            resControl.setDescription(this.listView.getItems().get(globalSelectedIndex).getDescription());
+            resControl.setTime(selectedReservation.getStartTime());
+            resControl.setDuration(selectedReservation.getDuration());
+            resControl.setVenueType(selectedReservation.getVenueType());
+            resControl.setAddress(selectedReservation.getAddress());
+            resControl.setDescription(selectedReservation.getDescription());
 
             resControl.Populate();
 
@@ -280,5 +290,3 @@ public class ReservationController {
 
 
 }
-
-
