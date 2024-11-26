@@ -53,9 +53,6 @@ public class DashboardController {
     private Label welcomeLabel;
 
     @FXML
-    private Label welcomeLabel;
-
-    @FXML
     DatePicker datePicker = new DatePicker();
 
     @FXML
