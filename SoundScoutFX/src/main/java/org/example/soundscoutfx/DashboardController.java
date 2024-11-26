@@ -40,6 +40,9 @@ public class DashboardController {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @FXML
+    private Label welcomeLabel;
+
+    @FXML
     DatePicker datePicker = new DatePicker();
 
     @FXML
@@ -69,6 +72,9 @@ public class DashboardController {
     @FXML
     private WebView webView;
 
+    @FXML
+    private Label reserveTitle;
+
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
     public void setUserID(int userID) {
@@ -83,13 +89,28 @@ public class DashboardController {
         this.userType = userType;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
     @FXML
     public void initialize() {
         if (webView != null) {
             WebEngine engine = webView.getEngine();
         }
 
-        //establish SQL connection
         sql = new SoundScoutSQLHelper();
         sql.establishConnection();
         sql.testConnection();
@@ -102,9 +123,36 @@ public class DashboardController {
         }
 
         searchResultsList.setVisible(false);
+
+        searchResultsList.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            protected void updateItem(Artist artist, boolean empty) {
+                super.updateItem(artist, empty);
+                if (empty || artist == null) {
+                    setText(null);
+                } else {
+                    String displayText = String.format("%s | Genre: %s | Rate: $%.2f | City: %s",
+                            artist.getStageName(),
+                            artist.getProfile().getGenre(),
+                            artist.getProfile().getRate(),
+                            artist.getCity());
+                    setText(displayText);
+                }
+            }
+        });
     }
 
-    @FXML
+
+    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
+        this.userID = userID;
+        this.userName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.city = city;
+        this.zipCode = zipCode;
+    }
+
+        @FXML
     private void handleSearch() {
         String searchText = searchField.getText().trim();
         if (searchText.isEmpty()) {
@@ -180,10 +228,9 @@ public class DashboardController {
             } else {
                 EditUserProfileController editUserProfileController = loader.getController();
                 editUserProfileController.setConnection(this.sqlHelper);
-                editUserProfileController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+                editUserProfileController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             }
 
-            // Switch to the new scene
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Edit Profile");
@@ -196,13 +243,14 @@ public class DashboardController {
 
     @FXML
     private void navigateToHome() {
+        System.out.println("Artist Name (First Name): " + userName);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
 
             LoggedHomeController loggedHomeController = loader.getController();
             loggedHomeController.setWelcomeMessage(this.userName, this.userID);
-            loggedHomeController.setUserDetails(this.userName, null, null, null, null, this.userID);
+            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
 
             loggedHomeController.setUserType(this.userType);
 
@@ -257,6 +305,19 @@ public class DashboardController {
         }
 
         setCalendarReservations();
+
+        reserveTitle.setVisible(true);
+    }
+
+    public void clearArtistDetails() {
+        nameField.setText("");
+        joinDateField.setText("");
+        genreField.setText("");
+        rateField.setText("");
+        locationField.setText("");
+        imgView.setImage(null);
+        webView.getEngine().load(null);
+        reserveTitle.setVisible(false); // Hide the title
     }
 
 
@@ -302,6 +363,7 @@ public class DashboardController {
             } else if (Objects.equals(userType, "User")) {
                 reservationController.SetUserType(this.userType);
                 reservationController.SetUserID(this.userID);
+                reservationController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             }
 
             reservationController.initializeReservations();

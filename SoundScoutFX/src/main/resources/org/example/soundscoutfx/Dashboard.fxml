@@ -28,7 +28,7 @@
                                  <Image url="@../../../icons/Info.png" />
                               </image>
                            </ImageView>
-                           <Label text="Profile" />
+                           <Label text="Edit Profile" />
                         </VBox>
                      </graphic>
                   </Button>
@@ -82,17 +82,16 @@
                         <Image url="@../../../icons/profile-icon-design-free-vector.jpg" />
                      </image>
                   </ImageView>
-                  <DatePicker fx:id="datePicker" layoutX="416.0" layoutY="10.0" prefHeight="25.0" prefWidth="293.0" />
-
-                  <ListView fx:id="searchResultsList" layoutX="414.0" layoutY="-4.0" maxHeight="394.0" onMouseClicked="#handleArtistSelect" prefHeight="156.0" prefWidth="390.0" visible="false" />
-
+                  <Label fx:id="reserveTitle" text="Reserve This Artist Now!" layoutX="416.0" layoutY="30.0" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" visible="false" />
+                  <DatePicker fx:id="datePicker" layoutX="416.0" layoutY="60.0" prefHeight="25.0" prefWidth="293.0" />
                   <Text fx:id="nameField" layoutX="212.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
                   <Text fx:id="joinDateField" layoutX="212.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
                   <Text fx:id="genreField" layoutX="212.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
                   <Text fx:id="rateField" layoutX="212.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
                   <Text fx:id="locationField" layoutX="212.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0" />
                   <WebView fx:id="webView" layoutX="14.0" layoutY="230.0" prefHeight="304.0" prefWidth="395.0" />
-                  <Button layoutX="722.0" layoutY="9.0" onAction="#SubmitReservation" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Submit" />
+                  <Button layoutX="722.0" layoutY="60.0" onAction="#SubmitReservation" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Submit" />
+                  <ListView fx:id="searchResultsList" layoutX="414.0" layoutY="-4.0" maxHeight="394.0" onMouseClicked="#handleArtistSelect" prefHeight="156.0" prefWidth="390.0" visible="false" />
                </children>
             </AnchorPane>
          </center>

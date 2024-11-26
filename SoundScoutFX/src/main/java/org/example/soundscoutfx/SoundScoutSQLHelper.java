@@ -508,10 +508,14 @@ public class SoundScoutSQLHelper {
         return artists;
     }
 
-    public boolean isArtistAvailable(int artistId, List<LocalDate> dates) {
+    public boolean isArtistAvailable(int artistId, List<LocalDate> selectedDates) {
+        if (selectedDates.isEmpty()) {
+            return true;  // No dates are selected, so artist should be considered available
+        }
+
         String query = "SELECT COUNT(*) FROM Reservation WHERE ArtistID = ? AND bookingDate = ? AND status = 'Active'";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
-            for (LocalDate date : dates) {
+            for (LocalDate date : selectedDates) {
                 statement.setInt(1, artistId);
                 statement.setDate(2, Date.valueOf(date));
                 ResultSet resultSet = statement.executeQuery();

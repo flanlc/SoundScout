@@ -17,10 +17,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LoggedHomeController {
-
     @FXML
     private Label welcomeLabel;
     @FXML
@@ -45,6 +45,9 @@ public class LoggedHomeController {
     private DatePicker availabilityDatePicker;
 
     private List<LocalDate> selectedDates = new ArrayList<>();
+    private String userName;
+    private int currentArtistID;
+
 
     @FXML
     private void toggleFilterPane() {
@@ -124,6 +127,7 @@ public class LoggedHomeController {
                 dashboardController.setUserID(this.userID);
                 dashboardController.setUserName(this.artistName);
                 dashboardController.setUserType(this.userType);
+                dashboardController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
 
                 Stage stage = (Stage) searchField.getScene().getWindow();
                 stage.setScene(new Scene(root));
@@ -213,7 +217,72 @@ public class LoggedHomeController {
     }
 
     @FXML
+    private void navigateToHome() {
+        Stage currentStage = (Stage) welcomeLabel.getScene().getWindow();
+
+        if (currentStage.getTitle().equals("Home")) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Already Here");
+            alert.setHeaderText(null);
+            alert.setContentText("You are already on the homepage!");
+            alert.showAndWait();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
+            Parent root = loader.load();
+
+            LoggedHomeController homeController = loader.getController();
+            homeController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+
+            currentStage.setScene(new Scene(root));
+            currentStage.setTitle("Logged Home");
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void NavigateToReservations() {
+        if (this.userID == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return; //can't proceed
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
+            Parent root = loader.load();
+
+            ReservationController reservationController = loader.getController();
+
+            if(Objects.equals(userType, "Artist")) {
+                reservationController.SetUserType(this.userType);
+                reservationController.SetArtistID(this.currentArtistID);
+            } else if (Objects.equals(userType, "User")) {
+                reservationController.SetUserType(this.userType);
+                reservationController.SetUserID(this.userID);
+                reservationController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            }
+
+            reservationController.initializeReservations();
+
+
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     protected void navigateToEditProfile() {
+        if (this.userID == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return; //can't proceed
+        }
         try {
             FXMLLoader loader;
 
@@ -287,6 +356,10 @@ public class LoggedHomeController {
             dashboardController.SetArtistID(this.artistID);
             dashboardController.setUserName(this.artistName);
             dashboardController.setUserType(this.userType);
+            dashboardController.setLastName(this.lastName);
+            dashboardController.setEmail(this.email);
+            dashboardController.setCity(this.city);
+            dashboardController.setZipCode(this.zipCode);
 
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -330,7 +403,8 @@ public class LoggedHomeController {
 
                     boolean matchesLocation = !isLocationFilterActive || isWithinDistance(artist, distance);
 
-                    boolean isAvailableOnDates = sqlHelper.isArtistAvailable(artist.getId(), selectedDates);
+                    boolean isAvailableOnDates = selectedDates.isEmpty() ||
+                            sqlHelper.isArtistAvailable(artist.getId(), selectedDates);
 
                     return matchesGenre && matchesPrice && matchesLocation && isAvailableOnDates;
                 })
@@ -462,9 +536,13 @@ public class LoggedHomeController {
     @FXML
     private void handleAvailabilitySelect() {
         LocalDate selectedDate = availabilityDatePicker.getValue();
-        if (selectedDate != null && !selectedDates.contains(selectedDate)) {
-            selectedDates.add(selectedDate);
-            handleApplyFilters();
+        if (selectedDate != null) {
+            if (selectedDates.contains(selectedDate)) {
+                selectedDates.remove(selectedDate);  // Deselects the date if already selected
+            } else {
+                selectedDates.add(selectedDate);  // Adds the date if not yet selected
+            }
+            handleApplyFilters();  // Reapply filters with the updated date selection
         }
     }
 

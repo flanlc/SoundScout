@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="493.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationController">
+<AnchorPane prefHeight="493.0" prefWidth="600.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationController">
    <children>
       <ListView fx:id="listView" layoutX="7.0" layoutY="97.0" onMouseClicked="#HandleMouseClick" prefHeight="281.0" prefWidth="585.0" />
       <ImageView fitHeight="59.0" fitWidth="214.0" layoutX="187.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
@@ -14,7 +14,7 @@
             <Image url="@../../../icons/soundscout.png" />
          </image>
       </ImageView>
-      <Button layoutX="238.0" layoutY="454.0" mnemonicParsing="false" onAction="#NavigateToDashboard" text="Return To Homepage" />
-      <Button layoutX="277.0" layoutY="413.0" mnemonicParsing="false" onAction="#SubmitCancel" text="Cancel" />
+      <Button layoutX="238.0" layoutY="454.0" mnemonicParsing="false" onAction="#NavigateToDashboard" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Return To Homepage" textFill="#4e238d" />
+      <Button layoutX="277.0" layoutY="413.0" mnemonicParsing="false" onAction="#SubmitCancel" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Cancel" textFill="#4e238d" />
    </children>
 </AnchorPane>

@@ -39,7 +39,7 @@ public class EditUserProfileController {
 
     private int userID;
     private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
-    private String firstName;
+    private String userName;
     private String lastName;
     private String email;
     private String city;
@@ -48,7 +48,7 @@ public class EditUserProfileController {
 
    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
         this.userID = userID;
-        this.firstName = firstName;
+        this.userName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.city = city;
@@ -157,8 +157,8 @@ public class EditUserProfileController {
 
             //pass user info back to LoggedHomeController
             LoggedHomeController loggedHomeController = loader.getController();
-            loggedHomeController.setUserDetails(firstNameField.getText(), lastNameField.getText(), emailField.getText(), cityField.getText(), zipCodeField.getText(), userID);
-
+            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
+            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             Stage stage = (Stage) firstNameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Home");
@@ -176,7 +176,8 @@ public class EditUserProfileController {
 
             LoggedHomeController loggedHomeController = loader.getController();
             //pass userName and userID back to logged-home
-            loggedHomeController.setWelcomeMessage(this.firstName, this.userID);
+            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
+            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
             loggedHomeController.setUserType("User");
 
             Stage stage = (Stage) firstNameField.getScene().getWindow();

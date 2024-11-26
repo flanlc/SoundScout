@@ -19,10 +19,24 @@ import java.util.Objects;
 public class ReservationController {
     private int artistID;
     private int userID;
+    private String userName;
     private String userType;
+    private String lastName;
+    private String email;
+    private String city;
+    private String zipCode;
     private SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
     private int reservationID = 0;
     List<Reservation> resList = new ArrayList<>();
+
+    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
+        this.userID = userID;
+        this.userName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.city = city;
+        this.zipCode = zipCode;
+    }
 
     @FXML
     public void SubmitCancel() {
@@ -40,6 +54,31 @@ public class ReservationController {
         ObservableList<Reservation> items = listView.getItems();
         items.removeAll(toRemove);
     }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
 
     public void SetUserID(int userID) {
         this.userID = userID;
@@ -101,6 +140,7 @@ public class ReservationController {
             dashboardController.setUserID(this.userID);
             dashboardController.SetArtistID(this.artistID);
             dashboardController.setUserType(this.userType);
+            dashboardController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
 
             Stage stage = (Stage) listView.getScene().getWindow();
             stage.setScene(new Scene(root));

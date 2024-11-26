@@ -174,6 +174,8 @@ public class EditProfileController {
 
             LoggedHomeController loggedHomeController = loader.getController();
             loggedHomeController.setWelcomeMessage(this.artistName, this.userID, this.lastName, this.email, this.city, this.zipCode);  //PASSES BACK the artist's name and ID
+            loggedHomeController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+
             loggedHomeController.setUserType("Artist");
 
             Stage stage = (Stage) anchorField.getScene().getWindow();
