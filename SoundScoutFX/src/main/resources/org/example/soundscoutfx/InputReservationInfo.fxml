@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="558.0" prefWidth="455.0" spacing="10" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.ReservationDescriptionInputController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <ImageView fitHeight="50.0" fitWidth="150.0">
+        <image>
+            <Image url="@../../../icons/soundscout.png" />
+        </image>
+    </ImageView>
+
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" text="Create Reservation" />
+    <Label fx:id="dateDisplayLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
+
+    <GridPane alignment="CENTER" hgap="10" prefHeight="405.0" prefWidth="515.0" vgap="10">
+        <Label style="-fx-text-fill: #4e238d;" text="Start Time:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <HBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <ComboBox fx:id="hourComboBox" promptText="Hour" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" />
+            <ComboBox fx:id="minuteComboBox" promptText="Minute" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" />
+            <ComboBox fx:id="ampmComboBox" promptText="AM/PM" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" />
+        </HBox>
+
+        <Label style="-fx-text-fill: #4e238d;" text="Duration:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+        <Label style="-fx-text-fill: #4e238d;" text="Address:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="addyField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label style="-fx-text-fill: #4e238d;" text="Venue Type" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+
+        <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="12">
+            <Button onAction="#SubmitReservation" prefHeight="27.0" prefWidth="70.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Submit" textFill="#4e238d" />
+        </HBox>
+
+        <Button fx:id="cancelButton" contentDisplay="CENTER" onAction="#CancelReservation" prefHeight="27.0" prefWidth="123.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Cancel Reservation" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+
+
+        <Label fx:id="errorMessage" style="-fx-text-fill: red;" GridPane.columnSpan="2" GridPane.rowIndex="13" />
+        <TextArea fx:id="descBox" prefHeight="439.0" prefWidth="202.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <Label style="-fx-text-fill: #4e238d;" text="Description:" GridPane.rowIndex="5" />
+        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <children>
+                <RadioButton fx:id="pubButton" mnemonicParsing="false" text="Public" />
+                <RadioButton fx:id="privateButton" mnemonicParsing="false" text="Private">
+                    <padding>
+                        <Insets left="5.0" />
+                    </padding>
+                </RadioButton>
+            </children>
+        </HBox>
+        <ComboBox fx:id="durationComboBox" promptText="Hours" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="0.25" />
+                    <String fx:value="0.50" />
+                    <String fx:value="0.75" />
+                    <String fx:value="1.00" />
+                    <String fx:value="1.25" />
+                    <String fx:value="1.50" />
+                    <String fx:value="1.75" />
+                    <String fx:value="2.00" />
+                    <String fx:value="2.25" />
+                    <String fx:value="2.50" />
+                    <String fx:value="2.75" />
+                    <String fx:value="3.00" />
+                    <String fx:value="3.25" />
+                    <String fx:value="3.50" />
+                    <String fx:value="3.75" />
+                    <String fx:value="4.00" />
+                    <String fx:value="4.25" />
+                    <String fx:value="4.50" />
+                    <String fx:value="4.75" />
+                    <String fx:value="5.00" />
+                    <String fx:value="5.25" />
+                    <String fx:value="5.50" />
+                    <String fx:value="5.75" />
+                    <String fx:value="6.00" />
+                    <String fx:value="6.25" />
+                    <String fx:value="6.50" />
+                    <String fx:value="6.75" />
+                    <String fx:value="7.00" />
+                    <String fx:value="7.25" />
+                    <String fx:value="7.50" />
+                    <String fx:value="7.75" />
+                    <String fx:value="8.00" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+        </rowConstraints>
+    </GridPane>
+</VBox>
