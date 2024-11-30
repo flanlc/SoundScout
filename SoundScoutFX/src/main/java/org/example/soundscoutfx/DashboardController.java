@@ -316,7 +316,7 @@ public class DashboardController {
         locationField.setText("");
         imgView.setImage(null);
         webView.getEngine().load(null);
-        reserveTitle.setVisible(false); // Hide the title
+        reserveTitle.setVisible(false);
     }
 
 
@@ -382,10 +382,19 @@ public class DashboardController {
 
     @FXML
     void DisplayReservationPopup() {
+        if (this.userID == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return; //can't proceed
+        }
+
         try {
             if (userID != 0) {
                 try {
                     selectedDate = String.valueOf(datePicker.getValue());
+                    if (selectedDate == null || selectedDate.equals("null")) {
+                        showErrorMessage("You must select a date to continue.");
+                        return;
+                    }
                 } catch (Exception e) {
                     System.out.println("ERROR: DATE HAS NOT BEEN SELECTED");
                 }
@@ -409,11 +418,9 @@ public class DashboardController {
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.show();
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void ReloadDashboard() {

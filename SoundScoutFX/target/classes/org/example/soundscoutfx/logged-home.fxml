@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="759.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
+<BorderPane prefHeight="759.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
 
     <top>
-        <HBox alignment="TOP_LEFT" prefHeight="480.0" prefWidth="873.0" spacing="20" style="-fx-padding: 10;">
-            <VBox prefHeight="559.0" prefWidth="83.0" spacing="10">
+        <HBox alignment="TOP_LEFT" prefHeight="314.0" prefWidth="874.0" spacing="20" style="-fx-padding: 10;">
+            <VBox prefHeight="459.0" prefWidth="92.0" spacing="10">
                 <children>
-                    <Button mnemonicParsing="false" onAction="#navigateToEditProfile" prefHeight="50.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
+                    <Button mnemonicParsing="false" onAction="#navigateToEditProfile" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
                             <VBox alignment="CENTER" prefHeight="42.0" prefWidth="47.0" spacing="2">
                                 <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
@@ -32,7 +32,7 @@
                             </VBox>
                         </graphic>
                     </Button>
-                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
+                    <Button mnemonicParsing="false" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
                             <VBox alignment="CENTER" spacing="2">
                                 <ImageView fitHeight="23.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
@@ -44,21 +44,21 @@
                             </VBox>
                         </graphic>
                     </Button>
-                    <Button mnemonicParsing="false" onAction="#NavigateToReservations" prefHeight="52.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
+                    <Button mnemonicParsing="false" onAction="#NavigateToReservations" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
-                            <VBox alignment="CENTER" spacing="2">
+                            <VBox alignment="CENTER" prefHeight="43.0" prefWidth="73.0" spacing="2">
                                 <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@../../../icons/Info.png" />
                                     </image>
                                 </ImageView>
-                                <Label text="Schedule" />
+                                <Label text="My Schedule" />
                             </VBox>
                         </graphic>
                     </Button>
-                    <Button mnemonicParsing="false" onAction="#navigateToHome" prefHeight="52.0" prefWidth="80.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
+                    <Button mnemonicParsing="false" onAction="#navigateToHome" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
-                            <VBox alignment="CENTER" spacing="2">
+                            <VBox alignment="CENTER" prefHeight="43.0" prefWidth="89.0" spacing="2">
                                 <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@../../../icons/Info.png" />
@@ -111,13 +111,13 @@
     </top>
 
     <center>
-        <VBox alignment="CENTER" prefHeight="317.0" prefWidth="873.0" spacing="5" style="-fx-padding: 10;">
+        <VBox alignment="CENTER" prefHeight="422.0" prefWidth="874.0" spacing="5" style="-fx-padding: 10;">
             <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
             <HBox alignment="CENTER" spacing="10">
-                <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="53.0" prefWidth="300" promptText="Search artists..." style="-fx-border-color: #D6C8EB;" />
+                <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="8.0" prefWidth="300.0" promptText="Search artists..." style="-fx-border-color: #D6C8EB;" />
                 <Button fx:id="filterButton" onAction="#toggleFilterPane" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Filters" />
             </HBox>
-            <ListView fx:id="searchResultsList" maxHeight="300.0" onMouseClicked="#handleArtistSelect" prefHeight="131.0" prefWidth="853.0" visible="false">
+            <ListView fx:id="searchResultsList" maxHeight="300.0" onMouseClicked="#handleArtistSelect" prefHeight="217.0" prefWidth="853.0" visible="false">
             <opaqueInsets>
                <Insets />
             </opaqueInsets>
