@@ -3,20 +3,19 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorField" prefHeight="522.0" prefWidth="674.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.EditProfileController">
+<AnchorPane fx:id="anchorField" prefHeight="522.0" prefWidth="674.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.EditProfileController">
    <children>
       <Text layoutX="250.0" layoutY="33.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-fill: #4e238d;" text="Edit Artist Profile" />
 
-      <!-- Main genres horizontal layout -->
       <HBox alignment="CENTER_LEFT" layoutX="50.0" layoutY="60.0" spacing="30">
          <children>
-            <VBox>
+            <HBox>
                <CheckBox fx:id="rockCheckBox" style="-fx-text-fill: #4e238d;" text="Rock" />
                <CheckBox fx:id="popCheckBox" style="-fx-text-fill: #4e238d;" text="Pop" />
                <CheckBox fx:id="rapCheckBox" style="-fx-text-fill: #4e238d;" text="Rap" />
@@ -27,29 +26,31 @@
                <CheckBox fx:id="jazzCheckBox" style="-fx-text-fill: #4e238d;" text="Jazz" />
                <CheckBox fx:id="indieCheckBox" style="-fx-text-fill: #4e238d;" text="Indie" />
                <CheckBox fx:id="alternativeCheckBox" style="-fx-text-fill: #4e238d;" text="Alternative" />
-            </VBox>
+            </HBox>
          </children>
       </HBox>
 
-      <!-- Button to update genres -->
-      <Button layoutX="50.0" layoutY="240.0" mnemonicParsing="false" onAction="#handleUpdateGenre" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Update Genre" />
+      <Button layoutX="510.0" layoutY="93.0" mnemonicParsing="false" onAction="#handleUpdateGenre" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Update Genre" />
 
 
-      <!-- Rate section -->
-      <Label layoutX="50.0" layoutY="300.0" style="-fx-font-size: 14px; -fx-text-fill: #4e238d;" text="Rate (per hour in $):" />
-      <TextField fx:id="rateField" layoutX="212.0" layoutY="300.0" prefHeight="35.0" prefWidth="150.0" promptText="Enter your rate" style="-fx-border-color: #D6C8EB;" />
-      <Button layoutX="400.0" layoutY="300.0" mnemonicParsing="false" onAction="#handleUpdateRate" prefHeight="17.0" prefWidth="110.0" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Update Rate" />
+      <Label layoutX="48.0" layoutY="167.0" style="-fx-font-size: 14px; -fx-text-fill: #4e238d;" text="Rate (per hour in $):" />
+      <TextField fx:id="rateField" layoutX="216.0" layoutY="159.0" prefHeight="35.0" prefWidth="150.0" promptText="Enter your rate" style="-fx-border-color: #D6C8EB;" />
+      <Button layoutX="392.0" layoutY="159.0" mnemonicParsing="false" onAction="#handleUpdateRate" prefHeight="17.0" prefWidth="110.0" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Update Rate" />
 
-      <!-- Profile Picture and URL -->
-      <Button layoutX="41.0" layoutY="417.0" mnemonicParsing="false" onAction="#handlePhoto" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Upload Profile Picture" />
-      <Label layoutX="50.0" layoutY="362.0" style="-fx-font-size: 14px; -fx-text-fill: #4e238d;" text="Performance Video URL:" />
-      <TextField fx:id="videoField" layoutX="212.0" layoutY="355.0" prefHeight="35.0" prefWidth="150.0" promptText="Enter YouTube video URL" style="-fx-border-color: #D6C8EB;" />
-      <Button layoutX="403.0" layoutY="355.0" mnemonicParsing="false" onAction="#handleUpdateProfile" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Submit URL" />
+      <Button layoutX="50.0" layoutY="288.0" mnemonicParsing="false" onAction="#handlePhoto" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Upload Profile Picture" />
+      <Label layoutX="48.0" layoutY="233.0" style="-fx-font-size: 14px; -fx-text-fill: #4e238d;" text="Performance Video URL:" />
+      <TextField fx:id="videoField" layoutX="216.0" layoutY="225.0" prefHeight="35.0" prefWidth="150.0" promptText="Enter YouTube video URL" style="-fx-border-color: #D6C8EB;" />
+      <Button layoutX="392.0" layoutY="224.0" mnemonicParsing="false" onAction="#handleUpdateProfile" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Submit URL" />
 
-      <!-- Success Message Label -->
+      <Label layoutX="50.0" layoutY="364.0" style="-fx-font-size: 14px; -fx-text-fill: #4e238d;" text="Artist Bio:" />
+      <TextArea fx:id="bioField" layoutX="123.0" layoutY="365.0" prefHeight="100.0" prefWidth="300.0" promptText="Enter your bio (150 characters max)" wrapText="true" />
+      <Label fx:id="charCountLabel" layoutX="433.0" layoutY="365.0" style="-fx-font-size: 12px; -fx-text-fill: #4e238d;" text="0/150 Characters" />
+
+
+      <Button layoutX="447.0" layoutY="428.0" mnemonicParsing="false" onAction="#handleUpdateBio" prefHeight="17.0" prefWidth="110.0" style="-fx-background-color: #65558F; -fx-text-fill: white; -fx-font-size: 16px;" text="Update Bio" />
+
       <Label fx:id="successMessageLabel" layoutX="250.0" layoutY="520.0" style="-fx-text-fill: green; -fx-font-size: 14px;" text="" />
 
-      <!-- Close Button -->
-      <Button layoutX="570.0" layoutY="1.0" mnemonicParsing="false" onAction="#returnToLoggedHome" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Return to Home" />
+      <Button layoutX="285.0" layoutY="498.0" mnemonicParsing="false" onAction="#returnToLoggedHome" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Return to Home" />
    </children>
 </AnchorPane>

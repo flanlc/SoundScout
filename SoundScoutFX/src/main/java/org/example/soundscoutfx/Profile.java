@@ -10,6 +10,7 @@ public class Profile {
     private double rate;
     private double latitude;
     private double longitude;
+    private String bio;
 
     public Profile(int profileID, int artistID, String genre, String profilePicture, String featuredPerformance, String activeStatus, double rate, double latitude, double longitude) {
         this.profileID = profileID;
@@ -95,5 +96,13 @@ public class Profile {
         this.activeStatus = activeStatus;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    // New setter for bio
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
 }

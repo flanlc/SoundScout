@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -51,39 +52,31 @@ public class DashboardController {
 
     @FXML
     private Label welcomeLabel;
-
     @FXML
     DatePicker datePicker = new DatePicker();
-
     @FXML
     private TextField searchField;
-
     @FXML
     private ListView<Artist> searchResultsList;
-
     @FXML
     private Text nameField;
-
     @FXML
     private Text joinDateField;
-
     @FXML
     private Text genreField;
-
     @FXML
     private Text rateField;
-
     @FXML
     private Text locationField;
-
     @FXML
     private ImageView imgView;
-
     @FXML
     private WebView webView;
-
     @FXML
     private Label reserveTitle;
+    @FXML
+    private TextArea artistBioTextArea;
+
 
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
@@ -272,7 +265,7 @@ public class DashboardController {
         searchField.clear();
         searchResultsList.setVisible(false);
 
-        String locationText = artist.getCity() + ", " + artist.getZipCode();
+        String locationText = artist.getCity();// + ", " + artist.getZipCode();
         locationField.setText(locationText);
 
         String profilePicture = artist.getProfile().getProfilePicture();
@@ -293,6 +286,14 @@ public class DashboardController {
             webView.getEngine().load(youtubeURL);
         } else {
             webView.getEngine().load(null);
+        }
+
+        try {
+            String artistBio = sql.getArtistBio(currentArtistID);
+            artistBioTextArea.setText(artistBio != null ? artistBio : "No bio listed");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            artistBioTextArea.setText("Error loading bio.");
         }
 
         reservationDates.clear();
@@ -316,7 +317,7 @@ public class DashboardController {
         locationField.setText("");
         imgView.setImage(null);
         webView.getEngine().load(null);
-        reserveTitle.setVisible(false);
+        reserveTitle.setVisible(false); // Hide the title
     }
 
 
@@ -393,8 +394,7 @@ public class DashboardController {
                     selectedDate = String.valueOf(datePicker.getValue());
                     if (selectedDate == null || selectedDate.equals("null")) {
                         showErrorMessage("You must select a date to continue.");
-                        return;
-                    }
+                        return; }
                 } catch (Exception e) {
                     System.out.println("ERROR: DATE HAS NOT BEEN SELECTED");
                 }

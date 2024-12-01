@@ -7,14 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.scene.control.TextField;
 
 import javafx.event.ActionEvent;
 import java.io.File;
@@ -37,6 +34,12 @@ public class EditProfileController {
     private CheckBox rockCheckBox, popCheckBox, rapCheckBox, rnbCheckBox, countryCheckBox, bluesCheckBox, electronicCheckBox, jazzCheckBox, indieCheckBox, alternativeCheckBox;
     @FXML
     private TextField rateField;
+    @FXML
+    private TextArea bioField;
+    @FXML
+    private Label charCountLabel;
+
+
 
     /*
     sub-genre checkboxes for Rock
@@ -79,9 +82,28 @@ public class EditProfileController {
         this.sql = sql;
     }
 
+    @FXML
+    public void initialize() {
+        bioField.textProperty().addListener((observable, oldValue, newValue) -> {
+            int currentLength = newValue.length();
+            charCountLabel.setText(currentLength + "/150 Characters");
+
+            if (currentLength > 150) {
+                bioField.setText(oldValue);
+                charCountLabel.setText("150/150 Characters");
+            }
+        });
+
+        if (sql != null && userID > 0) {
+            loadBio();
+        }
+    }
+
+
     public void setArtistDetails(String artistName, int userID) {
         this.artistName = artistName;
         this.userID = userID;
+        loadBio();
     }
 
     /* code for this method was created with code originally written in Professor Hoskeys CSC 211 class **/
@@ -255,6 +277,51 @@ public class EditProfileController {
             showErrorMessage("Error updating location.");
         }
     }
+
+    @FXML
+    public void handleUpdateBio() {
+        String bio = bioField.getText();
+
+        if (bio.length() > 150) {
+            showErrorMessage("Bio must be 150 characters or less.");
+            return;
+        }
+
+        try {
+            sql.updateArtistBio(this.userID, bio);
+
+            showSuccessMessage("Bio updated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Error updating bio.");
+        }
+    }
+
+    @FXML
+    private void loadBio() {
+        if (this.sql == null) {
+            System.out.println("Error: SQL Helper is not initialized.");
+            return;
+        }
+
+        try {
+            String bio = sql.getArtistBio(this.userID);
+            if (bio != null) {
+                bioField.setText(bio);
+            } else {
+                bioField.setText(""); // Clear if no bio exists
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Error loading bio.");
+        }
+    }
+
+    public void setSql(SoundScoutSQLHelper sql) {
+        this.sql = sql;
+        loadBio(); // Call loadBio after sql is set
+    }
+
 
     /*@FXML
     private void handleSubmit() {

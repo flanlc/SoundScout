@@ -76,7 +76,6 @@ public class SoundScoutSQLHelper {
         }
     }
 
-
     protected int CreateArtist(String firstName, String lastName, String stageName, String DOB, String streetAddress, String zipCode, String city, String state, double rate, String email, String password) {
         if (!status) {
             System.out.println("ERROR: Connection Not Created");
@@ -617,7 +616,26 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    public void updateArtistBio(int userID, String bio) throws SQLException {
+        String query = "UPDATE ArtistProfile SET bio = ? WHERE artistID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, bio);
+            stmt.setInt(2, userID);
+            stmt.executeUpdate();
+        }
+    }
 
-
+    public String getArtistBio(int artistID) throws SQLException {
+        String query = "SELECT bio FROM ArtistProfile WHERE artistID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, artistID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("bio");
+                }
+            }
+        }
+        return null;
+    }
 
 }
