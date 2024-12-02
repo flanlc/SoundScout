@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="300" prefWidth="450" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.CancellationPolicyPopupController">
+    <Label fx:id="policyHeader" style="-fx-font-size: 16px; -fx-text-fill: #4e238d;" text="Artist's Cancellation Policy">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font></Label>
+    <TextArea fx:id="policyTextArea" editable="false" prefHeight="200" prefWidth="400" wrapText="true" />
+    <Label fx:id="updatedAtLabel" style="-fx-text-fill: #4e238d; -fx-font-size: 12px;" text="Updated on: [date]" />
+    <Button onAction="#closePopup" style="-fx-background-color: #65558F; -fx-text-fill: white;" text="Close" />
+    <VBox.margin>
+        <Insets bottom="10" left="15" right="15" top="10" />
+    </VBox.margin>
+</VBox>
