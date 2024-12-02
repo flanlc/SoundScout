@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="613.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
+<AnchorPane prefHeight="613.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.DashboardController">
    <children>
       <BorderPane prefHeight="613.0" prefWidth="873.0">
          <left>
@@ -34,7 +34,7 @@
                         </VBox>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="53.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
+                  <Button mnemonicParsing="false" onAction="#NavigateToPublicEvents" prefHeight="53.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                      <graphic>
                         <VBox alignment="CENTER" spacing="2">
                            <ImageView fitHeight="23.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
@@ -42,7 +42,7 @@
                                  <Image url="@../../../icons/Info.png" />
                               </image>
                            </ImageView>
-                           <Label text="Messages" />
+                           <Label text="Events" />
                         </VBox>
                      </graphic>
                   </Button>

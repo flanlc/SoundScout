@@ -461,8 +461,8 @@ public class DashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("cancellation-policy-popup.fxml"));
             Parent root = loader.load();
 
-            CancellationPolicyPopupController popupController = loader.getController();
-            popupController.setPolicyData(policy, formattedDateTime);
+            //CancellationPolicyPopupController popupController = loader.getController();
+            //popupController.setPolicyData(policy, formattedDateTime);
 
             Stage popupStage = new Stage();
             popupStage.setTitle("Cancellation Policy");
@@ -491,6 +491,21 @@ public class DashboardController {
         }
     }
 
+    @FXML
+    private void NavigateToPublicEvents() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PublicEvents.fxml"));
+            Parent root = loader.load();
+
+            PublicEventsController reservationController = loader.getController();
+
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
