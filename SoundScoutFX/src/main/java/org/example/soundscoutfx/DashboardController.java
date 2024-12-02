@@ -237,7 +237,7 @@ public class DashboardController {
 
     @FXML
     private void navigateToHome() {
-        System.out.println("Artist Name (First Name): " + userName);
+        //System.out.println("Artist Name (First Name): " + userName);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
@@ -319,7 +319,7 @@ public class DashboardController {
         locationField.setText("");
         imgView.setImage(null);
         webView.getEngine().load(null);
-        reserveTitle.setVisible(false); // Hide the title
+        reserveTitle.setVisible(false);
     }
 
 

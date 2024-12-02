@@ -537,11 +537,11 @@ public class LoggedHomeController {
         LocalDate selectedDate = availabilityDatePicker.getValue();
         if (selectedDate != null) {
             if (selectedDates.contains(selectedDate)) {
-                selectedDates.remove(selectedDate);  // Deselects the date if already selected
+                selectedDates.remove(selectedDate);
             } else {
-                selectedDates.add(selectedDate);  // Adds the date if not yet selected
+                selectedDates.add(selectedDate);
             }
-            handleApplyFilters();  // Reapply filters with the updated date selection
+            handleApplyFilters();
         }
     }
 
