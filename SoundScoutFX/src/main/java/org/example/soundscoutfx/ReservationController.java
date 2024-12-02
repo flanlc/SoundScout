@@ -21,9 +21,9 @@ import java.util.Objects;
 
 public class ReservationController {
     private int artistID;
-    private int userID;
-    private String userName;
-    private String userType;
+    int userID;
+    String userName;
+    String userType;
     private String lastName;
     private String email;
     private String city;
@@ -43,7 +43,6 @@ public class ReservationController {
 
     @FXML
     Button approveButton;
-
 
     public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
         this.userID = userID;
@@ -165,8 +164,16 @@ public class ReservationController {
     @FXML
     protected ListView<Reservation> listView;
 
+    public void setConnection(SoundScoutSQLHelper sql) {
+        this.sql = sql;
+    }
+
     @FXML
     public void initializeReservations() {
+        if (userID == 0 || userName == null || userType == null) {
+            System.err.println("initializeReservations: User details are missing or invalid.");
+            return;
+        }
         // Establish SQL connection
         sql = new SoundScoutSQLHelper();
         sql.establishConnection();
@@ -187,7 +194,6 @@ public class ReservationController {
             this.resDate = selectedRes.getDate();
         }
     }
-
 
     public void PopulateListView() {
         List<Reservation> allReservations = sql.getAllReservations();
@@ -233,22 +239,26 @@ public class ReservationController {
     }
 
     @FXML
-    private void NavigateToDashboard() {
-        //System.out.println("Dashboard change");
+    private void NavigateToHomepage() {
         try {
+            System.out.println("NavigateToHomepage: userID = " + this.userID);
+            System.out.println("NavigateToHomepage: userName = " + this.userName);
+            System.out.println("NavigateToHomepage: userType = " + this.userType);
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
 
-            DashboardController dashboardController = loader.getController();
-            dashboardController.setUserID(this.userID);
-            dashboardController.SetArtistID(this.artistID);
-            dashboardController.setUserType(this.userType);
-            dashboardController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            //pass user info back to LoggedHomeController
+            LoggedHomeController loggedHomeController = loader.getController();
+            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
+            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            System.out.println("NavigateToHomepage (AFTER SET USER DETAILS): userID = " + this.userID);
+            System.out.println("NavigateToHomepage (AFTER SET USER DETAILS): userName = " + this.userName);
+            System.out.println("NavigateToHomepage (AFTER SET USER DETAILS): userType = " + this.userType);
 
             Stage stage = (Stage) listView.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Dashboard");
+            stage.setTitle("Home");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -284,10 +294,5 @@ public class ReservationController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
-
-
-
-
 }

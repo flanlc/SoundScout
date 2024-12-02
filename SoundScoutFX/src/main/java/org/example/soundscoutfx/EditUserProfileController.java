@@ -151,6 +151,7 @@ public class EditUserProfileController {
     }
 
     private void navigateToHome() {
+        System.out.println("navigateToHome is called");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();

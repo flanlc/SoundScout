@@ -513,7 +513,7 @@ public class SoundScoutSQLHelper {
 
     public boolean isArtistAvailable(int artistId, List<LocalDate> selectedDates) {
         if (selectedDates.isEmpty()) {
-            return true;  // No dates are selected, so artist should be considered available
+            return true;
         }
 
         String query = "SELECT COUNT(*) FROM Reservation WHERE ArtistID = ? AND bookingDate = ? AND status = 'Active'";

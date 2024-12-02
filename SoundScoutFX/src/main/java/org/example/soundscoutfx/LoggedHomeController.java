@@ -248,23 +248,47 @@ public class LoggedHomeController {
     private void NavigateToReservations() {
         if (this.userID == 0) {
             showErrorMessage("You must sign in to access this feature.");
-            return; //can't proceed
+            return;
         }
-
         try {
+            System.out.println("NavigateToRes: userID = " + this.userID);
+            System.out.println("NavigateToRes: userName = " + this.userName);
+            System.out.println("NavigateToRes: userType = " + this.userType);
+
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
             Parent root = loader.load();
 
             ReservationController reservationController = loader.getController();
 
             if ("Artist".equalsIgnoreCase(userType)) {
+                reservationController.setConnection(this.sqlHelper);
                 reservationController.SetUserType(this.userType);
                 reservationController.SetArtistID(this.artistID);
+                reservationController.setUserName(this.artistName);
+                reservationController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userID = " + this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userName = " + this.userName);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userType = " + this.userType);
+
             } else if ("User".equalsIgnoreCase(userType)) {
+                reservationController.setConnection(this.sqlHelper);
                 reservationController.SetUserType(this.userType);
                 reservationController.SetUserID(this.userID);
+                reservationController.setUserName(this.userName);
                 reservationController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userID = " + this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userName = " + reservationController.userName);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userType = " + this.userType);
+            } else {
+                System.err.println("NavigateToReservations: Invalid userType = " + this.userType);
+                return;
             }
+
+            System.out.println("NavigateToRes before initialize: userID = " + reservationController.userID);
+            System.out.println("NavigateToRes before initialize: userName = " + reservationController.userName);
+            System.out.println("NavigateToRes before initialize: userType = " + reservationController.userType);
+
 
             reservationController.initializeReservations();
 
@@ -408,8 +432,6 @@ public class LoggedHomeController {
                     return matchesGenre && matchesPrice && matchesLocation && isAvailableOnDates;
                 })
                 .collect(Collectors.toList());
-
-        //System.out.println("Filtered Artists Count: " + filteredArtists.size());
 
         updateArtistList(filteredArtists);
     }

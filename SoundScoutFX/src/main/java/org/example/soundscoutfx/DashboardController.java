@@ -354,6 +354,10 @@ public class DashboardController {
         }
 
         try {
+            System.out.println("NavigateToRes: userID = " + this.userID);
+            System.out.println("NavigateToRes: userName = " + this.userName);
+            System.out.println("NavigateToRes: userType = " + this.userType);
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
             Parent root = loader.load();
 
@@ -362,13 +366,25 @@ public class DashboardController {
             if (Objects.equals(userType, "Artist")) {
                 reservationController.SetUserType(this.userType);
                 reservationController.SetArtistID(this.currentArtistID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userID = " + this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userName = " + this.userName);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userType = " + this.userType);
+
             } else if (Objects.equals(userType, "User")) {
                 reservationController.SetUserType(this.userType);
                 reservationController.SetUserID(this.userID);
                 reservationController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userID = " + this.userID);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userName = " + this.userName);
+                System.out.println("NavigateToRes (AFTER SET USER DETAILS): userType = " + this.userType);
+
+
             }
 
             reservationController.initializeReservations();
+            System.out.println("after initialize: userID = " + this.userID);
+            System.out.println("after initialize: userName = " + this.userName);
+            System.out.println("after initialize: userType = " + this.userType);
 
 
             Stage stage = (Stage) searchField.getScene().getWindow();
