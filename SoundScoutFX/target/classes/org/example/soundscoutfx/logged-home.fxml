@@ -17,7 +17,7 @@
 <BorderPane prefHeight="759.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
 
     <top>
-        <HBox alignment="TOP_LEFT" prefHeight="314.0" prefWidth="874.0" spacing="20" style="-fx-padding: 10;">
+        <HBox alignment="TOP_LEFT" prefHeight="276.0" prefWidth="874.0" spacing="20" style="-fx-padding: 10;">
             <VBox prefHeight="459.0" prefWidth="92.0" spacing="10">
                 <children>
                     <Button mnemonicParsing="false" onAction="#navigateToEditProfile" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
@@ -104,8 +104,8 @@
                         <DatePicker fx:id="availabilityDatePicker" onAction="#handleAvailabilitySelect" showWeekNumbers="true" />
                     </VBox>
                 </HBox>
-
-                <Button fx:id="applyFiltersButton" onAction="#handleApplyFilters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Apply Filters" />
+   
+                            <Button fx:id="applyFiltersButton" alignment="BOTTOM_LEFT" onAction="#handleApplyFilters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Apply Filters" />
             </VBox>
         </HBox>
     </top>

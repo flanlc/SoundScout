@@ -38,8 +38,8 @@ public class EditProfileController {
     private TextArea bioField;
     @FXML
     private Label charCountLabel;
-
-
+    @FXML
+    private TextArea cancellationPolicyField;
 
     /*
     sub-genre checkboxes for Rock
@@ -96,6 +96,7 @@ public class EditProfileController {
 
         if (sql != null && userID > 0) {
             loadBio();
+            loadCancellationPolicy();
         }
     }
 
@@ -104,6 +105,7 @@ public class EditProfileController {
         this.artistName = artistName;
         this.userID = userID;
         loadBio();
+        loadCancellationPolicy();
     }
 
     /* code for this method was created with code originally written in Professor Hoskeys CSC 211 class **/
@@ -309,7 +311,7 @@ public class EditProfileController {
             if (bio != null) {
                 bioField.setText(bio);
             } else {
-                bioField.setText(""); // Clear if no bio exists
+                bioField.setText("");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -319,9 +321,57 @@ public class EditProfileController {
 
     public void setSql(SoundScoutSQLHelper sql) {
         this.sql = sql;
-        loadBio(); // Call loadBio after sql is set
+        loadBio();
+        loadCancellationPolicy();
     }
 
+    /*@FXML
+    private void openCancellationPolicyEditor() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Edit Cancellation Policy");
+        dialog.setHeaderText("Update your cancellation policy");
+        dialog.setContentText("Enter your new policy:");
+
+        dialog.showAndWait().ifPresent(newPolicy -> {
+            try {
+                sql.updateArtistCancellationPolicy(this.userID, newPolicy);
+                showSuccessMessage("Cancellation policy updated successfully!");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showErrorMessage("Failed to update the cancellation policy.");
+            }
+        });
+    }*/
+
+    @FXML
+    private void handleUpdateCancellationPolicy() {
+        String newPolicy = cancellationPolicyField.getText();
+        try {
+            sql.updateArtistCancellationPolicy(this.userID, newPolicy);
+            showSuccessMessage("Cancellation policy updated successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Failed to update the cancellation policy.");
+        }
+    }
+
+    @FXML
+    private void loadCancellationPolicy() {
+        System.out.println("Loading cancellation policy for user ID: " + this.userID);
+        try {
+            String[] policyInfo = sql.getArtistCancellationPolicy(this.userID);
+            String currentPolicy = policyInfo[0];
+            System.out.println("Current Policy: " + currentPolicy);
+            if (currentPolicy != null) {
+                cancellationPolicyField.setText(currentPolicy);
+            } else {
+                cancellationPolicyField.setText("");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Error loading cancellation policy.");
+        }
+    }
 
     /*@FXML
     private void handleSubmit() {

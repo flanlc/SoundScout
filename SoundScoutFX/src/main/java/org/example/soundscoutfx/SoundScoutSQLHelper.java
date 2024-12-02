@@ -245,13 +245,15 @@ public class SoundScoutSQLHelper {
                 return;
             }
 
-            String query = "INSERT INTO ArtistProfile (ArtistID, ProfilePicture, ActiveStatus, Rate) VALUES (?, ?, ?, ?);";
+            String defaultPolicy = "Cancellations must be made at least 24 hours before the scheduled event. No refunds available if cancellation is made within 24 hours of event.";
+            String query = "INSERT INTO ArtistProfile (ArtistID, ProfilePicture, ActiveStatus, Rate, CancellationPolicy) VALUES (?, ?, ?, ?, ?);";
 
             PreparedStatement profileInsertStatement = conn.prepareStatement(query);
             profileInsertStatement.setInt(1, artistID);
             profileInsertStatement.setString(2, "http://res.cloudinary.com/dbvmjemlj/image/upload/v1728860327/profile-icon-design-free-vector.jpg");
             profileInsertStatement.setString(3, "Active");
             profileInsertStatement.setDouble(4, rate);
+            profileInsertStatement.setString(5, defaultPolicy);
             profileInsertStatement.execute();
 
         } catch (SQLException e) {
@@ -637,5 +639,33 @@ public class SoundScoutSQLHelper {
         }
         return null;
     }
+
+    public String[] getArtistCancellationPolicy(int artistID) throws SQLException {
+        String query = "SELECT CancellationPolicy, FORMAT(PolicyUpdatedAt, 'yyyy-MM-dd''T''HH:mm:ss') AS PolicyUpdatedAtFormatted " +
+                "FROM ArtistProfile WHERE ArtistID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, artistID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String cancellationPolicy = rs.getString("CancellationPolicy");
+                    System.out.println("CancellationPolicy from ResultSet: " + cancellationPolicy);
+                    return new String[]{cancellationPolicy, rs.getString("PolicyUpdatedAtFormatted")};
+                }
+            }
+        }
+        System.out.println("Returning default message for missing policy.");
+        return new String[]{"No cancellation policy available.", null};
+    }
+
+
+    public void updateArtistCancellationPolicy(int artistID, String newPolicy) throws SQLException {
+        String query = "UPDATE ArtistProfile SET CancellationPolicy = ?, PolicyUpdatedAt = GETDATE() WHERE ArtistID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, newPolicy);
+            stmt.setInt(2, artistID);
+            stmt.executeUpdate();
+        }
+    }
+
 
 }

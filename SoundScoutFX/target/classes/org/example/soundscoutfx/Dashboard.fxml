@@ -100,7 +100,7 @@
                   <DatePicker fx:id="datePicker" layoutX="573.0" layoutY="184.0" prefHeight="26.0" prefWidth="136.0" />
                   <Text fx:id="nameField" layoutX="340.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font></Text>
                   <Text fx:id="joinDateField" layoutX="340.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="155.0">
                      <font>
@@ -155,8 +155,7 @@
                      <font>
                         <Font size="16.0" />
                      </font></Label>
-
-
+                  <Button layoutX="440.0" layoutY="480.0" mnemonicParsing="false" onAction="#viewCancellationPolicy" style="-fx-background-color: #65558F; -fx-text-fill: white;" text="View Artist's Cancellation Policy" />
                </children>
             </AnchorPane>
          </center>

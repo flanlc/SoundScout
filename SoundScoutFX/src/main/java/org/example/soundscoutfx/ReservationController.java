@@ -234,6 +234,7 @@ public class ReservationController {
 
     @FXML
     private void NavigateToDashboard() {
+        System.out.println("Dashboard change");
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));

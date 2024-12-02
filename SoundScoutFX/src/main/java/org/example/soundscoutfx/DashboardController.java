@@ -22,6 +22,9 @@ import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +79,6 @@ public class DashboardController {
     private Label reserveTitle;
     @FXML
     private TextArea artistBioTextArea;
-
 
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
@@ -388,6 +390,11 @@ public class DashboardController {
             return; //can't proceed
         }
 
+        if (this.currentArtistID == 0) {
+            showErrorMessage("You must select an artist to continue.");
+            return;
+        }
+
         try {
             if (userID != 0) {
                 try {
@@ -437,5 +444,53 @@ public class DashboardController {
         setCalendarReservations();
     }
 
-}
+    @FXML
+    private void viewCancellationPolicy() {
+        try {
+            String[] policyInfo = sql.getArtistCancellationPolicy(currentArtistID);
+            String policy = policyInfo[0];
+            String updatedAt = policyInfo[1];
 
+            if (policy == null || policy.isEmpty()) {
+                showErrorMessage("No cancellation policy found for this artist.");
+                return;
+            }
+
+            String formattedDateTime = formatDateTime(updatedAt);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("cancellation-policy-popup.fxml"));
+            Parent root = loader.load();
+
+            CancellationPolicyPopupController popupController = loader.getController();
+            popupController.setPolicyData(policy, formattedDateTime);
+
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Cancellation Policy");
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait();
+
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Failed to retrieve the cancellation policy.");
+        }
+    }
+
+    private String formatDateTime(String rawDateTime) {
+        if (rawDateTime == null || rawDateTime.isEmpty()) {
+            return "Unknown";
+        }
+        try {
+            LocalDateTime utcDateTime = LocalDateTime.parse(rawDateTime);
+            ZonedDateTime localDateTime = utcDateTime.atZone(ZoneId.of("UTC"))
+                    .withZoneSameInstant(ZoneId.systemDefault());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a");
+            return localDateTime.format(formatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Invalid Date";
+        }
+    }
+
+
+
+}
