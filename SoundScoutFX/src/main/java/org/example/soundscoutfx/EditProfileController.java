@@ -357,11 +357,9 @@ public class EditProfileController {
 
     @FXML
     private void loadCancellationPolicy() {
-        System.out.println("Loading cancellation policy for user ID: " + this.userID);
         try {
             String[] policyInfo = sql.getArtistCancellationPolicy(this.userID);
             String currentPolicy = policyInfo[0];
-            System.out.println("Current Policy: " + currentPolicy);
             if (currentPolicy != null) {
                 cancellationPolicyField.setText(currentPolicy);
             } else {

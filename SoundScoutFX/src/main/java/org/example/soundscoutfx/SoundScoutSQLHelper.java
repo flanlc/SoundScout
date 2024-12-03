@@ -672,12 +672,10 @@ public class SoundScoutSQLHelper {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String cancellationPolicy = rs.getString("CancellationPolicy");
-                    System.out.println("CancellationPolicy from ResultSet: " + cancellationPolicy);
                     return new String[]{cancellationPolicy, rs.getString("PolicyUpdatedAtFormatted")};
                 }
             }
         }
-        System.out.println("Returning default message for missing policy.");
         return new String[]{"No cancellation policy available.", null};
     }
 

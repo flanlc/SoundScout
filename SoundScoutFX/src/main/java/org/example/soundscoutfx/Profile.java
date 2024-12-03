@@ -100,9 +100,7 @@ public class Profile {
         return bio;
     }
 
-    // New setter for bio
     public void setBio(String bio) {
         this.bio = bio;
     }
-
 }
