@@ -479,6 +479,8 @@ public class DashboardController {
             //get controller class
             PublicEventsController reservationController = loader.getController();
 
+            reservationController.SetUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+
             //set scene
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));

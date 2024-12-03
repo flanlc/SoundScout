@@ -545,6 +545,28 @@ public class LoggedHomeController {
         }
     }
 
+    /** Navigate to public events scene */
+    @FXML
+    private void NavigateToPublicEvents() {
+        try {
+            //load fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("PublicEvents.fxml"));
+            Parent root = loader.load();
+
+            //get controller class
+            PublicEventsController reservationController = loader.getController();
+
+            reservationController.SetUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+
+            //set scene
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     void SetArtistID(int artistID) {
         this.artistID = artistID;
     }

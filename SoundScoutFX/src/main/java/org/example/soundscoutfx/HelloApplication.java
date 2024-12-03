@@ -19,7 +19,5 @@ public class HelloApplication extends Application {
 
     public static void main(String[] args) {
         launch();
-
-        //sql.CreateArtist("Beyoncé", "Knowles", "Beyoncé", "1981-09-04", "1505 Hadley St", "77002", "Houston", "TX", "beyonce@example.com", "Password123");
     }
 }

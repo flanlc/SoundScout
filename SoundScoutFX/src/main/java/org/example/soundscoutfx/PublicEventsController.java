@@ -22,6 +22,14 @@ public class PublicEventsController {
     ObservableList<Reservation> reservationObservableList;
     private int globalSelectedIndex = -1;
 
+    private String userName;
+    private int userID;
+    private String lastName;
+    private String email;
+    private String city;
+    private String zipCode;
+    private String userType;
+
     //fxml nodes
     @FXML
     private ListView<Reservation> eventsView;
@@ -116,6 +124,38 @@ public class PublicEventsController {
     public void SetIndex() {
         globalSelectedIndex = eventsView.getSelectionModel().getSelectedIndex();
         System.out.println(globalSelectedIndex);
+    }
+
+    /** Load home page */
+    @FXML
+    private void NavigateToHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
+            Parent root = loader.load();
+
+            LoggedHomeController loggedHomeController = loader.getController();
+            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
+            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+
+            loggedHomeController.setUserType(this.userType);
+
+            Stage stage = (Stage) searchField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Home");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** Populates User Details */
+    public void SetUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
+        this.userName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.userID = userID;
     }
 }
 
