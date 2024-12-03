@@ -1,6 +1,8 @@
 package org.example.soundscoutfx;
 
+/** Artist class for artists creating profiles */
 public class Artist {
+    //member variables
     private int id;
     private String firstName;
     private String lastName;
@@ -17,6 +19,7 @@ public class Artist {
     private double latitude;
     private double longitude;
 
+    /** Parameterized Constructor */
     public Artist(int id, String firstName, String stageName, String lastName, String DOB, String address, String zipCode, String city, String state, String email, String password) {
         this.id = id;
         this.firstName = firstName;
@@ -70,6 +73,7 @@ public class Artist {
         this.profile = profile;
     }
 
+    //getters and setters
     public int getId() {
         return id;
     }
@@ -178,6 +182,7 @@ public class Artist {
 
     public void setLongitude(double longitude) { this.longitude = longitude; }
 
+    /** To String overide for string representation of Artist */
     @Override
     public String toString() {
         return "Artist{" +

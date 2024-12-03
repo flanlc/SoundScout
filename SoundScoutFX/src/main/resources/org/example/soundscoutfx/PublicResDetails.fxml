@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="447.0" prefWidth="380.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.PublicResDetailsController">
+<AnchorPane prefHeight="447.0" prefWidth="389.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.PublicResDetailsController">
     <children>
         <VBox layoutY="19.0" prefHeight="181.0" prefWidth="380.0">
             <children>
@@ -22,7 +22,7 @@
                               <Insets top="5.0" />
                           </padding>
                       </Label>
-                      <Label fx:id="nameLabel" alignment="CENTER" prefHeight="43.0" prefWidth="256.0" textAlignment="CENTER">
+                      <Label fx:id="nameLabel" alignment="CENTER" prefHeight="29.0" prefWidth="310.0" textAlignment="CENTER">
                           <font>
                               <Font size="14.0" />
                           </font>
@@ -39,7 +39,7 @@
                               <Insets top="5.0" />
                           </padding>
                       </Label>
-                      <Label fx:id="dateLabel" alignment="CENTER" prefHeight="65.0" prefWidth="256.0" textAlignment="CENTER">
+                      <Label fx:id="dateLabel" alignment="CENTER" prefHeight="29.0" prefWidth="320.0" textAlignment="CENTER">
                           <font>
                               <Font size="14.0" />
                           </font>
@@ -56,7 +56,7 @@
                               <Insets top="2.0" />
                           </padding>
                       </Label>
-                      <Label fx:id="timeLabel" alignment="CENTER" prefHeight="54.0" prefWidth="256.0" textAlignment="CENTER">
+                      <Label fx:id="timeLabel" alignment="CENTER" prefHeight="29.0" prefWidth="315.0" textAlignment="CENTER">
                           <font>
                               <Font size="14.0" />
                           </font>
@@ -73,7 +73,7 @@
                               <Insets top="2.0" />
                           </padding>
                       </Label>
-                      <Label fx:id="durLabel" alignment="CENTER" prefHeight="46.0" prefWidth="256.0" textAlignment="CENTER">
+                      <Label fx:id="durLabel" alignment="CENTER" prefHeight="29.0" prefWidth="314.0" textAlignment="CENTER">
                           <font>
                               <Font size="14.0" />
                           </font>
@@ -89,8 +89,11 @@
                           <padding>
                               <Insets top="2.0" />
                           </padding>
+                     <opaqueInsets>
+                        <Insets left="10.0" />
+                     </opaqueInsets>
                       </Label>
-                      <Label fx:id="venueTypeLabel" alignment="CENTER" prefHeight="49.0" prefWidth="256.0" textAlignment="CENTER">
+                      <Label fx:id="venueTypeLabel" alignment="CENTER" prefHeight="29.0" prefWidth="302.0" textAlignment="CENTER">
                           <font>
                               <Font size="14.0" />
                           </font>
@@ -107,7 +110,7 @@
                               <Insets top="2.0" />
                           </padding>
                       </Label>
-                      <Label fx:id="AddressLabel" alignment="CENTER" prefHeight="39.0" prefWidth="256.0" textAlignment="CENTER">
+                      <Label fx:id="AddressLabel" alignment="CENTER" prefHeight="29.0" prefWidth="304.0" textAlignment="CENTER">
                           <font>
                               <Font size="14.0" />
                           </font>

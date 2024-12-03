@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DashboardController {
+    //member variables
     SoundScoutSQLHelper sql;
     private int userID;
     private int currentArtistID;
@@ -47,14 +48,7 @@ public class DashboardController {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private String selectedDate;
 
-    private String startTime = "";
-    private String duration = "";
-    private String venueType = "";
-    private String address = "";
-    private String description = "";
-
-    @FXML
-    private Label welcomeLabel;
+    //jfx nodes
     @FXML
     DatePicker datePicker = new DatePicker();
     @FXML
@@ -81,34 +75,6 @@ public class DashboardController {
     private TextArea artistBioTextArea;
 
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
 
     @FXML
     public void initialize() {
@@ -147,7 +113,7 @@ public class DashboardController {
         });
     }
 
-
+    /** Sets user details */
     public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
         this.userID = userID;
         this.userName = firstName;
@@ -157,7 +123,8 @@ public class DashboardController {
         this.zipCode = zipCode;
     }
 
-        @FXML
+    /** Changes search results */
+    @FXML
     private void handleSearch() {
         String searchText = searchField.getText().trim();
         if (searchText.isEmpty()) {
@@ -169,6 +136,7 @@ public class DashboardController {
         updateArtistList(searchResults);
     }
 
+    /** Updates artist search list  */
     private void updateArtistList(ObservableList<Artist> artists) {
         searchResultsList.getItems().clear();
         if (artists != null && !artists.isEmpty()) {
@@ -179,6 +147,7 @@ public class DashboardController {
         }
     }
 
+    /** Handles selecting artist upon click */
     @FXML
     private void handleArtistSelect(MouseEvent event) {
         Artist selectedArtist = searchResultsList.getSelectionModel().getSelectedItem();
@@ -195,6 +164,7 @@ public class DashboardController {
         alert.showAndWait();
     }
 
+    /** Loads edit profile screen */
     @FXML
     private void navigateToProfile() {
         //if Guest account
@@ -234,7 +204,7 @@ public class DashboardController {
         }
     }
 
-
+    /** Load home page */
     @FXML
     private void navigateToHome() {
         System.out.println("Artist Name (First Name): " + userName);
@@ -257,6 +227,7 @@ public class DashboardController {
         }
     }
 
+    /** Populates specific artist data within the dashboard */
     public void setArtistDetails(Artist artist) {
         //populate the fields in the Dashboard with the selected artist's details
         currentArtistID = (artist.getId());
@@ -311,6 +282,7 @@ public class DashboardController {
         reserveTitle.setVisible(true);
     }
 
+    /** reset artist details */
     public void clearArtistDetails() {
         nameField.setText("");
         joinDateField.setText("");
@@ -322,8 +294,7 @@ public class DashboardController {
         reserveTitle.setVisible(false); // Hide the title
     }
 
-
-    //https://docs.oracle.com/javase/8/javafx/user-interface-tutorial/date-picker.htm#CCHHJBEA Implementing a Day Cell Factory to Disable Some Days
+    /** Reload dashboard upon reservation data change */
     public void setCalendarReservations() {
         final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
             @Override
@@ -346,6 +317,7 @@ public class DashboardController {
 
     }
 
+    /** View active reservations method */
     @FXML
     private void NavigateToReservations() {
         if (this.userID == 0) {
@@ -379,10 +351,8 @@ public class DashboardController {
         }
     }
 
-    void SetArtistID(int artistID) {
-        this.currentArtistID = artistID;
-    }
 
+    /** Display reservation popup method */
     @FXML
     void DisplayReservationPopup() {
         if (this.userID == 0) {
@@ -391,13 +361,14 @@ public class DashboardController {
         }
 
         if (this.currentArtistID == 0) {
-            showErrorMessage("You must select an artist to continue.");
+            showErrorMessage("You must select an artist to continue."); //no artist selected
             return;
         }
 
         try {
             if (userID != 0) {
                 try {
+                    //date must be selected first
                     selectedDate = String.valueOf(datePicker.getValue());
                     if (selectedDate == null || selectedDate.equals("null")) {
                         showErrorMessage("You must select a date to continue.");
@@ -406,11 +377,14 @@ public class DashboardController {
                     System.out.println("ERROR: DATE HAS NOT BEEN SELECTED");
                 }
 
+                //load fxml
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("InputReservationInfo.fxml"));
                 Parent root = loader.load();
 
+                //get controller
                 ReservationDescriptionInputController resControl = loader.getController();
 
+                //set member variables
                 resControl.setSql(sql);
                 resControl.setSelectedDate(selectedDate);
                 resControl.setCurrentArtistID(currentArtistID);
@@ -430,6 +404,7 @@ public class DashboardController {
         }
     }
 
+    /** Reload dashboard upon reservation data change */
     public void ReloadDashboard() {
         reservationStringList = sql.getAllReservations();
         reservationDates.clear();
@@ -444,6 +419,7 @@ public class DashboardController {
         setCalendarReservations();
     }
 
+    /** View cancellation policy method */
     @FXML
     private void viewCancellationPolicy() {
         try {
@@ -475,6 +451,7 @@ public class DashboardController {
         }
     }
 
+    /** Method to change date time format */
     private String formatDateTime(String rawDateTime) {
         if (rawDateTime == null || rawDateTime.isEmpty()) {
             return "Unknown";
@@ -491,14 +468,18 @@ public class DashboardController {
         }
     }
 
+    /** Navigate to public events scene */
     @FXML
     private void NavigateToPublicEvents() {
         try {
+            //load fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PublicEvents.fxml"));
             Parent root = loader.load();
 
+            //get controller class
             PublicEventsController reservationController = loader.getController();
 
+            //set scene
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -507,5 +488,37 @@ public class DashboardController {
         }
     }
 
+    //setter methods
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    void SetArtistID(int artistID) {
+        this.currentArtistID = artistID;
+    }
 
 }

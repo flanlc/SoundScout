@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/** Reservation fxml controller class */
 public class ReservationController {
+    //member variables
     private int artistID;
     private int userID;
     private String userName;
@@ -38,13 +40,15 @@ public class ReservationController {
     private String resDate;
     private int globalSelectedIndex;
 
+    //fxml nodes
     @FXML
     Button cancelButton;
-
     @FXML
     Button approveButton;
+    @FXML
+    protected ListView<Reservation> listView;
 
-
+    /** Populates user detail member variables */
     public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
         this.userID = userID;
         this.userName = firstName;
@@ -54,6 +58,7 @@ public class ReservationController {
         this.zipCode = zipCode;
     }
 
+    /** Handles reservation cancel */
     @FXML
     public void SubmitCancel() {
         if(Objects.equals(this.activeStatus, "Cancelled")) {
@@ -61,6 +66,7 @@ public class ReservationController {
             return;
         }
 
+        //parses list and cancels desired reservation
         List<Reservation> toRemove = new ArrayList<>();
         for (Reservation reservation : activeResList) {
             if (reservation.getResID() == this.reservationID) {
@@ -82,7 +88,7 @@ public class ReservationController {
 
         sql.CancelReservation(this.reservationID);
 
-
+        //changes listview based on filter
         if (listView.getItems().equals(FXCollections.observableArrayList(activeResList))) {
             reservationsList = FXCollections.observableArrayList(activeResList);
         } else if (listView.getItems().equals(FXCollections.observableArrayList(pendingResList))) {
@@ -94,6 +100,7 @@ public class ReservationController {
         listView.getItems();
     }
 
+    /** Handles pending reservation approval */
     @FXML
     public void SubmitApprove() {
         if (Objects.equals(this.activeStatus, "Active")) {
@@ -125,46 +132,7 @@ public class ReservationController {
         listView.getItems();
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-
-    public void SetUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void SetUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public void SetArtistID(int artistID) {
-        this.artistID = artistID;
-    }
-
-    @FXML
-    protected ListView<Reservation> listView;
-
+    /** Creates sql connection and calls populate method */
     @FXML
     public void initializeReservations() {
         // Establish SQL connection
@@ -175,6 +143,7 @@ public class ReservationController {
         FilterToActive();
     }
 
+    /** Handles listview mouse click */
     @FXML
     public void HandleMouseClick(MouseEvent event) {
         ObservableList<Reservation> items = listView.getItems();
@@ -188,7 +157,7 @@ public class ReservationController {
         }
     }
 
-
+    /** Populates reservation data */
     public void PopulateListView() {
         List<Reservation> allReservations = sql.getAllReservations();
         for (Reservation reservation : allReservations) {
@@ -209,21 +178,38 @@ public class ReservationController {
         listView.setItems(reservationsList);
     }
 
+    /** Filters listview to active reservations */
     @FXML
     private void FilterToActive() {
         reservationsList = FXCollections.observableArrayList(activeResList);
         listView.setItems(reservationsList);
-        approveButton.setVisible(false);
+        if(userType.equals("Artist")) {
+            approveButton.setVisible(false);
+            cancelButton.setVisible(true);
+        }
+        else {
+            approveButton.setVisible(false);
+            cancelButton.setVisible(false);
+        }
     }
 
+    /** Filters listview to pending reservations */
     @FXML
     private void FilterToPending() {
         reservationsList = FXCollections.observableArrayList(pendingResList);
         listView.setItems(reservationsList);
-        approveButton.setVisible(true);
-        cancelButton.setVisible(true);
+
+        if(userType.equals("Artist")) {
+            approveButton.setVisible(true);
+            cancelButton.setVisible(true);
+        }
+        else {
+            approveButton.setVisible(false);
+            cancelButton.setVisible(false);
+        }
     }
 
+    /** Filters listview to cancelled reservations */
     @FXML
     private void FilterToCancelled() {
         reservationsList = FXCollections.observableArrayList(cancelledResList);
@@ -232,6 +218,7 @@ public class ReservationController {
         cancelButton.setVisible(false);
     }
 
+    /** Navigates to dashboard fxml */
     @FXML
     private void NavigateToDashboard() {
         System.out.println("Dashboard change");
@@ -255,6 +242,7 @@ public class ReservationController {
         }
     }
 
+    /** Displays reservation description popup */
     @FXML
     private void DisplayReservationDescription() {
 
@@ -285,6 +273,43 @@ public class ReservationController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    //getters and setters
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public void SetUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public void SetUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public void SetArtistID(int artistID) {
+        this.artistID = artistID;
     }
 
 

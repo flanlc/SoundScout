@@ -12,8 +12,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/** Reservation Creation fxml controller class */
 public class ReservationDescriptionInputController {
+    //fxml nodes
     @FXML
     TextField timeField;
     @FXML
@@ -37,6 +38,7 @@ public class ReservationDescriptionInputController {
     @FXML
     private ComboBox<String> durationComboBox;
 
+    //members variables
     private int userID;
     private int currentArtistID;
     private String currentArtistStageName;
@@ -46,6 +48,7 @@ public class ReservationDescriptionInputController {
 
     private DashboardController dashboardController;
 
+    /** Init. override */
     @FXML
     public void initialize() {
         ToggleGroup venueGroup = new ToggleGroup();
@@ -75,6 +78,7 @@ public class ReservationDescriptionInputController {
         dateDisplayLabel.setText("Selected Date: " + selectedDate);
     }
 
+    /** Creates reservation by populating object and calling sql method */
     @FXML
     public void SubmitReservation() {
         String venueType = pubButton.isSelected() ? "Public" : "Private";
@@ -104,12 +108,14 @@ public class ReservationDescriptionInputController {
         ((Stage) hourComboBox.getScene().getWindow()).close();
     }
 
+    /** On cancel close */
     @FXML
     public void CancelReservation() {
         Stage stage = (Stage) hourComboBox.getScene().getWindow();
         stage.close();
     }
 
+    //getters and setters
     public void setUserID(int userID) {
         this.userID = userID;
     }

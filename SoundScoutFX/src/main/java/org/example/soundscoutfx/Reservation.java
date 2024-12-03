@@ -1,6 +1,8 @@
 package org.example.soundscoutfx;
 
+/** Class representation of SQL Reservation table */
 public class Reservation {
+    //member variables
     private int resID;
     private int artistID;
 
@@ -14,6 +16,7 @@ public class Reservation {
     private String description;
     private String stageName;
 
+    /** Parameterized Constructor */
     public Reservation(int resID, int artistID, int userID, String date, String activeStatus, String startTime, String duration, String venueType, String address, String description, String stageName) {
         this.resID = resID;
         this.artistID = artistID;
@@ -28,6 +31,7 @@ public class Reservation {
         this.stageName = stageName;
     }
 
+    //getters and setters
     public int getResID() {
         return resID;
     }
@@ -116,6 +120,7 @@ public class Reservation {
         this.stageName = stageName;
     }
 
+    /** To String representation  */
     @Override
     public String toString() {
         return "Artist: " + artistID + ", User ID: " + userID + ", Date: " + date + ", Status: " + activeStatus;

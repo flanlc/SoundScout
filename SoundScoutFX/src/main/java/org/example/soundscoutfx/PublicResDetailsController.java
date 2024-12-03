@@ -4,8 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 
-
+/** Public Reservation Details popup Controller class */
 public class PublicResDetailsController {
+    //FXML nodes
     @FXML
     Label nameLabel;
     @FXML
@@ -21,6 +22,7 @@ public class PublicResDetailsController {
     @FXML
     TextArea descArea;
 
+    //memeber variables
     private String stageName;
     private String startTime;
     private String date;
@@ -29,6 +31,7 @@ public class PublicResDetailsController {
     private String address;
     private String description;
 
+    /** Sets Label Text */
     public void Populate() {
         nameLabel.setText(stageName);
         dateLabel.setText(date);
@@ -39,6 +42,7 @@ public class PublicResDetailsController {
         descArea.setText(description);
     }
 
+    //getters and setters
     public String getStageName() {
         return stageName;
     }

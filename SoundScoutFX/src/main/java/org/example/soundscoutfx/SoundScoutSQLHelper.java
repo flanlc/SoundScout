@@ -16,11 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.io.IOException;
 
+/** SQL Helper class */
 public class SoundScoutSQLHelper {
     Connection conn;
     boolean status = false;
     ArrayList<Artist> artistArrayList = new ArrayList<Artist>();
 
+    /** Establishes sql database connection */
     public Connection establishConnection() {
         {
             try {
@@ -33,6 +35,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Tests sql connection */
     public void testConnection() {
         Connection con;
         con = establishConnection();
@@ -44,6 +47,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Verifies user credentials in SQL server */
     protected UserInfo verifyUserCredentials(String email, String password) {
         String query = "SELECT ArtistID AS ID, FirstName, LastName, Email, City, ZipCode, 'Artist' AS UserType " +
                 "FROM Artist WHERE Email = ? AND Password = ? " +
@@ -76,6 +80,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Creates new artist in SQL */
     protected int CreateArtist(String firstName, String lastName, String stageName, String DOB, String streetAddress, String zipCode, String city, String state, double rate, String email, String password) {
         if (!status) {
             System.out.println("ERROR: Connection Not Created");
@@ -118,6 +123,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Creates new user in SQL */
     protected void CreateUser(String firstName, String lastName, String accountType, String city, String zipCode, String businessAddress, String email, String password) {
         if (!status) {
             System.out.println("ERROR: Connection Not Created");
@@ -162,6 +168,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Updates user profile within SQL */
     public void updateUserProfile(int userID, String firstName, String lastName, String email, String city, String zipCode) throws SQLException {
         String updateQuery = "UPDATE Users SET FirstName = ?, LastName = ?, Email = ?, City = ?, ZipCode = ? WHERE UserID = ?";
 
@@ -185,7 +192,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
-    /* code for this method was created following the guide on https://cloudinary.com/documentation/java_quickstart **/
+    /** Uploads user image to cloudinary, returns url to users sql row in the profile table */
     protected void UploadToCloudinary(int artistID, String filePath) {
         Dotenv dotenv = Dotenv.load();
         Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
@@ -217,6 +224,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Updates user performance youtube video url */
     protected void UpdatePerformance(int artistID, String uploadURL) {
         String sqlQuery = "UPDATE ArtistProfile SET FeaturedPerformance = ? WHERE ArtistID = ?;";
 
@@ -230,7 +238,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
-
+    /** Creates new profile in sql */
     protected void CreateNewProfile(int newArtistID, double rate) {
         int artistID = -1;
 
@@ -324,6 +332,7 @@ public class SoundScoutSQLHelper {
         return artistArrayList;
     }
 
+    /** Updates artists selected rate within sql server */
     public void updateArtistRate(int artistID, double rate) throws SQLException {
         String query = "UPDATE ArtistProfile SET Rate = ? WHERE ArtistID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -384,6 +393,7 @@ public class SoundScoutSQLHelper {
         return searchResults;
     }
 
+    /** Updates artists selected genre within sql server */
     public void updateArtistGenres(int artistID, String genres) throws SQLException {
         String query = "UPDATE ArtistProfile SET Genre = ? WHERE ArtistID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -393,6 +403,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Updates artists location within sql server */
     public void updateArtistLocation(int artistID, double latitude, double longitude) throws SQLException {
         String query = "UPDATE ArtistProfile SET Latitude = ?, Longitude = ? WHERE ArtistID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -403,6 +414,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Updates user location within sql server */
     public void updateUserLocation(int userID, double latitude, double longitude) throws SQLException {
         String query = "UPDATE Users SET Latitude = ?, Longitude = ? WHERE UserID = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -413,6 +425,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Gets user latitude */
     public double getUserLatitude(int userID) {
         try (PreparedStatement statement = conn.prepareStatement("SELECT Latitude FROM Users WHERE UserID = ?")) {
             statement.setInt(1, userID);
@@ -426,6 +439,7 @@ public class SoundScoutSQLHelper {
         return 0.0;
     }
 
+    /** Gets user longitude */
     public double getUserLongitude(int userID) {
         try (PreparedStatement statement = conn.prepareStatement("SELECT Longitude FROM Users WHERE UserID = ?")) {
             statement.setInt(1, userID);
@@ -439,6 +453,7 @@ public class SoundScoutSQLHelper {
         return 0.0;
     }
 
+    /** Gets all users in sql server */
     public List<UserInfo> getAllUsers() {
         List<UserInfo> users = new ArrayList<>();
         String query = "SELECT UserID, FirstName, LastName, City, ZipCode, Latitude, Longitude FROM Users";
@@ -476,6 +491,7 @@ public class SoundScoutSQLHelper {
         return -1; //if something went wrong
     }
 
+    /** Updates artists selected rate within sql server */
     public List<Artist> getAllArtists() {
         List<Artist> artists = new ArrayList<>();
         String query = "SELECT a.ArtistID, a.FirstName, a.LastName, a.StageName, a.City, a.State, a.ZipCode, " +
@@ -511,6 +527,7 @@ public class SoundScoutSQLHelper {
         return artists;
     }
 
+    /** Checks if artist is available */
     public boolean isArtistAvailable(int artistId, List<LocalDate> selectedDates) {
         if (selectedDates.isEmpty()) {
             return true;  // No dates are selected, so artist should be considered available
@@ -532,6 +549,7 @@ public class SoundScoutSQLHelper {
         return true;
     }
 
+    /** Gets all reservations shown in the reservation table */
     public List<Reservation> getAllReservations() {
         List<Reservation> reservations = new ArrayList<>();
         String Query = "SELECT * FROM VW_Reservations";
@@ -568,6 +586,7 @@ public class SoundScoutSQLHelper {
         return reservations;
     }
 
+    /** Creates new reservation in sql table */
     protected void CreateNewReservation(Reservation reservation) {
         if(reservation.getArtistID() == 0) {
             System.out.println("ERROR: No artist selected");
@@ -594,6 +613,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Cancels reservation in sql server by changing status column to cancelled */
     public void CancelReservation(int reservationID) {
         String query = "UPDATE Reservation SET status = 'Cancelled' WHERE ReservationID = ?";
 
@@ -606,6 +626,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Updates pending reservation to active */
     public void UpdateReservation(int reservationID) {
         String query = "UPDATE Reservation SET status = 'Active' WHERE ReservationID = ?";
 
@@ -618,6 +639,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Updates artist bio within sql */
     public void updateArtistBio(int userID, String bio) throws SQLException {
         String query = "UPDATE ArtistProfile SET bio = ? WHERE artistID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -627,6 +649,7 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    /** Gets artist bio from sql */
     public String getArtistBio(int artistID) throws SQLException {
         String query = "SELECT bio FROM ArtistProfile WHERE artistID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -640,6 +663,7 @@ public class SoundScoutSQLHelper {
         return null;
     }
 
+    /** gets artist cancellation policy from sql */
     public String[] getArtistCancellationPolicy(int artistID) throws SQLException {
         String query = "SELECT CancellationPolicy, FORMAT(PolicyUpdatedAt, 'yyyy-MM-dd''T''HH:mm:ss') AS PolicyUpdatedAtFormatted " +
                 "FROM ArtistProfile WHERE ArtistID = ?";
@@ -657,7 +681,7 @@ public class SoundScoutSQLHelper {
         return new String[]{"No cancellation policy available.", null};
     }
 
-
+    /** Updates artist cancellation policy within sql */
     public void updateArtistCancellationPolicy(int artistID, String newPolicy) throws SQLException {
         String query = "UPDATE ArtistProfile SET CancellationPolicy = ?, PolicyUpdatedAt = GETDATE() WHERE ArtistID = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {

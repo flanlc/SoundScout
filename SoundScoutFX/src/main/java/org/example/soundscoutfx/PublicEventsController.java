@@ -15,17 +15,21 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
+/** Public Events FXML controller class */
 public class PublicEventsController {
+    //member variables
     SoundScoutSQLHelper sql;
-
     ObservableList<Reservation> reservationObservableList;
+    private int globalSelectedIndex = -1;
+
+    //fxml nodes
     @FXML
     private ListView<Reservation> eventsView;
     @FXML
     TextField searchField;
-    private int globalSelectedIndex = -1;
 
 
+    /** Initialize method */
     @FXML
     public void initialize() {
         sql = new SoundScoutSQLHelper();
@@ -51,6 +55,7 @@ public class PublicEventsController {
         eventsView.setItems(reservationObservableList);
     }
 
+    /** Handles search feature */
     @FXML
     private void HandleSearch() {
         String searchText = searchField.getText().trim();
@@ -69,6 +74,7 @@ public class PublicEventsController {
         eventsView.setItems(filteredArtistsList);
     }
 
+    /** Displays event description popup */
     @FXML
     private void DisplayEventDescription() {
 
@@ -105,6 +111,7 @@ public class PublicEventsController {
 
     }
 
+    /** Upon listview selection update variable with index location of selected event */
     @FXML
     public void SetIndex() {
         globalSelectedIndex = eventsView.getSelectionModel().getSelectedIndex();
