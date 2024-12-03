@@ -66,22 +66,6 @@ public class EditProfileController {
     private VBox rockSubGenres, popSubGenres, rapSubGenres, rnbSubGenres, countrySubGenres;
 */
 
-    private int userID;
-    private String artistName;
-    private String lastName;
-    private String email;
-    private String city;
-    private String zipCode;
-    SoundScoutSQLHelper sql;
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setConnection(SoundScoutSQLHelper sql) {
-        this.sql = sql;
-    }
-
     @FXML
     public void initialize() {
         bioField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -94,7 +78,8 @@ public class EditProfileController {
             }
         });
 
-        if (sql != null && userID > 0) {
+        Session session = Session.getInstance();
+        if (session.getSql() != null && session.getUserID() > 0) {
             loadBio();
             loadCancellationPolicy();
         }
@@ -102,8 +87,9 @@ public class EditProfileController {
 
 
     public void setArtistDetails(String artistName, int userID) {
-        this.artistName = artistName;
-        this.userID = userID;
+        Session session = Session.getInstance();
+        session.setUserName(artistName);
+        session.setUserID(userID);
         loadBio();
         loadCancellationPolicy();
     }
@@ -134,8 +120,8 @@ public class EditProfileController {
         }
 
         if (filePath != null) {
-            //upload to Cloudinary
-            this.sql.UploadToCloudinary(this.userID, filePath);
+            Session session = Session.getInstance();
+            session.getSql().UploadToCloudinary(session.getUserID(), filePath);
         }
     }
 
@@ -197,10 +183,16 @@ public class EditProfileController {
             Parent root = loader.load();
 
             LoggedHomeController loggedHomeController = loader.getController();
-            loggedHomeController.setWelcomeMessage(this.artistName, this.userID, this.lastName, this.email, this.city, this.zipCode);  //PASSES BACK the artist's name and ID
-            loggedHomeController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            Session session = Session.getInstance();
 
-            loggedHomeController.setUserType("Artist");
+            loggedHomeController.setWelcomeMessage(
+                    session.getUserName(),
+                    session.getUserID(),
+                    session.getLastName(),
+                    session.getEmail(),
+                    session.getCity(),
+                    session.getZipCode()
+            );
 
             Stage stage = (Stage) anchorField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -211,6 +203,7 @@ public class EditProfileController {
         }
     }
 
+
     @FXML
     private Label successMessageLabel;
 
@@ -218,12 +211,12 @@ public class EditProfileController {
     private void handleUpdateGenre() {
         List<String> selectedGenres = getSelectedGenres();
 
-        //checks if genres are selected before updating
         if (!selectedGenres.isEmpty()) {
             try {
                 String genres = String.join(", ", selectedGenres);
 
-                sql.updateArtistGenres(this.userID, genres);
+                Session session = Session.getInstance();
+                session.getSql().updateArtistGenres(session.getUserID(), genres);
 
                 successMessageLabel.setText("Success! Genre has been updated!");
                 successMessageLabel.setVisible(true);
@@ -242,14 +235,16 @@ public class EditProfileController {
         double rate;
         try {
             rate = Double.parseDouble(rateField.getText());
-            if (rate < 0) throw new NumberFormatException(); //makes sure rate is not negative
+            if (rate < 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
             showErrorMessage("Please enter a valid rate amount.");
             return;
         }
 
         try {
-            sql.updateArtistRate(this.userID, rate);
+            Session session = Session.getInstance();
+            session.getSql().updateArtistRate(session.getUserID(), rate);
+
             successMessageLabel.setText("Success! Rate has been updated!");
             successMessageLabel.setVisible(true);
 
@@ -262,7 +257,8 @@ public class EditProfileController {
     @FXML
     private void handleUpdateProfile() {
         if (videoField != null && videoField.getText().toLowerCase().contains("youtube")) {
-            sql.UpdatePerformance(this.userID, videoField.getText());
+            Session session = Session.getInstance();
+            session.getSql().UpdatePerformance(session.getUserID(), videoField.getText());
             successMessageLabel.setText("Success! Performance URL has been updated!");
             successMessageLabel.setVisible(true);
         } else {
@@ -273,7 +269,8 @@ public class EditProfileController {
     private void updateArtistLocation(String cityOrZipCode) {
         double[] coordinates = LocationHelper.getCoordinates(cityOrZipCode);
         try {
-            sql.updateArtistLocation(this.userID, coordinates[0], coordinates[1]);
+            Session session = Session.getInstance();
+            session.getSql().updateArtistLocation(session.getUserID(), coordinates[0], coordinates[1]);
         } catch (SQLException e) {
             e.printStackTrace();
             showErrorMessage("Error updating location.");
@@ -290,7 +287,8 @@ public class EditProfileController {
         }
 
         try {
-            sql.updateArtistBio(this.userID, bio);
+            Session session = Session.getInstance();
+            session.getSql().updateArtistBio(session.getUserID(), bio);
 
             showSuccessMessage("Bio updated successfully.");
         } catch (SQLException e) {
@@ -301,13 +299,14 @@ public class EditProfileController {
 
     @FXML
     private void loadBio() {
-        if (this.sql == null) {
+        Session session = Session.getInstance();
+        if (session.getSql() == null) {
             System.out.println("Error: SQL Helper is not initialized.");
             return;
         }
 
         try {
-            String bio = sql.getArtistBio(this.userID);
+            String bio = session.getSql().getArtistBio(session.getUserID());
             if (bio != null) {
                 bioField.setText(bio);
             } else {
@@ -317,12 +316,6 @@ public class EditProfileController {
             e.printStackTrace();
             showErrorMessage("Error loading bio.");
         }
-    }
-
-    public void setSql(SoundScoutSQLHelper sql) {
-        this.sql = sql;
-        loadBio();
-        loadCancellationPolicy();
     }
 
     /*@FXML
@@ -347,7 +340,8 @@ public class EditProfileController {
     private void handleUpdateCancellationPolicy() {
         String newPolicy = cancellationPolicyField.getText();
         try {
-            sql.updateArtistCancellationPolicy(this.userID, newPolicy);
+            Session session = Session.getInstance();
+            session.getSql().updateArtistCancellationPolicy(session.getUserID(), newPolicy);
             showSuccessMessage("Cancellation policy updated successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -358,13 +352,9 @@ public class EditProfileController {
     @FXML
     private void loadCancellationPolicy() {
         try {
-            String[] policyInfo = sql.getArtistCancellationPolicy(this.userID);
-            String currentPolicy = policyInfo[0];
-            if (currentPolicy != null) {
-                cancellationPolicyField.setText(currentPolicy);
-            } else {
-                cancellationPolicyField.setText("");
-            }
+            Session session = Session.getInstance();
+            String[] policyInfo = session.getSql().getArtistCancellationPolicy(session.getUserID());
+            cancellationPolicyField.setText(policyInfo != null ? policyInfo[0] : "");
         } catch (SQLException e) {
             e.printStackTrace();
             showErrorMessage("Error loading cancellation policy.");

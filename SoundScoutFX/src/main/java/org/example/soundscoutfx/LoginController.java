@@ -11,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class LoginController {
 
@@ -46,10 +45,25 @@ public class LoginController {
 
             if (userInfo != null) {
                 setErrorMessage("Login successful!", "green");
+
+                Session session = Session.getInstance();
+                session.setUserID(userInfo.getId());
+                session.setUserName(userInfo.getFirstName());
+                session.setUserType(userInfo.getUserType());
+                session.setLastName(userInfo.getLastName());
+                session.setEmail(userInfo.getEmail());
+                session.setCity(userInfo.getCity());
+                session.setZipCode(userInfo.getZipCode());
+                session.setSql(sqlHelper);
+
+                if ("Artist".equals(userInfo.getUserType())) {
+                    session.setCurrentArtistID(userInfo.getId());
+                }
+
                 new Thread(() -> {
                     try {
-                        Thread.sleep(1000); //1 second delay
-                        javafx.application.Platform.runLater(() -> navigateToLoggedHome(userInfo));
+                        Thread.sleep(1000); // 1-second delay
+                        javafx.application.Platform.runLater(this::navigateToLoggedHome);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -102,19 +116,22 @@ public class LoginController {
         }
     }
 
-    private void navigateToLoggedHome(UserInfo userInfo) {
+    private void navigateToLoggedHome() {
         try {
+            Session session = Session.getInstance();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
 
             LoggedHomeController controller = loader.getController();
-            controller.setWelcomeMessage(userInfo.getFirstName(), userInfo.getId(), userInfo.getLastName(), userInfo.getEmail(), userInfo.getCity(), userInfo.getZipCode());
-            controller.setUserID(userInfo.getId());
-            controller.setUserType(userInfo.getUserType());
-
-            if(Objects.equals(userInfo.getUserType(), "Artist")) {
-                controller.SetArtistID(userInfo.getId());
-            }
+            controller.setWelcomeMessage(
+                    session.getUserName(),
+                    session.getUserID(),
+                    session.getLastName(),
+                    session.getEmail(),
+                    session.getCity(),
+                    session.getZipCode()
+            );
 
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root));

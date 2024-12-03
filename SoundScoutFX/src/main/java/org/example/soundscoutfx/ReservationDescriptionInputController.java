@@ -1,34 +1,24 @@
 package org.example.soundscoutfx;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-/** Reservation Creation fxml controller class */
 public class ReservationDescriptionInputController {
-    //fxml nodes
+    //FXML nodes
     @FXML
-    TextField timeField;
+    private TextField addyField;
     @FXML
-    TextField durationField;
+    private TextArea descBox;
     @FXML
-    TextField addyField;
+    private RadioButton pubButton;
     @FXML
-    TextArea descBox;
+    private RadioButton privateButton;
     @FXML
-    RadioButton pubButton;
-    @FXML
-    RadioButton privateButton;
-    @FXML
-    Label dateDisplayLabel;
+    private Label dateDisplayLabel;
     @FXML
     private ComboBox<String> hourComboBox;
     @FXML
@@ -38,14 +28,9 @@ public class ReservationDescriptionInputController {
     @FXML
     private ComboBox<String> durationComboBox;
 
-    //members variables
-    private int userID;
-    private int currentArtistID;
-    private String currentArtistStageName;
+    //Member variables
     private String selectedDate;
-    private SoundScoutSQLHelper sql;
     private List<LocalDate> reservationDates;
-
     private DashboardController dashboardController;
 
     /** Init. override */
@@ -81,57 +66,77 @@ public class ReservationDescriptionInputController {
     /** Creates reservation by populating object and calling sql method */
     @FXML
     public void SubmitReservation() {
-        String venueType = pubButton.isSelected() ? "Public" : "Private";
+        Session session = Session.getInstance();
+        int userID = session.getUserID();
+        int currentArtistID = session.getCurrentArtistID();
+        String currentArtistStageName = session.getCurrentArtistStageName();
+
+        if (userID == 0 || currentArtistID == 0 || currentArtistStageName == null) {
+            ShowErrorMessage("Invalid session data. Please sign in again.");
+            return;
+        }
+
+        String venueType = pubButton.isSelected() ? "Public" : privateButton.isSelected() ? "Private" : null;
         String startTime = hourComboBox.getValue() + ":" + minuteComboBox.getValue() + " " + ampmComboBox.getValue();
         String duration = durationComboBox.getValue();
-        String address = addyField.getText();
-        String description = descBox.getText();
+        String address = addyField.getText().trim();
+        String description = descBox.getText().trim();
 
-        if(pubButton.isSelected()) {
-            venueType = "Public";
-        } else if (privateButton.isSelected()) {
-            venueType = "Private";
+        if (venueType == null) {
+            ShowErrorMessage("Please select a venue type.");
+            return;
+        }
+        if (address.isEmpty()) {
+            ShowErrorMessage("Please provide an address.");
+            return;
+        }
+        if (description.isEmpty()) {
+            ShowErrorMessage("Please provide a description.");
+            return;
         }
 
-        Reservation reservation = new Reservation(0, this.currentArtistID, this.userID, selectedDate, "Pending", startTime, duration, venueType, address, description, currentArtistStageName);
-        sql.CreateNewReservation(reservation);
+        try {
+            Reservation reservation = new Reservation(
+                    0, currentArtistID, userID, selectedDate, "Pending",
+                    startTime, duration, venueType, address, description, currentArtistStageName
+            );
 
-        LocalDate dateToAdd = LocalDate.parse(selectedDate);
-        if (!reservationDates.contains(dateToAdd)) {
-            reservationDates.add(dateToAdd);
+            session.getSql().CreateNewReservation(reservation);
+
+            LocalDate dateToAdd = LocalDate.parse(selectedDate);
+            if (!reservationDates.contains(dateToAdd)) {
+                reservationDates.add(dateToAdd);
+            }
+
+            if (dashboardController != null) {
+                dashboardController.ReloadDashboard();
+            }
+
+            CloseWindow();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowErrorMessage("Failed to create reservation.");
         }
-
-        if (dashboardController != null) {
-            dashboardController.ReloadDashboard();
-        }
-
-        ((Stage) hourComboBox.getScene().getWindow()).close();
     }
 
     /** On cancel close */
     @FXML
     public void CancelReservation() {
-        Stage stage = (Stage) hourComboBox.getScene().getWindow();
-        stage.close();
+        CloseWindow();
     }
 
-    //getters and setters
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setCurrentArtistID(int currentArtistID) {
-        this.currentArtistID = currentArtistID;
+    /** Display an error message */
+    private void ShowErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public void setSelectedDate(String selectedDate) {
         this.selectedDate = selectedDate;
     }
-
-    public void setSql(SoundScoutSQLHelper sql) {
-        this.sql = sql;
-    }
-
 
     public void setReservationDates(List<LocalDate> reservationDates) {
         this.reservationDates = reservationDates;
@@ -141,11 +146,9 @@ public class ReservationDescriptionInputController {
         this.dashboardController = dashboardController;
     }
 
-    public String getCurrentArtistStageName() {
-        return currentArtistStageName;
-    }
-
-    public void setCurrentArtistStageName(String currentArtistStageName) {
-        this.currentArtistStageName = currentArtistStageName;
+    /** Closes window */
+    private void CloseWindow() {
+        Stage stage = (Stage) hourComboBox.getScene().getWindow();
+        stage.close();
     }
 }

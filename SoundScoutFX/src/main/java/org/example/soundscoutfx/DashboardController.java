@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,12 +11,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,29 +25,14 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static org.example.soundscoutfx.Session.session;
 
 public class DashboardController {
-    //member variables
-    SoundScoutSQLHelper sql;
-    private int userID;
-    private int currentArtistID;
 
-    private String artistName;
-    private String userName;
-    private String userType;
-    private String lastName;
-    private String email;
-    private String city;
-    private String zipCode;
-    private List<Reservation> reservationStringList;
-    private List<LocalDate> reservationDates = new ArrayList<>();
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private String selectedDate;
-
-    //jfx nodes
+    // JFX nodes
     @FXML
-    DatePicker datePicker = new DatePicker();
+    private DatePicker datePicker;
     @FXML
     private TextField searchField;
     @FXML
@@ -74,25 +56,13 @@ public class DashboardController {
     @FXML
     private TextArea artistBioTextArea;
 
+    // Member variables
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
+    private List<LocalDate> reservationDates = new ArrayList<>();
 
     @FXML
     public void initialize() {
-        if (webView != null) {
-            WebEngine engine = webView.getEngine();
-        }
-
-        sql = new SoundScoutSQLHelper();
-        sql.establishConnection();
-        sql.testConnection();
-
-        reservationStringList = sql.getAllReservations();
-
-        for (Reservation reservation : reservationStringList) {
-            LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
-            reservationDates.add(tempDate);
-        }
-
+        sqlHelper.establishConnection();
         searchResultsList.setVisible(false);
 
         searchResultsList.setCellFactory(listView -> new ListCell<>() {
@@ -102,41 +72,31 @@ public class DashboardController {
                 if (empty || artist == null) {
                     setText(null);
                 } else {
-                    String displayText = String.format("%s | Genre: %s | Rate: $%.2f | City: %s",
+                    setText(String.format("%s | Genre: %s | Rate: $%.2f | City: %s",
                             artist.getStageName(),
                             artist.getProfile().getGenre(),
                             artist.getProfile().getRate(),
-                            artist.getCity());
-                    setText(displayText);
+                            artist.getCity()));
                 }
             }
         });
     }
 
-    /** Sets user details */
-    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
-        this.userID = userID;
-        this.userName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
-        this.zipCode = zipCode;
-    }
-
-    /** Changes search results */
+    /** Handles search functionality */
     @FXML
     private void handleSearch() {
         String searchText = searchField.getText().trim();
+
         if (searchText.isEmpty()) {
             searchResultsList.setVisible(false);
             return;
         }
 
-        ObservableList<Artist> searchResults = FXCollections.observableArrayList(sql.searchArtists(searchText));
+        ObservableList<Artist> searchResults = FXCollections.observableArrayList(sqlHelper.searchArtists(searchText));
         updateArtistList(searchResults);
     }
 
-    /** Updates artist search list  */
+    /** Updates the artist list */
     private void updateArtistList(ObservableList<Artist> artists) {
         searchResultsList.getItems().clear();
         if (artists != null && !artists.isEmpty()) {
@@ -147,7 +107,7 @@ public class DashboardController {
         }
     }
 
-    /** Handles selecting artist upon click */
+    /** Handles artist selection */
     @FXML
     private void handleArtistSelect(MouseEvent event) {
         Artist selectedArtist = searchResultsList.getSelectionModel().getSelectedItem();
@@ -156,95 +116,23 @@ public class DashboardController {
         }
     }
 
-    private void showErrorMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Access Denied");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    /** Loads edit profile screen */
-    @FXML
-    private void navigateToProfile() {
-        //if Guest account
-        if (this.userID == 0) {
-            showErrorMessage("You must sign in to access this feature.");
-            return; //can't proceed
-        }
-
-        try {
-            FXMLLoader loader;
-
-            //determine which profile page to load based on user type
-            if ("Artist".equalsIgnoreCase(userType)) {
-                loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));
-            } else {
-                loader = new FXMLLoader(getClass().getResource("edit-user-profile.fxml"));
-            }
-
-            Parent root = loader.load();
-
-            if ("Artist".equalsIgnoreCase(userType)) {
-                EditProfileController editProfileController = loader.getController();
-                editProfileController.setConnection(this.sqlHelper);
-                editProfileController.setArtistDetails(this.artistName, this.userID);
-            } else {
-                EditUserProfileController editUserProfileController = loader.getController();
-                editUserProfileController.setConnection(this.sqlHelper);
-                editUserProfileController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-            }
-
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Edit Profile");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /** Load home page */
-    @FXML
-    private void navigateToHome() {
-        //System.out.println("Artist Name (First Name): " + userName);
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
-            Parent root = loader.load();
-
-            LoggedHomeController loggedHomeController = loader.getController();
-            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
-            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-
-            loggedHomeController.setUserType(this.userType);
-
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Home");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /** Populates specific artist data within the dashboard */
+    /** Sets artist details in the dashboard */
     public void setArtistDetails(Artist artist) {
-        //populate the fields in the Dashboard with the selected artist's details
-        currentArtistID = (artist.getId());
+        int currentArtistID = artist.getId();
         nameField.setText(artist.getStageName());
         joinDateField.setText(artist.getJoinDate());
         genreField.setText(artist.getProfile().getGenre());
         rateField.setText(String.valueOf(artist.getProfile().getRate()));
-        searchField.clear();
-        searchResultsList.setVisible(false);
+        locationField.setText(artist.getCity());
 
-        String locationText = artist.getCity();// + ", " + artist.getZipCode();
-        locationField.setText(locationText);
+        try {
+            String artistBio = sqlHelper.getArtistBio(currentArtistID);
+            artistBioTextArea.setText(artistBio != null ? artistBio : "No bio listed");
+        } catch (SQLException e) {
+            artistBioTextArea.setText("Error loading bio.");
+        }
 
         String profilePicture = artist.getProfile().getProfilePicture();
-        String video = artist.getProfile().getFeaturedPerformance();
-
-        //load profile picture
         Image defaultImage = new Image("https://asset.cloudinary.com/dbvmjemlj/3b6de659993c8001449604d2985bcf4f");
         if (profilePicture != null && !profilePicture.isEmpty()) {
             Image image = new Image(profilePicture, false);
@@ -253,205 +141,87 @@ public class DashboardController {
             imgView.setImage(defaultImage);
         }
 
-        //load video
+        String video = artist.getProfile().getFeaturedPerformance();
         if (video != null && !video.isEmpty()) {
-            String youtubeURL = video.replace("watch?v=", "embed/");
-            webView.getEngine().load(youtubeURL);
+            webView.getEngine().load(video.replace("watch?v=", "embed/"));
         } else {
             webView.getEngine().load(null);
         }
 
-        try {
-            String artistBio = sql.getArtistBio(currentArtistID);
-            artistBioTextArea.setText(artistBio != null ? artistBio : "No bio listed");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            artistBioTextArea.setText("Error loading bio.");
-        }
-
         reservationDates.clear();
-        for (Reservation reservation : reservationStringList) {
+        for (Reservation reservation : sqlHelper.getAllReservations()) {
             if (reservation.getArtistID() == currentArtistID) {
-                LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
-                reservationDates.add(tempDate);
+                reservationDates.add(LocalDate.parse(reservation.getDate()));
             }
         }
-
-        setCalendarReservations();
 
         reserveTitle.setVisible(true);
+        searchResultsList.setVisible(false);
     }
 
-    /** reset artist details */
-    public void clearArtistDetails() {
-        nameField.setText("");
-        joinDateField.setText("");
-        genreField.setText("");
-        rateField.setText("");
-        locationField.setText("");
-        imgView.setImage(null);
-        webView.getEngine().load(null);
-        reserveTitle.setVisible(false);
-    }
-
-    /** Reload dashboard upon reservation data change */
-    public void setCalendarReservations() {
-        final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
-            @Override
-            public DateCell call(final DatePicker datePicker) {
-                return new DateCell() {
-                    @Override
-                    public void updateItem(LocalDate item, boolean empty) {
-                        super.updateItem(item, empty);
-
-                        if (!empty && item != null && reservationDates.contains(item) || Objects.requireNonNull(item).isBefore(LocalDate.now())) {
-                            setDisable(true);
-                            setStyle("-fx-background-color: grey; -fx-text-fill: white;");
-                        }
-                    }
-                };
-            }
-        };
-
-        datePicker.setDayCellFactory(dayCellFactory);
-
-    }
-
-    /** View active reservations method */
+    /** Handles navigation to reservations */
     @FXML
     private void NavigateToReservations() {
-        if (this.userID == 0) {
+        Session session = Session.getInstance();
+        if (IsGuestUser()) {
             showErrorMessage("You must sign in to access this feature.");
-            return; //can't proceed
+            return;
         }
 
+        Navigate("Reservations.fxml", "Reservations");
+    }
+
+    @FXML
+    private void navigateToProfile() {
+        if (IsGuestUser()) {
+            showErrorMessage("You must sign in to access this feature.");
+            return;
+        }
+        Navigate("edit-profile.fxml", "Edit Profile");
+    }
+
+    @FXML
+    private void NavigateToPublicEvents() {
+        if (IsGuestUser()) {
+            showErrorMessage("You must sign in to access public events.");
+            return;
+        }
+        Navigate("PublicEvents.fxml", "Public Events");
+    }
+
+    @FXML
+    private void navigateToHome() {
+        Navigate("logged-home.fxml", "Home");
+    }
+
+    /** Displays an error message */
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public void ReloadDashboard() {
+        searchResultsList.refresh();
+        reserveTitle.setText("Updated Reservations");
+    }
+
+    /** General navigation method to remove redundancy */
+    private void Navigate(String fxmlFile, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-
-            ReservationController reservationController = loader.getController();
-
-            if (Objects.equals(userType, "Artist")) {
-                reservationController.SetUserType(this.userType);
-                reservationController.SetArtistID(this.currentArtistID);
-            } else if (Objects.equals(userType, "User")) {
-                reservationController.SetUserType(this.userType);
-                reservationController.SetUserID(this.userID);
-                reservationController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-            }
-
-            reservationController.initializeReservations();
-
-
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle(title);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    /** Display reservation popup method */
-    @FXML
-    void DisplayReservationPopup() {
-        if (this.userID == 0) {
-            showErrorMessage("You must sign in to access this feature.");
-            return; //can't proceed
-        }
-
-        if (this.currentArtistID == 0) {
-            showErrorMessage("You must select an artist to continue."); //no artist selected
-            return;
-        }
-
-        try {
-            if (userID != 0) {
-                try {
-                    //date must be selected first
-                    selectedDate = String.valueOf(datePicker.getValue());
-                    if (selectedDate == null || selectedDate.equals("null")) {
-                        showErrorMessage("You must select a date to continue.");
-                        return; }
-                } catch (Exception e) {
-                    System.out.println("ERROR: DATE HAS NOT BEEN SELECTED");
-                }
-
-                //load fxml
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("InputReservationInfo.fxml"));
-                Parent root = loader.load();
-
-                //get controller
-                ReservationDescriptionInputController resControl = loader.getController();
-
-                //set member variables
-                resControl.setSql(sql);
-                resControl.setSelectedDate(selectedDate);
-                resControl.setCurrentArtistID(currentArtistID);
-                resControl.setCurrentArtistStageName(artistName);
-                resControl.setUserID(userID);
-                resControl.setReservationDates(reservationDates);
-                resControl.setDashboardController(this);
-                resControl.SetLabel();
-
-                Stage stage = new Stage();
-                stage.setScene(new Scene(root));
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.show();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /** Reload dashboard upon reservation data change */
-    public void ReloadDashboard() {
-        reservationStringList = sql.getAllReservations();
-        reservationDates.clear();
-
-        for (Reservation reservation : reservationStringList) {
-            LocalDate tempDate = LocalDate.parse(reservation.getDate(), dateFormatter);
-            if (!reservationDates.contains(tempDate)) {
-                reservationDates.add(tempDate);
-            }
-        }
-
-        setCalendarReservations();
-    }
-
-    /** View cancellation policy method */
-    @FXML
-    private void viewCancellationPolicy() {
-        try {
-            String[] policyInfo = sql.getArtistCancellationPolicy(currentArtistID);
-            String policy = policyInfo[0];
-            String updatedAt = policyInfo[1];
-
-            if (policy == null || policy.isEmpty()) {
-                showErrorMessage("No cancellation policy found for this artist.");
-                return;
-            }
-
-            String formattedDateTime = formatDateTime(updatedAt);
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("cancellation-policy-popup.fxml"));
-            Parent root = loader.load();
-
-            //CancellationPolicyPopupController popupController = loader.getController();
-            //popupController.setPolicyData(policy, formattedDateTime);
-
-            Stage popupStage = new Stage();
-            popupStage.setTitle("Cancellation Policy");
-            popupStage.setScene(new Scene(root));
-            popupStage.showAndWait();
-
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            showErrorMessage("Failed to retrieve the cancellation policy.");
-        }
-    }
-
-    /** Method to change date time format */
     private String formatDateTime(String rawDateTime) {
         if (rawDateTime == null || rawDateTime.isEmpty()) {
             return "Unknown";
@@ -468,59 +238,105 @@ public class DashboardController {
         }
     }
 
-    /** Navigate to public events scene */
     @FXML
-    private void NavigateToPublicEvents() {
+    private void viewCancellationPolicy() {
+        Session session = Session.getInstance();
+        int currentArtistID = session.getCurrentArtistID();
+
+        if (currentArtistID == 0) {
+            showErrorMessage("You must select an artist to view the cancellation policy.");
+            return;
+        }
+
         try {
-            //load fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PublicEvents.fxml"));
+            String[] policyInfo = sqlHelper.getArtistCancellationPolicy(currentArtistID);
+            String policy = policyInfo[0];
+            String updatedAt = policyInfo[1];
+
+            if (policy == null || policy.isEmpty()) {
+                showErrorMessage("No cancellation policy found for this artist.");
+                return;
+            }
+
+            String formattedDateTime = formatDateTime(updatedAt);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("cancellation-policy-popup.fxml"));
             Parent root = loader.load();
 
-            //get controller class
-            PublicEventsController reservationController = loader.getController();
+            CancellationPolicyPopupController popupController = loader.getController();
+            popupController.setPolicyData(policy, formattedDateTime);
 
-            reservationController.SetUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            Stage popupStage = new Stage();
+            popupStage.setTitle("Cancellation Policy");
+            popupStage.setScene(new Scene(root));
+            popupStage.showAndWait();
 
-            //set scene
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
+            showErrorMessage("Failed to retrieve the cancellation policy.");
         }
     }
 
-    //setter methods
-    public void setUserID(int userID) {
-        this.userID = userID;
+    @FXML
+    void DisplayReservationPopup() {
+        Session session = Session.getInstance();
+        int userID = session.getUserID();
+        int currentArtistID = session.getCurrentArtistID();
+        String currentArtistStageName = session.getCurrentArtistStageName();
+
+        if (userID == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return;
+        }
+
+        if (currentArtistID == 0 || currentArtistStageName == null) {
+            showErrorMessage("You must select an artist to continue.");
+            return;
+        }
+
+        try {
+            String selectedDate = String.valueOf(datePicker.getValue());
+            if (selectedDate == null || selectedDate.equals("null")) {
+                showErrorMessage("You must select a date to continue.");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("InputReservationInfo.fxml"));
+            Parent root = loader.load();
+
+            ReservationDescriptionInputController resControl = loader.getController();
+            resControl.setSelectedDate(selectedDate);
+            resControl.setReservationDates(reservationDates);
+            resControl.setDashboardController(this);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void ClearDetails() {
+        nameField.setText("");
+        joinDateField.setText("");
+        genreField.setText("");
+        rateField.setText("");
+        locationField.setText("");
+        artistBioTextArea.setText("");
+        imgView.setImage(null);
+        imgView.setVisible(false);
+        webView.getEngine().load(null);
+        webView.setVisible(false);
+        reserveTitle.setVisible(false);
+        reservationDates.clear();
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    void SetArtistID(int artistID) {
-        this.currentArtistID = artistID;
+    private boolean IsGuestUser() {
+        Session session = Session.getInstance();
+        return "Guest".equalsIgnoreCase(session.getUserType());
     }
 
 }

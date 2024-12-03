@@ -1,8 +1,6 @@
 package org.example.soundscoutfx;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,14 +11,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LoggedHomeController {
+
     @FXML
     private Label welcomeLabel;
     @FXML
@@ -45,24 +42,19 @@ public class LoggedHomeController {
     private DatePicker availabilityDatePicker;
 
     private List<LocalDate> selectedDates = new ArrayList<>();
-    private String userName;
-    private int currentArtistID;
-
+    private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
     @FXML
     private void toggleFilterPane() {
         filterPane.setVisible(!filterPane.isVisible());
     }
 
-    private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
-
     @FXML
     public void initialize() {
-        //confirm the connection is established
-        sqlHelper = new SoundScoutSQLHelper();
-        sqlHelper.establishConnection();
-        //updateExistingUserLocations();
-        //updateExistingArtistLocations();
+        Session session = Session.getInstance();
+
+        setWelcomeMessage(session.getUserName(), session.getUserID(), session.getLastName(), session.getEmail(), session.getCity(), session.getZipCode());
+        configureEditProfileButton(session.getUserType());
 
         distanceSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() == 0) {
@@ -114,8 +106,6 @@ public class LoggedHomeController {
         Artist selectedArtist = searchResultsList.getSelectionModel().getSelectedItem();
 
         if (selectedArtist != null) {
-            //System.out.println("Selected Artist: " + selectedArtist.toString());
-
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
                 Parent root = loader.load();
@@ -123,11 +113,6 @@ public class LoggedHomeController {
                 DashboardController dashboardController = loader.getController();
 
                 dashboardController.setArtistDetails(selectedArtist);
-
-                dashboardController.setUserID(this.userID);
-                dashboardController.setUserName(this.artistName);
-                dashboardController.setUserType(this.userType);
-                dashboardController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
 
                 Stage stage = (Stage) searchField.getScene().getWindow();
                 stage.setScene(new Scene(root));
@@ -139,66 +124,18 @@ public class LoggedHomeController {
         }
     }
 
-    private int userID;
-    private String userType;
-    private String artistName;
-    private int artistID;
-    private String lastName;
-    private String email;
-    private String city;
-    private String zipCode;
-
-    public void setWelcomeMessage(String firstName, int userID, String lastName, String email, String city, String zipCode) {
-        //System.out.println("setWelcomeMessage called with: " + firstName + ", ID: " + userID);
-        this.artistName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.userID = userID;
-        welcomeLabel.setText("Welcome, " + firstName + "! Your ID is: " + userID);
-
-    //hide the "Edit Artist Profile" button if the user is a guest (ID = 0)
-        if (userID == 0) {
-            editProfileButton.setVisible(false);
-        } else {
-            editProfileButton.setVisible(true);
-        }
-    }
-
-    public void setWelcomeMessage(String firstName, int userID) {
-        this.artistName = firstName;
-        this.userID = userID;
-
-        this.lastName = "";
-        this.email = "";
-        this.city = "";
-        this.zipCode = "";
-
-        welcomeLabel.setText("Welcome, " + firstName + "! Your ID is: " + userID);
+    void setWelcomeMessage(String userName, int userID, String lastName, String email, String city, String zipCode) {
+        welcomeLabel.setText("Welcome, " + userName + "! Your ID is: " + userID);
 
         if (userID == 0) {
             editProfileButton.setVisible(false);
         } else {
             editProfileButton.setVisible(true);
         }
+
     }
 
-    private void showErrorMessage(String message) {
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-        configureButtonBasedOnUserType();
-    }
-
-    public void configureButtonBasedOnUserType() {
+    private void configureEditProfileButton(String userType) {
         if ("Artist".equalsIgnoreCase(userType)) {
             editProfileButton.setText("Edit Artist Profile");
         } else {
@@ -208,12 +145,62 @@ public class LoggedHomeController {
 
     @FXML
     protected void handleLogout() {
+        Session.getInstance().clearSession();
         navigateTo("hello-view.fxml", "SoundScout");
     }
 
     @FXML
-    protected void handleAvailableArtistsClick() {
-        navigateTo("Dashboard.fxml", "Available Artists");
+    private void navigateToEditProfile() {
+        Session session = Session.getInstance();
+
+        if (session.getUserID() == 0) {
+            showErrorMessage("You must sign in to access this feature.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader;
+            if ("Artist".equalsIgnoreCase(session.getUserType())) {
+                loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));
+            } else {
+                loader = new FXMLLoader(getClass().getResource("edit-user-profile.fxml"));
+            }
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Edit Profile");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void navigateTo(String fxmlFile, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(title);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void NavigateToPublicEvents() {
+        navigateTo("PublicEvents.fxml", "Public Events");
     }
 
     @FXML
@@ -234,7 +221,15 @@ public class LoggedHomeController {
             Parent root = loader.load();
 
             LoggedHomeController homeController = loader.getController();
-            homeController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            Session session = Session.getInstance();
+            homeController.setWelcomeMessage(
+                    session.getUserName(),
+                    session.getUserID(),
+                    session.getLastName(),
+                    session.getEmail(),
+                    session.getCity(),
+                    session.getZipCode()
+            );
 
             currentStage.setScene(new Scene(root));
             currentStage.setTitle("Logged Home");
@@ -246,261 +241,30 @@ public class LoggedHomeController {
 
     @FXML
     private void NavigateToReservations() {
-        if (this.userID == 0) {
+        Session session = Session.getInstance();
+
+        if (session.getUserID() == 0) {
             showErrorMessage("You must sign in to access this feature.");
-            return; //can't proceed
+            return;
         }
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Reservations.fxml"));
-            Parent root = loader.load();
-
-            ReservationController reservationController = loader.getController();
-
-            if ("Artist".equalsIgnoreCase(userType)) {
-                reservationController.SetUserType(this.userType);
-                reservationController.SetArtistID(this.artistID);
-            } else if ("User".equalsIgnoreCase(userType)) {
-                reservationController.SetUserType(this.userType);
-                reservationController.SetUserID(this.userID);
-                reservationController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-            }
-
-            reservationController.initializeReservations();
-
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigateTo("Reservations.fxml", "Reservations");
     }
+
 
     @FXML
-    protected void navigateToEditProfile() {
-        if (this.userID == 0) {
-            showErrorMessage("You must sign in to access this feature.");
-            return; //can't proceed
-        }
-        try {
-            FXMLLoader loader;
-
-            //determine which profile page to load based on user type
-            if ("Artist".equalsIgnoreCase(userType)) {
-                loader = new FXMLLoader(getClass().getResource("edit-profile.fxml"));
+    private void handleAvailabilitySelect() {
+        LocalDate selectedDate = availabilityDatePicker.getValue();
+        if (selectedDate != null) {
+            if (selectedDates.contains(selectedDate)) {
+                selectedDates.remove(selectedDate);
             } else {
-                loader = new FXMLLoader(getClass().getResource("edit-user-profile.fxml"));
+                selectedDates.add(selectedDate);
             }
-
-            Parent root = loader.load();
-
-            if ("Artist".equalsIgnoreCase(userType)) {
-                EditProfileController editProfileController = loader.getController();
-                editProfileController.setConnection(this.sqlHelper);
-                editProfileController.setArtistDetails(this.artistName, this.userID);
-            } else {
-                EditUserProfileController editUserProfileController = loader.getController();
-                editUserProfileController.setConnection(this.sqlHelper);
-                editUserProfileController.setUserDetails(this.artistName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-            }
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Edit Profile");
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            handleApplyFilters();
         }
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    private void navigateTo(String fxmlFile, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle(title);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
-
-        this.artistName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.userID = userID;
-
-        welcomeLabel.setText("Welcome, " + firstName + "! Your ID is: " + userID);
-    }
-
-    @FXML
-    private void navigateToDashboard() {
-        try {
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
-            Parent root = loader.load();
-
-            DashboardController dashboardController = loader.getController();
-            dashboardController.setUserID(this.userID);
-            dashboardController.SetArtistID(this.artistID);
-            dashboardController.setUserName(this.artistName);
-            dashboardController.setUserType(this.userType);
-            dashboardController.setLastName(this.lastName);
-            dashboardController.setEmail(this.email);
-            dashboardController.setCity(this.city);
-            dashboardController.setZipCode(this.zipCode);
-
-            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Dashboard");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateArtistList(List<Artist> artists) {
-        //clear existing items in the list
-        searchResultsList.getItems().clear();
-
-        //add new filtered artists
-        if (artists != null && !artists.isEmpty()) {
-            searchResultsList.getItems().addAll(artists);
-            searchResultsList.setVisible(true);
-        } else {
-            searchResultsList.setVisible(false); //hide if no results
-        }
-    }
-
-    private void filterArtists(List<String> genres, double maxPrice, double distance) {
-        List<Artist> allArtists = sqlHelper.getAllArtists();
-
-        //System.out.println("All Artists Retrieved: " + allArtists.size());
-
-        boolean isLocationFilterActive = (distance > 0);
-
-        List<Artist> filteredArtists = allArtists.stream()
-                .filter(artist -> {
-                    boolean matchesGenre = genres.isEmpty() ||
-                            genres.stream().anyMatch(genre -> {
-                                String artistGenre = artist.getProfile().getGenre();
-                                //System.out.println("Artist Genre: " + artistGenre + ", Selected Genre: " + genre);
-                                return artistGenre != null && artistGenre.contains(genre);
-                            });
-
-                    boolean matchesPrice = artist.getProfile().getRate() <= maxPrice;
-
-                    boolean matchesLocation = !isLocationFilterActive || isWithinDistance(artist, distance);
-
-                    boolean isAvailableOnDates = selectedDates.isEmpty() ||
-                            sqlHelper.isArtistAvailable(artist.getId(), selectedDates);
-
-                    return matchesGenre && matchesPrice && matchesLocation && isAvailableOnDates;
-                })
-                .collect(Collectors.toList());
-
-        //System.out.println("Filtered Artists Count: " + filteredArtists.size());
-
-        updateArtistList(filteredArtists);
-    }
-
-    private boolean isWithinDistance(Artist artist, double distance) {
-        //if distance slider is set to 0, ignore distance filtering
-        if (distance == 0) {
-            //System.out.println("Distance Filter is set to 'None'. Skipping distance filtering.");
-            return true; //consider all locations valid
-        }
-
-        double userLatitude = sqlHelper.getUserLatitude(this.userID);
-        double userLongitude = sqlHelper.getUserLongitude(this.userID);
-
-        double artistLatitude = artist.getProfile().getLatitude();
-        double artistLongitude = artist.getProfile().getLongitude();
-
-        if (userLatitude == 0.0 && userLongitude == 0.0) {
-            //System.out.println("User location not set properly. Ignoring distance filter.");
-            return true;
-        }
-
-        double calculatedDistance = LocationHelper.calculateDistance(userLatitude, userLongitude, artistLatitude, artistLongitude);
-
-        /*
-        System.out.println("User Location: (" + userLatitude + ", " + userLongitude + ")");
-        System.out.println("Artist Location: (" + artistLatitude + ", " + artistLongitude + ")");
-        System.out.println("Calculated Distance to Artist: " + calculatedDistance + " miles");
-        */
-        return calculatedDistance <= distance;
-    }
-
-    /*private double getUserLatitude() {
-        return sqlHelper.getUserLatitude(this.userID);
-    }
-
-    private double getUserLongitude() {
-        return sqlHelper.getUserLongitude(this.userID);
-    }
-
-    private void updateExistingArtistLocations() {
-        List<Artist> artists = sqlHelper.getAllArtists();
-        for (Artist artist : artists) {
-            try {
-                String city = artist.getCity();
-                String state = artist.getState();
-                String zipCode = artist.getZipCode();
-
-                if (city == null || city.trim().isEmpty() ||
-                        state == null || state.trim().isEmpty() ||
-                        zipCode == null || zipCode.trim().isEmpty()) {
-                    continue;
-                }
-
-                String location = city + ", " + state + " " + zipCode;
-
-                double[] coordinates = LocationHelper.getCoordinates(location);
-
-                if (coordinates[0] != 0.0 && coordinates[1] != 0.0) {
-                    artist.getProfile().setLatitude(coordinates[0]);
-                    artist.getProfile().setLongitude(coordinates[1]);
-
-                    sqlHelper.updateArtistLocation(artist.getId(), coordinates[0], coordinates[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void updateExistingUserLocations() {
-        List<UserInfo> users = sqlHelper.getAllUsers();
-        for (UserInfo user : users) {
-            try {
-                String location = user.getCity();
-                double[] coordinates = LocationHelper.getCoordinates(location);
-
-                if (coordinates[0] != 0.0 && coordinates[1] != 0.0) {
-                    user.setLatitude(coordinates[0]);
-                    user.setLongitude(coordinates[1]);
-                    sqlHelper.updateUserLocation(user.getId(), user.getLatitude(), user.getLongitude());
-                }
-            } catch (SQLException e) {
-                System.err.println("SQL Error while updating user location for user ID: " + user.getId());
-                e.printStackTrace();
-            } catch (Exception e) {
-                System.err.println("General error while updating user location for user ID: " + user.getId());
-                e.printStackTrace();
-            }
-        }
-    }
-*/
     @FXML
     private void handleApplyFilters() {
         List<String> selectedGenres = new ArrayList<>();
@@ -525,49 +289,104 @@ public class LoggedHomeController {
             }
         }
 
-        //gets distance ONLY if the slider is moved
         double selectedDistance = distanceSlider.getValue();
 
-        //calls the filter method
         filterArtists(selectedGenres, maxPrice, selectedDistance);
     }
 
-    @FXML
-    private void handleAvailabilitySelect() {
-        LocalDate selectedDate = availabilityDatePicker.getValue();
-        if (selectedDate != null) {
-            if (selectedDates.contains(selectedDate)) {
-                selectedDates.remove(selectedDate);
-            } else {
-                selectedDates.add(selectedDate);
-            }
-            handleApplyFilters();
-        }
+    private void filterArtists(List<String> genres, double maxPrice, double distance) {
+        List<Artist> allArtists = sqlHelper.getAllArtists();
+
+        boolean isLocationFilterActive = (distance > 0);
+
+        List<Artist> filteredArtists = allArtists.stream()
+                .filter(artist -> {
+                    boolean matchesGenre = genres.isEmpty() ||
+                            genres.stream().anyMatch(genre -> {
+                                String artistGenre = artist.getProfile().getGenre();
+                                return artistGenre != null && artistGenre.contains(genre);
+                            });
+
+                    boolean matchesPrice = artist.getProfile().getRate() <= maxPrice;
+
+                    boolean matchesLocation = !isLocationFilterActive || isWithinDistance(artist, distance);
+
+                    boolean isAvailableOnDates = selectedDates.isEmpty() ||
+                            sqlHelper.isArtistAvailable(artist.getId(), selectedDates);
+
+                    return matchesGenre && matchesPrice && matchesLocation && isAvailableOnDates;
+                })
+                .collect(Collectors.toList());
+
+        updateArtistList(filteredArtists);
     }
 
-    /** Navigate to public events scene */
+    private boolean isWithinDistance(Artist artist, double distance) {
+        if (distance == 0) {
+            return true;
+        }
+
+        Session session = Session.getInstance();
+        double userLatitude = sqlHelper.getUserLatitude(session.getUserID());
+        double userLongitude = sqlHelper.getUserLongitude(session.getUserID());
+
+        double artistLatitude = artist.getProfile().getLatitude();
+        double artistLongitude = artist.getProfile().getLongitude();
+
+        if (userLatitude == 0.0 && userLongitude == 0.0) {
+            return true;
+        }
+
+        double calculatedDistance = LocationHelper.calculateDistance(userLatitude, userLongitude, artistLatitude, artistLongitude);
+
+        return calculatedDistance <= distance;
+    }
+
     @FXML
-    private void NavigateToPublicEvents() {
+    private void navigateToDashboard() {
         try {
-            //load fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PublicEvents.fxml"));
+            Session session = Session.getInstance();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
             Parent root = loader.load();
 
-            //get controller class
-            PublicEventsController reservationController = loader.getController();
+            DashboardController dashboardController = loader.getController();
 
-            reservationController.SetUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            Artist selectedArtist = searchResultsList.getSelectionModel().getSelectedItem();
+            if (selectedArtist != null) {
+                dashboardController.setArtistDetails(selectedArtist);
+            } else if (session.getCurrentArtistID() != 0) {
+                Artist artist = sqlHelper.GetArtistByID(session.getCurrentArtistID());
+                if (artist != null) {
+                    dashboardController.setArtistDetails(artist);
+                } else {
+                    dashboardController.ClearDetails();
+                }
+            } else {
+                dashboardController.ClearDetails();
+            }
 
-            //set scene
-            Stage stage = (Stage) searchField.getScene().getWindow();
+
+            Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Dashboard");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void SetArtistID(int artistID) {
-        this.artistID = artistID;
+    private void updateArtistList(List<Artist> artists) {
+        searchResultsList.getItems().clear();
+
+        if (artists != null && !artists.isEmpty()) {
+            searchResultsList.getItems().addAll(artists);
+            searchResultsList.setVisible(true);
+        } else {
+            searchResultsList.setVisible(false);
+        }
     }
+
+
+
 }

@@ -22,14 +22,6 @@ public class PublicEventsController {
     ObservableList<Reservation> reservationObservableList;
     private int globalSelectedIndex = -1;
 
-    private String userName;
-    private int userID;
-    private String lastName;
-    private String email;
-    private String city;
-    private String zipCode;
-    private String userType;
-
     //fxml nodes
     @FXML
     private ListView<Reservation> eventsView;
@@ -40,10 +32,9 @@ public class PublicEventsController {
     /** Initialize method */
     @FXML
     public void initialize() {
-        sql = new SoundScoutSQLHelper();
-        sql.establishConnection();
-        List<Reservation> tempRes = sql.getAllReservations();
-        reservationObservableList = FXCollections.observableList(tempRes);
+        SoundScoutSQLHelper sql = Session.getInstance().getSql();
+        List<Reservation> tempReservations = sql.getAllReservations();
+        reservationObservableList = FXCollections.observableList(tempReservations);
 
         eventsView.setCellFactory(listView -> new ListCell<>() {
             @Override
@@ -67,46 +58,44 @@ public class PublicEventsController {
     @FXML
     private void HandleSearch() {
         String searchText = searchField.getText().trim();
+
         if (searchText.isEmpty()) {
             eventsView.setItems(reservationObservableList);
             return;
         }
 
-        //filters artist list based on search text
-        ObservableList<Reservation> filteredArtistsList = reservationObservableList.filtered(reservation ->
+        ObservableList<Reservation> filteredReservations = reservationObservableList.filtered(reservation ->
                 reservation.getStageName().toUpperCase().contains(searchText.toUpperCase()) &&
                         reservation.getActiveStatus().equals("Active") &&
                         reservation.getVenueType().equals("Public")
         );
 
-        eventsView.setItems(filteredArtistsList);
+        eventsView.setItems(filteredReservations);
     }
 
     /** Displays event description popup */
     @FXML
     private void DisplayEventDescription() {
-
         try {
-            if(globalSelectedIndex == -1) {
-                return; //returns if no event selected
+            if (globalSelectedIndex == -1) {
+                return;
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("PublicResDetails.fxml"));
             Parent root = loader.load();
 
-            PublicResDetailsController resControl = loader.getController();
+            PublicResDetailsController resDetailsController = loader.getController();
 
             Reservation selectedReservation = eventsView.getItems().get(globalSelectedIndex);
 
-            resControl.setStageName(selectedReservation.getStageName());
-            resControl.setDate(selectedReservation.getDate());
-            resControl.setStartTime(selectedReservation.getStartTime());
-            resControl.setDuration(selectedReservation.getDuration());
-            resControl.setVenueType(selectedReservation.getVenueType());
-            resControl.setAddress(selectedReservation.getAddress());
-            resControl.setDescription(selectedReservation.getDescription());
-
-            resControl.Populate();
+            resDetailsController.setStageName(selectedReservation.getStageName());
+            resDetailsController.setDate(selectedReservation.getDate());
+            resDetailsController.setStartTime(selectedReservation.getStartTime());
+            resDetailsController.setDuration(selectedReservation.getDuration());
+            resDetailsController.setVenueType(selectedReservation.getVenueType());
+            resDetailsController.setAddress(selectedReservation.getAddress());
+            resDetailsController.setDescription(selectedReservation.getDescription());
+            resDetailsController.Populate();
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -114,16 +103,14 @@ public class PublicEventsController {
             stage.show();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-
     }
 
     /** Upon listview selection update variable with index location of selected event */
     @FXML
     public void SetIndex() {
         globalSelectedIndex = eventsView.getSelectionModel().getSelectedIndex();
-        System.out.println(globalSelectedIndex);
     }
 
     /** Load home page */
@@ -134,10 +121,7 @@ public class PublicEventsController {
             Parent root = loader.load();
 
             LoggedHomeController loggedHomeController = loader.getController();
-            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
-            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-
-            loggedHomeController.setUserType(this.userType);
+            loggedHomeController.initialize();
 
             Stage stage = (Stage) searchField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -147,15 +131,4 @@ public class PublicEventsController {
             e.printStackTrace();
         }
     }
-
-    /** Populates User Details */
-    public void SetUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
-        this.userName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
-        this.zipCode = zipCode;
-        this.userID = userID;
-    }
 }
-

@@ -527,6 +527,44 @@ public class SoundScoutSQLHelper {
         return artists;
     }
 
+    /** Gets an artist based off passed id */
+    public Artist GetArtistByID(int artistID) {
+        String artistQuery = "SELECT a.ArtistID, a.FirstName, a.LastName, a.StageName, a.City, a.State, a.ZipCode, " +
+                "ap.Genre, ap.Rate, ap.Latitude, ap.Longitude, ap.ProfilePicture, ap.FeaturedPerformance, ap.ActiveStatus, a.JoinDate " +
+                "FROM Artist a " +
+                "JOIN ArtistProfile ap ON a.ArtistID = ap.ArtistID " +
+                "WHERE a.ArtistID = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(artistQuery)) {
+            statement.setInt(1, artistID);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    String firstName = rs.getString("FirstName");
+                    String lastName = rs.getString("LastName");
+                    String stageName = rs.getString("StageName");
+                    String city = rs.getString("City");
+                    String state = rs.getString("State");
+                    String zipCode = rs.getString("ZipCode");
+                    String genre = rs.getString("Genre");
+                    double rate = rs.getDouble("Rate");
+                    double latitude = rs.getDouble("Latitude");
+                    double longitude = rs.getDouble("Longitude");
+                    String profilePicture = rs.getString("ProfilePicture");
+                    String featuredPerformance = rs.getString("FeaturedPerformance");
+                    String activeStatus = rs.getString("ActiveStatus");
+                    String joinDate = rs.getString("JoinDate");
+
+                    Profile profile = new Profile(artistID, artistID, genre, profilePicture, featuredPerformance, activeStatus, rate, latitude, longitude);
+                    return new Artist(artistID, firstName, lastName, stageName, city, state, zipCode, joinDate, profile);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /** Checks if artist is available */
     public boolean isArtistAvailable(int artistId, List<LocalDate> selectedDates) {
         if (selectedDates.isEmpty()) {

@@ -23,19 +23,30 @@ public class HelloController {
 
     @FXML
     protected void onGuestClick(ActionEvent event) {
-        navigateToLoggedHome("Guest", event);
+        Session session = Session.getInstance();
+        session.clearSession();
+        session.setUserID(0);
+        session.setUserName("Guest");
+        session.setUserType("Guest");
+        navigateToLoggedHome(event);
     }
 
-    private void navigateToLoggedHome(String name, ActionEvent event) {
+    private void navigateToLoggedHome(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
 
-            //get the controller and set the welcome message
             LoggedHomeController controller = loader.getController();
-            controller.setWelcomeMessage(name, 0); //passes 0 as the ID for a guest
+            Session session = Session.getInstance();
+            controller.setWelcomeMessage(
+                    session.getUserName(),
+                    session.getUserID(),
+                    session.getLastName(),
+                    session.getEmail(),
+                    session.getCity(),
+                    session.getZipCode()
+            );
 
-            //get the stage from the event source (Button)
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Home");

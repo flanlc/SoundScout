@@ -1,5 +1,6 @@
 package org.example.soundscoutfx;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,12 +10,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.collections.FXCollections;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,46 +20,28 @@ import java.util.Objects;
 /** Reservation fxml controller class */
 public class ReservationController {
     //member variables
-    private int artistID;
-    private int userID;
-    private String userName;
-    private String userType;
-    private String lastName;
-    private String email;
-    private String city;
-    private String zipCode;
-    private SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
     private int reservationID = 0;
     private String activeStatus = null;
-    List<Reservation> activeResList = new ArrayList<>();
-    List<Reservation> pendingResList = new ArrayList<>();
-    List<Reservation> cancelledResList = new ArrayList<>();
-    ObservableList<Reservation> reservationsList;
     private String resDate;
     private int globalSelectedIndex;
+    private final List<Reservation> activeResList = new ArrayList<>();
+    private final List<Reservation> pendingResList = new ArrayList<>();
+    private final List<Reservation> cancelledResList = new ArrayList<>();
+    private ObservableList<Reservation> reservationsList;
+    private final SoundScoutSQLHelper sql = new SoundScoutSQLHelper();
 
     //fxml nodes
     @FXML
-    Button cancelButton;
+    private Button cancelButton;
     @FXML
-    Button approveButton;
+    private Button approveButton;
     @FXML
     protected ListView<Reservation> listView;
-
-    /** Populates user detail member variables */
-    public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
-        this.userID = userID;
-        this.userName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
-        this.zipCode = zipCode;
-    }
 
     /** Handles reservation cancel */
     @FXML
     public void SubmitCancel() {
-        if(Objects.equals(this.activeStatus, "Cancelled")) {
+        if (Objects.equals(this.activeStatus, "Cancelled")) {
             System.out.println("ERROR: Reservation has already been Cancelled");
             return;
         }
@@ -134,11 +114,9 @@ public class ReservationController {
 
     /** Creates sql connection and calls populate method */
     @FXML
-    public void initializeReservations() {
+    public void InitializeReservations() {
         // Establish SQL connection
-        sql = new SoundScoutSQLHelper();
         sql.establishConnection();
-
         PopulateListView();
         FilterToActive();
     }
@@ -159,20 +137,27 @@ public class ReservationController {
 
     /** Populates reservation data */
     public void PopulateListView() {
+        Session session = Session.getInstance();
+        String userType = session.getUserType();
+        int userID = session.getUserID();
+        int artistID = session.getCurrentArtistID();
+
         List<Reservation> allReservations = sql.getAllReservations();
         for (Reservation reservation : allReservations) {
-            if (!("User".equals(this.userType) && reservation.getUserID() == this.userID) && !("Artist".equals(userType) && reservation.getArtistID() == this.artistID)) {
+            if ("User".equals(userType) && reservation.getUserID() != userID) {
+                continue;
+            }
+            if ("Artist".equals(userType) && reservation.getArtistID() != artistID) {
                 continue;
             }
 
-            if(Objects.equals(reservation.getActiveStatus(), "Active")) {
+            if (Objects.equals(reservation.getActiveStatus(), "Active")) {
                 activeResList.add(reservation);
-            } else if(Objects.equals(reservation.getActiveStatus(), "Pending")) {
+            } else if (Objects.equals(reservation.getActiveStatus(), "Pending")) {
                 pendingResList.add(reservation);
-            } else if(Objects.equals(reservation.getActiveStatus(), "Cancelled")) {
+            } else if (Objects.equals(reservation.getActiveStatus(), "Cancelled")) {
                 cancelledResList.add(reservation);
             }
-
         }
         reservationsList = FXCollections.observableArrayList(activeResList);
         listView.setItems(reservationsList);
@@ -183,11 +168,10 @@ public class ReservationController {
     private void FilterToActive() {
         reservationsList = FXCollections.observableArrayList(activeResList);
         listView.setItems(reservationsList);
-        if(userType.equals("Artist")) {
+        if ("Artist".equals(Session.getInstance().getUserType())) {
             approveButton.setVisible(false);
             cancelButton.setVisible(true);
-        }
-        else {
+        } else {
             approveButton.setVisible(false);
             cancelButton.setVisible(false);
         }
@@ -199,11 +183,10 @@ public class ReservationController {
         reservationsList = FXCollections.observableArrayList(pendingResList);
         listView.setItems(reservationsList);
 
-        if(userType.equals("Artist")) {
+        if ("Artist".equals(Session.getInstance().getUserType())) {
             approveButton.setVisible(true);
             cancelButton.setVisible(true);
-        }
-        else {
+        } else {
             approveButton.setVisible(false);
             cancelButton.setVisible(false);
         }
@@ -218,20 +201,15 @@ public class ReservationController {
         cancelButton.setVisible(false);
     }
 
-    /** Navigates to dashboard fxml */
+    /** Navigates to the dashboard fxml */
     @FXML
     private void NavigateToDashboard() {
-        //System.out.println("Dashboard change");
         try {
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
             Parent root = loader.load();
 
             DashboardController dashboardController = loader.getController();
-            dashboardController.setUserID(this.userID);
-            dashboardController.SetArtistID(this.artistID);
-            dashboardController.setUserType(this.userType);
-            dashboardController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            dashboardController.ClearDetails();
 
             Stage stage = (Stage) listView.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -242,16 +220,33 @@ public class ReservationController {
         }
     }
 
+    /** Load home page */
+    @FXML
+    private void NavigateToHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
+            Parent root = loader.load();
+
+            LoggedHomeController loggedHomeController = loader.getController();
+            loggedHomeController.initialize();
+
+            Stage stage = (Stage) listView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Home");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /** Displays reservation description popup */
     @FXML
     private void DisplayReservationDescription() {
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationDescription.fxml"));
             Parent root = loader.load();
 
             ReservationDescriptionViewController resControl = loader.getController();
-
             Reservation selectedReservation = this.listView.getItems().get(globalSelectedIndex);
 
             resControl.setArtistName(selectedReservation.getStageName());
@@ -272,47 +267,5 @@ public class ReservationController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
-
-    //getters and setters
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public void SetUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void SetUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public void SetArtistID(int artistID) {
-        this.artistID = artistID;
-    }
-
-
-
-
 }

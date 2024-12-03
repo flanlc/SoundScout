@@ -37,32 +37,15 @@ public class EditUserProfileController {
     @FXML
     private TextField locationField;
 
-    private int userID;
-    private SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
-    private String userName;
-    private String lastName;
-    private String email;
-    private String city;
-    private String zipCode;
-    SoundScoutSQLHelper sql;
+    @FXML
+    private void initialize() {
+        Session session = Session.getInstance();
 
-   public void setUserDetails(String firstName, String lastName, String email, String city, String zipCode, int userID) {
-        this.userID = userID;
-        this.userName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
-        this.zipCode = zipCode;
-
-        firstNameField.setText(firstName);
-        lastNameField.setText(lastName);
-        emailField.setText(email);
-        cityField.setText(city);
-        zipCodeField.setText(zipCode);
-    }
-
-    public void setConnection(SoundScoutSQLHelper sql) {
-        this.sql = sql;
+        firstNameField.setText(session.getUserName());
+        lastNameField.setText(session.getLastName());
+        emailField.setText(session.getEmail());
+        cityField.setText(session.getCity());
+        zipCodeField.setText(session.getZipCode());
     }
 
     @FXML
@@ -78,7 +61,8 @@ public class EditUserProfileController {
         double longitude = coordinates[1];
 
         try {
-            sql.updateUserLocation(this.userID, latitude, longitude);
+            Session session = Session.getInstance();
+            session.getSql().updateUserLocation(session.getUserID(), latitude, longitude);
             showSuccessMessage("Location updated successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,21 +70,7 @@ public class EditUserProfileController {
         }
     }
 
-    private void showErrorMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
-    private void showSuccessMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     @FXML
     private void handleSave() {
@@ -111,34 +81,37 @@ public class EditUserProfileController {
         String zipCode = zipCodeField.getText();
 
         try {
-            sqlHelper.establishConnection();
-            //only update non-empty fields
+            Session session = Session.getInstance();
+            SoundScoutSQLHelper sqlHelper = session.getSql();
+
+            // Only update non-empty fields
             if (firstName != null && !firstName.isEmpty()) {
-                sqlHelper.updateSingleField("FirstName", firstName, userID);
+                sqlHelper.updateSingleField("FirstName", firstName, session.getUserID());
+                session.setUserName(firstName);
             }
             if (lastName != null && !lastName.isEmpty()) {
-                sqlHelper.updateSingleField("LastName", lastName, userID);
+                sqlHelper.updateSingleField("LastName", lastName, session.getUserID());
+                session.setLastName(lastName);
             }
             if (email != null && !email.isEmpty()) {
-                sqlHelper.updateSingleField("Email", email, userID);
+                sqlHelper.updateSingleField("Email", email, session.getUserID());
+                session.setEmail(email);
             }
             if (city != null && !city.isEmpty()) {
-                sqlHelper.updateSingleField("City", city, userID);
+                sqlHelper.updateSingleField("City", city, session.getUserID());
+                session.setCity(city);
             }
             if (zipCode != null && !zipCode.isEmpty()) {
-                sqlHelper.updateSingleField("ZipCode", zipCode, userID);
+                sqlHelper.updateSingleField("ZipCode", zipCode, session.getUserID());
+                session.setZipCode(zipCode);
             }
 
-            successMessage.setText("Profile has been updated successfully!");
+            setSuccessMessage("Profile has been updated successfully!", "green");
 
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000); //one second delay
-                    javafx.application.Platform.runLater(this::navigateToHome);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            // Delay before navigating back to home
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));
+            pause.setOnFinished(event -> navigateToHome());
+            pause.play();
 
         } catch (Exception e) {
             setSuccessMessage("Error updating profile: " + e.getMessage(), "red");
@@ -155,10 +128,17 @@ public class EditUserProfileController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
             Parent root = loader.load();
 
-            //pass user info back to LoggedHomeController
+            Session session = Session.getInstance();
             LoggedHomeController loggedHomeController = loader.getController();
-            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
-            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
+            loggedHomeController.setWelcomeMessage(
+                    session.getUserName(),
+                    session.getUserID(),
+                    session.getLastName(),
+                    session.getEmail(),
+                    session.getCity(),
+                    session.getZipCode()
+            );
+
             Stage stage = (Stage) firstNameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Home");
@@ -170,22 +150,22 @@ public class EditUserProfileController {
 
     @FXML
     private void handleBackButton() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("logged-home.fxml"));
-            Parent root = loader.load();
+        navigateToHome();
+    }
 
-            LoggedHomeController loggedHomeController = loader.getController();
-            //pass userName and userID back to logged-home
-            loggedHomeController.setWelcomeMessage(this.userName, this.userID);
-            loggedHomeController.setUserDetails(this.userName, this.lastName, this.email, this.city, this.zipCode, this.userID);
-            loggedHomeController.setUserType("User");
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
-            Stage stage = (Stage) firstNameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Home");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void showSuccessMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

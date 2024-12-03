@@ -28,7 +28,7 @@
             <Image url="@../../../icons/soundscout.png" />
          </image>
       </ImageView>
-      <Button layoutX="238.0" layoutY="494.0" mnemonicParsing="false" onAction="#NavigateToDashboard" style="-fx-background-color: #65558F;" text="Return To Dashboard" textFill="WHITE" />
+      <Button layoutX="252.0" layoutY="494.0" mnemonicParsing="false" onAction="#NavigateToHome" style="-fx-background-color: #65558F;" text="Return To Home" textFill="WHITE" />
       <Button fx:id="approveButton" layoutX="239.0" layoutY="457.0" mnemonicParsing="false" onAction="#SubmitApprove" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Approve" textFill="#03bc12" />
       <Button layoutX="265.0" layoutY="418.0" mnemonicParsing="false" onAction="#DisplayReservationDescription" style="-fx-background-color: #65558F;" text="Description" textFill="WHITE" />
       <Button fx:id="cancelButton" layoutX="316.0" layoutY="457.0" mnemonicParsing="false" onAction="#SubmitCancel" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Cancel" textFill="RED" />
