@@ -15,6 +15,7 @@ public class Session {
     private SoundScoutSQLHelper sql;
 
     public Session() {
+
         this.userID = 0;
         this.userName = null;
         this.userType = null;

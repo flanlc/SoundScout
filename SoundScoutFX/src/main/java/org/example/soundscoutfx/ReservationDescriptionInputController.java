@@ -41,9 +41,7 @@ public class ReservationDescriptionInputController {
         privateButton.setToggleGroup(venueGroup);
 
         hourComboBox.getItems().addAll("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
-
         minuteComboBox.getItems().addAll("00", "15", "30", "45");
-
         ampmComboBox.getItems().addAll("AM", "PM");
 
         hourComboBox.setValue("01");
@@ -71,7 +69,7 @@ public class ReservationDescriptionInputController {
         int currentArtistID = session.getCurrentArtistID();
         String currentArtistStageName = session.getCurrentArtistStageName();
 
-        if (userID == 0 || currentArtistID == 0 || currentArtistStageName == null) {
+        if (userID == 0 || currentArtistID == 0) {
             ShowErrorMessage("Invalid session data. Please sign in again.");
             return;
         }

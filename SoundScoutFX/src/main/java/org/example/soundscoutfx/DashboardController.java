@@ -59,9 +59,13 @@ public class DashboardController {
     // Member variables
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
     private List<LocalDate> reservationDates = new ArrayList<>();
+    private int currentSelectedArtist;
 
     @FXML
     public void initialize() {
+        SetCalendarReservations();
+        searchResultsList.setVisible(false);
+
         sqlHelper.establishConnection();
         searchResultsList.setVisible(false);
 
@@ -80,6 +84,28 @@ public class DashboardController {
                 }
             }
         });
+    }
+
+    private void SetCalendarReservations() {
+        final Callback<DatePicker, DateCell> dayCellFactory = datePicker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (!empty) {
+                    if (reservationDates.contains(item)) {
+                        setDisable(true);
+                        setStyle("-fx-background-color: grey; -fx-text-fill: white;");
+                    }
+                    else if (item.isBefore(LocalDate.now())) {
+                        setDisable(true);
+                        setStyle("-fx-background-color: lightgrey; -fx-text-fill: black;");
+                    }
+                }
+            }
+        };
+
+        datePicker.setDayCellFactory(dayCellFactory);
     }
 
     /** Handles search functionality */
@@ -118,7 +144,9 @@ public class DashboardController {
 
     /** Sets artist details in the dashboard */
     public void setArtistDetails(Artist artist) {
-        int currentArtistID = artist.getId();
+        Session session = Session.getInstance();
+        session.setCurrentArtistID(artist.getId());
+
         nameField.setText(artist.getStageName());
         joinDateField.setText(artist.getJoinDate());
         genreField.setText(artist.getProfile().getGenre());
@@ -126,7 +154,7 @@ public class DashboardController {
         locationField.setText(artist.getCity());
 
         try {
-            String artistBio = sqlHelper.getArtistBio(currentArtistID);
+            String artistBio = sqlHelper.getArtistBio(artist.getId());
             artistBioTextArea.setText(artistBio != null ? artistBio : "No bio listed");
         } catch (SQLException e) {
             artistBioTextArea.setText("Error loading bio.");
@@ -149,11 +177,13 @@ public class DashboardController {
         }
 
         reservationDates.clear();
-        for (Reservation reservation : sqlHelper.getAllReservations()) {
-            if (reservation.getArtistID() == currentArtistID) {
+        List<Reservation> allReservations = sqlHelper.getAllReservations();
+        for (Reservation reservation : allReservations) {
+            if (reservation.getArtistID() == artist.getId()) {
                 reservationDates.add(LocalDate.parse(reservation.getDate()));
             }
         }
+        SetCalendarReservations();
 
         reserveTitle.setVisible(true);
         searchResultsList.setVisible(false);
@@ -241,15 +271,19 @@ public class DashboardController {
     @FXML
     private void viewCancellationPolicy() {
         Session session = Session.getInstance();
-        int currentArtistID = session.getCurrentArtistID();
 
-        if (currentArtistID == 0) {
+        if (session.getCurrentArtistID() == 0) {
             showErrorMessage("You must select an artist to view the cancellation policy.");
             return;
         }
 
+        if (session.getUserType().equals("Artist")) {
+            showErrorMessage("You must sign in as a User to make a Reservation.");
+            return;
+        }
+
         try {
-            String[] policyInfo = sqlHelper.getArtistCancellationPolicy(currentArtistID);
+            String[] policyInfo = sqlHelper.getArtistCancellationPolicy(session.getCurrentArtistID());
             String policy = policyInfo[0];
             String updatedAt = policyInfo[1];
 
@@ -282,14 +316,13 @@ public class DashboardController {
         Session session = Session.getInstance();
         int userID = session.getUserID();
         int currentArtistID = session.getCurrentArtistID();
-        String currentArtistStageName = session.getCurrentArtistStageName();
 
         if (userID == 0) {
             showErrorMessage("You must sign in to access this feature.");
             return;
         }
 
-        if (currentArtistID == 0 || currentArtistStageName == null) {
+        if (currentArtistID == 0) {
             showErrorMessage("You must select an artist to continue.");
             return;
         }
@@ -300,6 +333,8 @@ public class DashboardController {
                 showErrorMessage("You must select a date to continue.");
                 return;
             }
+
+            session.setCurrentArtistID(currentArtistID);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("InputReservationInfo.fxml"));
             Parent root = loader.load();
