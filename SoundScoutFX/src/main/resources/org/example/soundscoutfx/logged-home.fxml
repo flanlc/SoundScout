@@ -13,13 +13,22 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="759.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
+<BorderPane prefHeight="759.0" prefWidth="873.0" style="-fx-background-color: #F3EEF5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.LoggedHomeController">
 
     <top>
-        <HBox alignment="TOP_LEFT" prefHeight="276.0" prefWidth="874.0" spacing="20" style="-fx-padding: 10;">
-            <VBox prefHeight="459.0" prefWidth="92.0" spacing="10">
+        <HBox alignment="TOP_LEFT" prefHeight="382.0" prefWidth="874.0" spacing="20" style="-fx-padding: 10;">
+            <VBox prefHeight="302.0" prefWidth="150.0" spacing="10.0">
                 <children>
+               <ImageView fitHeight="41.0" fitWidth="149.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../../icons/soundscout.png" />
+                  </image>
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+               </ImageView>
                     <Button mnemonicParsing="false" onAction="#navigateToEditProfile" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
                             <VBox alignment="CENTER" prefHeight="42.0" prefWidth="47.0" spacing="2">
@@ -34,7 +43,7 @@
                     </Button>
                     <Button mnemonicParsing="false" onAction="#NavigateToPublicEvents" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
-                            <VBox alignment="CENTER" spacing="2">
+                            <VBox alignment="CENTER" prefHeight="54.0" prefWidth="85.0" spacing="2">
                                 <ImageView fitHeight="23.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@../../../icons/Info.png" />
@@ -46,13 +55,13 @@
                     </Button>
                     <Button mnemonicParsing="false" onAction="#NavigateToReservations" prefHeight="54.0" prefWidth="85.0" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;">
                         <graphic>
-                            <VBox alignment="CENTER" prefHeight="44.0" prefWidth="73.0" spacing="2">
+                            <VBox alignment="CENTER" prefHeight="45.0" prefWidth="66.0" spacing="2">
                                 <ImageView fitHeight="23.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@../../../icons/Info.png" />
                                     </image>
                                 </ImageView>
-                                <Label text="Schedule" />
+                                <Label text="My Schedule" />
                             </VBox>
                         </graphic>
                     </Button>
@@ -69,9 +78,12 @@
                         </graphic>
                     </Button>
                 </children>
+            <padding>
+               <Insets top="-5.0" />
+            </padding>
             </VBox>
 
-            <VBox fx:id="filterPane" alignment="CENTER" spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" visible="false">
+            <VBox fx:id="filterPane" alignment="CENTER" prefHeight="362.0" prefWidth="657.0" spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" visible="false">
                 <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Filter Options" />
 
                 <HBox alignment="CENTER" spacing="10">
@@ -104,14 +116,13 @@
                         <DatePicker fx:id="availabilityDatePicker" onAction="#handleAvailabilitySelect" showWeekNumbers="true" />
                     </VBox>
                 </HBox>
-   
-                            <Button fx:id="applyFiltersButton" alignment="BOTTOM_LEFT" onAction="#handleApplyFilters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Apply Filters" />
+                <Button fx:id="applyFiltersButton" alignment="BOTTOM_LEFT" onAction="#handleApplyFilters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Apply Filters" />
             </VBox>
         </HBox>
     </top>
 
     <center>
-        <VBox alignment="CENTER" prefHeight="422.0" prefWidth="874.0" spacing="5" style="-fx-padding: 10;">
+        <VBox alignment="CENTER" prefHeight="456.0" prefWidth="874.0" spacing="5" style="-fx-padding: 10;">
             <Label fx:id="welcomeLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" />
             <HBox alignment="CENTER" spacing="10">
                 <TextField fx:id="searchField" onKeyReleased="#handleSearch" prefHeight="8.0" prefWidth="300.0" promptText="Search artists..." style="-fx-border-color: #D6C8EB;" />
@@ -124,9 +135,12 @@
             <VBox.margin>
                <Insets />
             </VBox.margin></ListView>
-            <Button onAction="#navigateToDashboard" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Dashboard" />
-            <Button fx:id="editProfileButton" onAction="#navigateToEditProfile" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Edit Profile" />
-            <Button onAction="#handleLogout" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Logout" />
+            <!-- <Button onAction="#navigateToDashboard" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Dashboard" /> -->
+            <!-- <Button fx:id="editProfileButton" onAction="#navigateToEditProfile" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Edit Profile" /> -->
+            <Button onAction="#handleLogout" style="-fx-background-color: #FF0000; -fx-border-color: #D6C8EB; -fx-text-fill: #FFFFFF;" text="Logout" textFill="WHITE">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font></Button>
         </VBox>
     </center>
 </BorderPane>

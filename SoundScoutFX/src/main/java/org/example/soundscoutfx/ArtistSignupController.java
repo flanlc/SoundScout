@@ -13,6 +13,7 @@ import javafx.animation.PauseTransition;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class ArtistSignupController {
 
@@ -39,6 +40,10 @@ public class ArtistSignupController {
     @FXML
     private TextField emailField;
     @FXML
+    private CheckBox showPasswordCheckBox;
+    @FXML
+    private TextField passwordTextField;
+    @FXML
     private PasswordField passwordField;
     @FXML
     private Label errorMessage;
@@ -62,6 +67,14 @@ public class ArtistSignupController {
         stateComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             otherStateField.setVisible("Other".equals(newValue));
         });
+
+        zipCodeField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d{0,5}")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     @FXML
@@ -82,7 +95,7 @@ public class ArtistSignupController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        double rate = 0;
+        double rate = 0.0;
         try {
             rate = Double.parseDouble(rateField.getText());
             if (rate < 0) throw new NumberFormatException();
@@ -95,6 +108,30 @@ public class ArtistSignupController {
                 dob.isEmpty() || streetAddress.isEmpty() || city.isEmpty() ||
                 state.isEmpty() || zipCode.isEmpty() || email.isEmpty() || password.isEmpty()) {
             errorMessage.setText("All fields are required.");
+            return;
+        }
+        if (zipCode.length() != 5) {
+            errorMessage.setText("Please enter a valid 5-digit ZIP code.");
+            return;
+        }
+        if (!isValidEmail(email)) {
+            errorMessage.setText("Please enter a valid email address.");
+            return;
+        }
+        if (!isValidPassword(password)) {
+            errorMessage.setText("Password must be at least 8 characters, including a number and a special character.");
+            return;
+        }
+
+        try {
+            sqlHelper.establishConnection();
+            if (sqlHelper.ifEmailExists(email)) {
+                errorMessage.setText("Email is already in use. Please use a different email.");
+                return;
+            }
+        } catch (Exception e) {
+            errorMessage.setText("An error occurred while checking email availability.");
+            e.printStackTrace();
             return;
         }
 
@@ -123,11 +160,41 @@ public class ArtistSignupController {
             PauseTransition delay = new PauseTransition(Duration.seconds(2)); //2 seconds
             //delay.setOnFinished(event -> navigateToGenreSelection());
             delay.play();
+
+            navigateToGenreSelection(newArtistID);
         } catch (Exception e) {
             errorMessage.setText("Signup failed: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
 
-        navigateToGenreSelection(newArtistID);
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        return pattern.matcher(email).matches();
+    }
+
+    private boolean isValidPassword(String password) {
+        String passwordRegex = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"|,.<>/?]).{8,}$";
+        Pattern pattern = Pattern.compile(passwordRegex);
+        return pattern.matcher(password).matches();
+    }
+
+    @FXML
+    protected void togglePasswordVisibility() {
+        if (showPasswordCheckBox.isSelected()) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+        }
     }
 
     private void navigateToGenreSelection(int artistID) {

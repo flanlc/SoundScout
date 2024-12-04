@@ -38,6 +38,11 @@ public class ReservationController {
     @FXML
     protected ListView<Reservation> listView;
 
+    @FXML
+    public void initialize() {
+        InitializeReservations();
+    }
+
     /** Handles reservation cancel */
     @FXML
     public void SubmitCancel() {

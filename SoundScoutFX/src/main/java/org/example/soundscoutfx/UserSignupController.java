@@ -1,15 +1,11 @@
 package org.example.soundscoutfx;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.control.ToggleGroup;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -33,6 +29,8 @@ public class UserSignupController {
     @FXML
     private TextField emailField;
     @FXML
+    private CheckBox showPasswordCheckBox;
+    @FXML
     private PasswordField passwordField;
     @FXML
     private TextField passwordTextField;
@@ -46,6 +44,14 @@ public class UserSignupController {
         ToggleGroup accountTypeGroup = new ToggleGroup();
         personalRadio.setToggleGroup(accountTypeGroup);
         businessRadio.setToggleGroup(accountTypeGroup);
+
+        zipCodeField.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("\\d{0,5}")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     @FXML
@@ -62,16 +68,21 @@ public class UserSignupController {
 
     @FXML
     protected void togglePasswordVisibility() {
-        if (passwordField.isVisible()) {
+        if (showPasswordCheckBox.isSelected()) {
             passwordTextField.setText(passwordField.getText());
             passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
             passwordField.setVisible(false);
+            passwordField.setManaged(false);
         } else {
             passwordField.setText(passwordTextField.getText());
             passwordField.setVisible(true);
+            passwordField.setManaged(true);
             passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
         }
     }
+
 
     @FXML
     protected void handleSignup() {
@@ -95,12 +106,28 @@ public class UserSignupController {
             errorMessage.setText("Please provide the business address.");
             return;
         }
+        if (zipCode.length() != 5) {
+            errorMessage.setText("Please enter a valid 5-digit ZIP code.");
+            return;
+        }
         if (!isValidEmail(email)) {
             errorMessage.setText("Please enter a valid email address.");
             return;
         }
         if (!isValidPassword(password)) {
             errorMessage.setText("Password must be at least 8 characters, including a number and a special character.");
+            return;
+        }
+
+        try {
+            sqlHelper.establishConnection();
+            if (sqlHelper.ifEmailExists(email)) {
+                errorMessage.setText("Email is already in use. Please use a different email.");
+                return;
+            }
+        } catch (Exception e) {
+            errorMessage.setText("An error occurred while checking email availability.");
+            e.printStackTrace();
             return;
         }
 

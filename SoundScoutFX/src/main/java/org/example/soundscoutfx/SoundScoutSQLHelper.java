@@ -87,6 +87,18 @@ public class SoundScoutSQLHelper {
             return -1;
         }
 
+        String emailCheckQuery = "SELECT 1 FROM Artist WHERE Email = ?";
+        try (PreparedStatement emailCheckStatement = conn.prepareStatement(emailCheckQuery)) {
+            emailCheckStatement.setString(1, email);
+            try (ResultSet resultSet = emailCheckStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    throw new IllegalArgumentException("Email already exists. Please use a different email.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while checking email: " + e.getMessage(), e);
+        }
+
         String query = "INSERT INTO Artist (FirstName, LastName, StageName, DOB, StreetAddress, ZipCode, City, State, Email, Password, JoinDate, ActiveStatus) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), 'Active')";
 
@@ -118,8 +130,10 @@ public class SoundScoutSQLHelper {
                     throw new SQLException("Creating artist failed, no ID obtained.");
                 }
             }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            throw new IllegalArgumentException("The email provided is already in use. Please use a different email.", e);
         } catch (SQLException e) {
-            throw new RuntimeException("Error while creating artist: " + e.getMessage(), e);
+            throw new RuntimeException("Error while inserting artist: " + e.getMessage(), e);
         }
     }
 
@@ -128,6 +142,18 @@ public class SoundScoutSQLHelper {
         if (!status) {
             System.out.println("ERROR: Connection Not Created");
             return;
+        }
+
+        String emailCheckQuery = "SELECT 1 FROM Users WHERE Email = ?";
+        try (PreparedStatement emailCheckStatement = conn.prepareStatement(emailCheckQuery)) {
+            emailCheckStatement.setString(1, email);
+            try (ResultSet resultSet = emailCheckStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    throw new IllegalArgumentException("Email already exists. Please use a different email.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while checking email: " + e.getMessage(), e);
         }
 
         String query;
@@ -164,6 +190,9 @@ public class SoundScoutSQLHelper {
 
             userInsertStatement.execute();
         } catch (SQLException e) {
+            if (e.getMessage().contains("unique_user_email")) {
+                throw new RuntimeException("The email provided is already in use. Please use a different email.");
+            }
             throw new RuntimeException("Error while inserting user: " + e.getMessage());
         }
     }
@@ -452,6 +481,22 @@ public class SoundScoutSQLHelper {
         }
         return 0.0;
     }
+
+    public boolean ifEmailExists(String email) {
+        String query = "SELECT 1 FROM Users WHERE Email = ? UNION SELECT 1 FROM ArtistProfile WHERE Email = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, email);
+            statement.setString(2, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while checking email existence.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     /** Gets all users in sql server */
     public List<UserInfo> getAllUsers() {

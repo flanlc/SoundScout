@@ -207,7 +207,21 @@ public class DashboardController {
             showErrorMessage("You must sign in to access this feature.");
             return;
         }
-        Navigate("edit-profile.fxml", "Edit Profile");
+
+        Session session = Session.getInstance();
+        String userType = session.getUserType();
+
+        String fxmlFile;
+        if ("User".equalsIgnoreCase(userType)) {
+            fxmlFile = "edit-user-profile.fxml";
+        } else if ("Artist".equalsIgnoreCase(userType)) {
+            fxmlFile = "edit-profile.fxml";
+        } else {
+            showErrorMessage("Unknown user type. Please contact support.");
+            return;
+        }
+
+        Navigate(fxmlFile, "Edit Profile");
     }
 
     @FXML

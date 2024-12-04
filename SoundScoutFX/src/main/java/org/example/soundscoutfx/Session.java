@@ -10,6 +10,8 @@ public class Session {
     private String email;
     private String city;
     private String zipCode;
+    private double latitude;
+    private double longitude;
     private int currentArtistID;
     private String currentArtistStageName;
     private SoundScoutSQLHelper sql;
@@ -144,6 +146,21 @@ public class Session {
 
     public String getCurrentArtistStageName() {
         return currentArtistStageName;
+    }
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public void setCurrentArtistStageName(String currentArtistStageName) {

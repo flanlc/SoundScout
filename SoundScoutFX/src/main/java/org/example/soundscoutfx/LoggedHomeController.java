@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,12 @@ public class LoggedHomeController {
     public void initialize() {
         Session session = Session.getInstance();
 
+        sqlHelper.establishConnection();
         setWelcomeMessage(session.getUserName(), session.getUserID(), session.getLastName(), session.getEmail(), session.getCity(), session.getZipCode());
-        configureEditProfileButton(session.getUserType());
+        //removed second button
+        //configureEditProfileButton(session.getUserType());
+        //updateExistingUserLocations();
+        //updateExistingArtistLocations();
 
         distanceSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() == 0) {
@@ -127,21 +132,23 @@ public class LoggedHomeController {
     void setWelcomeMessage(String userName, int userID, String lastName, String email, String city, String zipCode) {
         welcomeLabel.setText("Welcome, " + userName + "! Your ID is: " + userID);
 
+        /*removed second button
         if (userID == 0) {
             editProfileButton.setVisible(false);
         } else {
             editProfileButton.setVisible(true);
-        }
+        }*/
 
     }
 
+    /* removed second button
     private void configureEditProfileButton(String userType) {
         if ("Artist".equalsIgnoreCase(userType)) {
             editProfileButton.setText("Edit Artist Profile");
         } else {
             editProfileButton.setText("Edit User Profile");
         }
-    }
+    }*/
 
     @FXML
     protected void handleLogout() {
@@ -342,6 +349,7 @@ public class LoggedHomeController {
         return calculatedDistance <= distance;
     }
 
+    /* removed the button
     @FXML
     private void navigateToDashboard() {
         try {
@@ -375,6 +383,7 @@ public class LoggedHomeController {
             e.printStackTrace();
         }
     }
+     */
 
     private void updateArtistList(List<Artist> artists) {
         searchResultsList.getItems().clear();
@@ -387,6 +396,66 @@ public class LoggedHomeController {
         }
     }
 
+    private void updateExistingArtistLocations() {
+        List<Artist> artists = sqlHelper.getAllArtists();
+        for (Artist artist : artists) {
+            try {
+                String city = artist.getCity();
+                String state = artist.getState();
+                String zipCode = artist.getZipCode();
 
+                if (city == null || city.trim().isEmpty() ||
+                        state == null || state.trim().isEmpty() ||
+                        zipCode == null || zipCode.trim().isEmpty()) {
+                    continue;
+                }
+
+                String location = city + ", " + state + " " + zipCode;
+
+                double[] coordinates = LocationHelper.getCoordinates(location);
+
+                if (coordinates[0] != 0.0 && coordinates[1] != 0.0) {
+                    artist.getProfile().setLatitude(coordinates[0]);
+                    artist.getProfile().setLongitude(coordinates[1]);
+
+                    sqlHelper.updateArtistLocation(artist.getId(), coordinates[0], coordinates[1]);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void updateExistingUserLocations() {
+        try {
+            Session session = Session.getInstance();
+
+            String city = session.getCity();
+            int userID = session.getUserID();
+
+            if (city == null || city.isEmpty()) {
+                System.err.println("City information is missing in the session.");
+                return;
+            }
+
+            double[] coordinates = LocationHelper.getCoordinates(city);
+
+            if (coordinates[0] != 0.0 && coordinates[1] != 0.0) {
+                session.setLatitude(coordinates[0]);
+                session.setLongitude(coordinates[1]);
+                sqlHelper.updateUserLocation(userID, coordinates[0], coordinates[1]);
+
+                System.out.println("User location updated successfully for user ID: " + userID);
+            } else {
+                System.err.println("Coordinates could not be resolved for the city: " + city);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Error while updating user location.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error occurred while updating user location.");
+            e.printStackTrace();
+        }
+    }
 
 }

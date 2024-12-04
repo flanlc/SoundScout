@@ -34,7 +34,13 @@ public class PublicEventsController {
     public void initialize() {
         SoundScoutSQLHelper sql = Session.getInstance().getSql();
         List<Reservation> tempReservations = sql.getAllReservations();
-        reservationObservableList = FXCollections.observableList(tempReservations);
+
+        List<Reservation> filteredReservations = tempReservations.stream()
+                .filter(reservation -> "Active".equals(reservation.getActiveStatus()) &&
+                        "Public".equals(reservation.getVenueType()))
+                .toList();
+
+        reservationObservableList = FXCollections.observableList(filteredReservations);
 
         eventsView.setCellFactory(listView -> new ListCell<>() {
             @Override
@@ -53,6 +59,7 @@ public class PublicEventsController {
 
         eventsView.setItems(reservationObservableList);
     }
+
 
     /** Handles search feature */
     @FXML

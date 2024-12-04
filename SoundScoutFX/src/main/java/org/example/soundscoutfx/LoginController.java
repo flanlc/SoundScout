@@ -62,7 +62,7 @@ public class LoginController {
 
                 new Thread(() -> {
                     try {
-                        Thread.sleep(1000); // 1-second delay
+                        Thread.sleep(1000);
                         javafx.application.Platform.runLater(this::navigateToLoggedHome);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

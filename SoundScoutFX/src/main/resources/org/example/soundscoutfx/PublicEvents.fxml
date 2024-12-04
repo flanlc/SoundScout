@@ -3,15 +3,21 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="550.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.PublicEventsController">
+<AnchorPane prefHeight="550.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.PublicEventsController">
    <children>
+      <ImageView fitHeight="41.0" fitWidth="149.0" layoutX="180.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../icons/soundscout.png" />
+         </image>
+      </ImageView>
       <ListView fx:id="eventsView" layoutX="14.0" layoutY="74.0" onMouseClicked="#SetIndex" prefHeight="340.0" prefWidth="495.0" />
       <TextField fx:id="searchField" layoutX="113.0" layoutY="433.0" onKeyReleased="#HandleSearch" prefHeight="25.0" prefWidth="300.0" promptText="Enter Artist Name" />
       <ImageView fitHeight="50.0" fitWidth="200.0" layoutX="153.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-      <Button layoutX="237.0" layoutY="504.0" mnemonicParsing="false" onAction="#NavigateToHome" text="Home" />
-      <Button layoutX="236.0" layoutY="468.0" mnemonicParsing="false" onAction="#DisplayEventDescription" text="Details" />
+      <Button layoutX="189.0" layoutY="504.0" mnemonicParsing="false" onAction="#NavigateToHome" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Return to Homepage" textFill="#4e238d" />
+      <Button layoutX="211.0" layoutY="469.0" mnemonicParsing="false" onAction="#DisplayEventDescription" style="-fx-background-color: #E8DEF8; -fx-border-color: D6C8EB;" text="Event Details" textFill="#4e238d" />
    </children>
 </AnchorPane>

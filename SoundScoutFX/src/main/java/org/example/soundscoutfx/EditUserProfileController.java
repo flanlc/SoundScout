@@ -84,7 +84,6 @@ public class EditUserProfileController {
             Session session = Session.getInstance();
             SoundScoutSQLHelper sqlHelper = session.getSql();
 
-            // Only update non-empty fields
             if (firstName != null && !firstName.isEmpty()) {
                 sqlHelper.updateSingleField("FirstName", firstName, session.getUserID());
                 session.setUserName(firstName);
@@ -108,7 +107,6 @@ public class EditUserProfileController {
 
             setSuccessMessage("Profile has been updated successfully!", "green");
 
-            // Delay before navigating back to home
             PauseTransition pause = new PauseTransition(Duration.seconds(1));
             pause.setOnFinished(event -> navigateToHome());
             pause.play();
