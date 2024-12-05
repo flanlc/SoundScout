@@ -6,8 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,7 +50,25 @@ public class ReservationController {
             return;
         }
 
-        //parses list and cancels desired reservation
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Confirmation");
+        confirmationDialog.setHeaderText("Cancel Reservation");
+        confirmationDialog.setContentText("Are you sure you want to cancel this reservation?");
+
+        ButtonType confirmButton = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirmationDialog.getButtonTypes().setAll(confirmButton, cancelButton);
+
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == confirmButton) {
+                performCancellation();
+            } else {
+                System.out.println("Cancellation aborted by user.");
+            }
+        });
+    }
+
+    private void performCancellation() {
         List<Reservation> toRemove = new ArrayList<>();
         for (Reservation reservation : activeResList) {
             if (reservation.getResID() == this.reservationID) {
@@ -73,7 +90,6 @@ public class ReservationController {
 
         sql.CancelReservation(this.reservationID);
 
-        //changes listview based on filter
         if (listView.getItems().equals(FXCollections.observableArrayList(activeResList))) {
             reservationsList = FXCollections.observableArrayList(activeResList);
         } else if (listView.getItems().equals(FXCollections.observableArrayList(pendingResList))) {
@@ -82,7 +98,7 @@ public class ReservationController {
 
         ObservableList<Reservation> items = listView.getItems();
         items.removeAll(toRemove);
-        listView.getItems();
+        listView.refresh();
     }
 
     /** Handles pending reservation approval */
@@ -93,6 +109,25 @@ public class ReservationController {
             return;
         }
 
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setTitle("Confirmation");
+        confirmationDialog.setHeaderText("Confirm Reservation");
+        confirmationDialog.setContentText("Are you sure you want to confirm this reservation?");
+
+        ButtonType confirmButton = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirmationDialog.getButtonTypes().setAll(confirmButton, cancelButton);
+
+        confirmationDialog.showAndWait().ifPresent(response -> {
+            if (response == confirmButton) {
+                performApproval();
+            } else {
+                System.out.println("Approval aborted by user.");
+            }
+        });
+    }
+
+    private void performApproval() {
         List<Reservation> toApprove = new ArrayList<>();
         for (Reservation reservation : pendingResList) {
             if (reservation.getResID() == this.reservationID) {
@@ -114,7 +149,7 @@ public class ReservationController {
 
         ObservableList<Reservation> items = listView.getItems();
         items.removeAll(toApprove);
-        listView.getItems();
+        listView.refresh();
     }
 
     /** Creates sql connection and calls populate method */
@@ -175,7 +210,7 @@ public class ReservationController {
         listView.setItems(reservationsList);
         if ("Artist".equals(Session.getInstance().getUserType())) {
             approveButton.setVisible(false);
-            cancelButton.setVisible(true);
+            cancelButton.setVisible(false);
         } else {
             approveButton.setVisible(false);
             cancelButton.setVisible(false);

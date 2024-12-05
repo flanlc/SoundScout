@@ -130,7 +130,7 @@ public class LoggedHomeController {
     }
 
     void setWelcomeMessage(String userName, int userID, String lastName, String email, String city, String zipCode) {
-        welcomeLabel.setText("Welcome, " + userName + "! Your ID is: " + userID);
+        welcomeLabel.setText("Welcome, " + userName + "!");
 
         /*removed second button
         if (userID == 0) {
@@ -327,6 +327,31 @@ public class LoggedHomeController {
 
         updateArtistList(filteredArtists);
     }
+
+    @FXML
+    private void handleClearFilters() {
+        rockGenreCheckBox.setSelected(false);
+        popGenreCheckBox.setSelected(false);
+        rapGenreCheckBox.setSelected(false);
+        jazzGenreCheckBox.setSelected(false);
+        rnbCheckBox.setSelected(false);
+        countryCheckBox.setSelected(false);
+        bluesCheckBox.setSelected(false);
+        electronicCheckBox.setSelected(false);
+        indieCheckBox.setSelected(false);
+        alternativeCheckBox.setSelected(false);
+
+        maxPriceField.clear();
+
+        distanceSlider.setValue(0);
+
+        selectedDates.clear();
+
+        List<Artist> allArtists = sqlHelper.getAllArtists();
+        updateArtistList(allArtists);
+    }
+
+
 
     private boolean isWithinDistance(Artist artist, double distance) {
         if (distance == 0) {

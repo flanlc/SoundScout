@@ -13,8 +13,9 @@ public class HelloApplication extends Application {
         Session session = Session.getInstance();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/org/example/soundscoutfx/hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 750, 500);
-        stage.setTitle("SoundScout");
+        stage.setTitle("Sound Scout");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
     public static void main(String[] args) {

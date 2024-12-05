@@ -148,7 +148,11 @@ public class DashboardController {
         session.setCurrentArtistID(artist.getId());
 
         nameField.setText(artist.getStageName());
-        joinDateField.setText(artist.getJoinDate());
+
+        String rawJoinDate = artist.getJoinDate();
+        String formattedJoinDate = formatToMMDDYYYY(rawJoinDate);
+        joinDateField.setText(formattedJoinDate);
+
         genreField.setText(artist.getProfile().getGenre());
         rateField.setText(String.valueOf(artist.getProfile().getRate()));
         locationField.setText(artist.getCity());
@@ -189,6 +193,21 @@ public class DashboardController {
         searchResultsList.setVisible(false);
     }
 
+    private String formatToMMDDYYYY(String rawDate) {
+        if (rawDate == null || rawDate.isEmpty()) {
+            return "Unknown";
+        }
+        try {
+            LocalDate parsedDate = LocalDate.parse(rawDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            return parsedDate.format(formatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Invalid Date";
+        }
+    }
+
+
     /** Handles navigation to reservations */
     @FXML
     private void NavigateToReservations() {
@@ -226,10 +245,10 @@ public class DashboardController {
 
     @FXML
     private void NavigateToPublicEvents() {
-        if (IsGuestUser()) {
+        /*if (IsGuestUser()) {
             showErrorMessage("You must sign in to access public events.");
             return;
-        }
+        }*/
         Navigate("PublicEvents.fxml", "Public Events");
     }
 

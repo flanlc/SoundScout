@@ -117,6 +117,8 @@
                     </VBox>
                 </HBox>
                 <Button fx:id="applyFiltersButton" alignment="BOTTOM_LEFT" onAction="#handleApplyFilters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Apply Filters" />
+                <Button onAction="#handleClearFilters" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Clear Filters" />
+
             </VBox>
         </HBox>
     </top>
@@ -137,7 +139,7 @@
             </VBox.margin></ListView>
             <!-- <Button onAction="#navigateToDashboard" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Dashboard" /> -->
             <!-- <Button fx:id="editProfileButton" onAction="#navigateToEditProfile" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB; -fx-text-fill: #4e238d;" text="Edit Profile" /> -->
-            <Button onAction="#handleLogout" style="-fx-background-color: #FF0000; -fx-border-color: #D6C8EB; -fx-text-fill: #FFFFFF;" text="Logout" textFill="WHITE">
+            <Button onAction="#handleLogout" style="-fx-background-color: #FF0000; -fx-text-fill: #FFFFFF;" text="Logout" textFill="WHITE">
             <font>
                <Font name="System Bold" size="14.0" />
             </font></Button>

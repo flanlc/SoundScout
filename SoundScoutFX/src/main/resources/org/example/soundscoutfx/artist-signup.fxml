@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -28,73 +29,79 @@
     </ImageView>
 
     <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" text="Artist Signup" />
-
-    <GridPane alignment="CENTER" hgap="10" vgap="10">
-        <Label style="-fx-text-fill: #4e238d;" text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="firstNameField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="lastNameField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="Stage Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField fx:id="stageNameField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="Date of Birth:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <DatePicker fx:id="dobPicker" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="Street Address:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <TextField fx:id="streetAddressField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="City:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <TextField fx:id="cityField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="State:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-        <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
-            <ComboBox fx:id="stateComboBox" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" />
-            <TextField fx:id="otherStateField" promptText="Specify state" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" visible="false" />
-        </VBox>
-
-        <Label style="-fx-text-fill: #4e238d;" text="Zip Code:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-        <TextField fx:id="zipCodeField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="Rate (per hour in $):" GridPane.columnIndex="0" GridPane.rowIndex="8" />
-        <TextField fx:id="rateField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-
-        <Label style="-fx-text-fill: #4e238d;" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
-        <TextField fx:id="emailField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-
-        <PasswordField fx:id="passwordField" managed="true" style="-fx-border-color: #D6C8EB;" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-        <TextField fx:id="passwordTextField" managed="false" promptText="Password" style="-fx-border-color: #D6C8EB;" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-        <CheckBox fx:id="showPasswordCheckBox" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Show Password" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-
-        <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="13" />
-
-        <Label fx:id="errorMessage" style="-fx-text-fill: red;" GridPane.columnSpan="2" GridPane.rowIndex="14" />
-         <Button onAction="#handleSignup" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Sign Up" textFill="#4e238d" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-      <Label text="Password:" textFill="#4e238d" GridPane.rowIndex="11" />
-
-        <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         <RowConstraints />
-         <RowConstraints />
-         <RowConstraints />
-        </rowConstraints>
-    </GridPane>
+   <BorderPane prefHeight="511.0" prefWidth="515.0">
+      <center>
+      
+          <GridPane alignment="CENTER" hgap="10" prefWidth="566.0" vgap="10">
+              <Label style="-fx-text-fill: #4e238d;" text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+              <TextField fx:id="firstNameField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+              <TextField fx:id="lastNameField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Stage Name:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+              <TextField fx:id="stageNameField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Date of Birth:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+              <DatePicker fx:id="dobPicker" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Street Address:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+              <TextField fx:id="streetAddressField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="City:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+              <TextField fx:id="cityField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="State:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+              <VBox GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  <ComboBox fx:id="stateComboBox" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" />
+                  <TextField fx:id="otherStateField" promptText="Specify state" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" visible="false" />
+              </VBox>
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Zip Code:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+              <TextField fx:id="zipCodeField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Rate (per hour in $):" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+              <TextField fx:id="rateField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+      
+              <Label style="-fx-text-fill: #4e238d;" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+              <TextField fx:id="emailField" style="-fx-background-color: white; -fx-border-color: #D6C8EB;" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+      
+              <PasswordField fx:id="passwordField" managed="true" style="-fx-border-color: #D6C8EB;" visible="true" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+              <TextField fx:id="passwordTextField" managed="false" promptText="Password" style="-fx-border-color: #D6C8EB;" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+              <CheckBox fx:id="showPasswordCheckBox" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Show Password" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+      
+              <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="14" />
+      
+              <Label fx:id="errorMessage" style="-fx-text-fill: red;" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+               <Button onAction="#handleSignup" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Sign Up" textFill="#4e238d" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <Label text="Password:" textFill="#4e238d" GridPane.rowIndex="11" />
+      
+              <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+              </rowConstraints>
+          </GridPane>
+      </center>
+   </BorderPane>
 
     <Button onAction="#handleBack" style="-fx-background-color: #E8DEF8; -fx-border-color: #D6C8EB;" text="Back" textFill="#4e238d" />
 </VBox>

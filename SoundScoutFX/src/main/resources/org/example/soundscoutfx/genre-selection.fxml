@@ -5,11 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorField" prefHeight="573.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.GenreSelectionController">
+<AnchorPane fx:id="anchorField" prefHeight="573.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.soundscoutfx.GenreSelectionController">
     <children>
-        <Text layoutX="200.0" layoutY="40.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" text="Select Your Genre(s)" />
+        <Text fill="#4e238d" layoutX="200.0" layoutY="40.0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4e238d;" text="Select Your Genre(s)" />
 
         <VBox layoutX="50.0" layoutY="60.0" spacing="15">
             <CheckBox fx:id="rockCheckBox" style="-fx-text-fill: #4e238d;" text="Rock" />
@@ -24,7 +25,10 @@
             <CheckBox fx:id="alternativeCheckBox" style="-fx-text-fill: #4e238d;" text="Alternative" />
         </VBox>
 
-        <Button layoutX="250.0" layoutY="500.0" mnemonicParsing="false" onAction="#finalizeSignup" style="-fx-background-color: E8DEF8;" text="Finish Signup" />
+        <Button layoutX="250.0" layoutY="500.0" mnemonicParsing="false" onAction="#finalizeSignup" style="-fx-background-color: #4e238d;" text="Finish Signup" textFill="#fcfcfc">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
         <Label fx:id="successMessageLabel" layoutX="200.0" layoutY="550.0" style="-fx-text-fill: green; -fx-font-size: 14px;" text="" visible="false" />
 
     </children>

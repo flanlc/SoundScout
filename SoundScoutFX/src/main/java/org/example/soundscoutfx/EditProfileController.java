@@ -82,6 +82,8 @@ public class EditProfileController {
         if (session.getSql() != null && session.getUserID() > 0) {
             loadBio();
             loadCancellationPolicy();
+            loadRate();
+            loadGenres();
         }
     }
 
@@ -317,6 +319,72 @@ public class EditProfileController {
             showErrorMessage("Error loading bio.");
         }
     }
+
+    @FXML
+    private void loadRate() {
+        try {
+            Session session = Session.getInstance();
+            double rate = session.getSql().getArtistRate(session.getUserID());
+            rateField.setText(String.valueOf(rate)); // Set the rate in the TextField
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Error loading rate.");
+        }
+    }
+
+    @FXML
+    private void loadGenres() {
+        try {
+            Session session = Session.getInstance();
+            String genres = session.getSql().getArtistGenres(session.getUserID()); // Get genres as a comma-separated string
+            if (genres != null && !genres.isEmpty()) {
+                String[] genreArray = genres.split(",\\s*"); // Split by comma and optional spaces
+
+                for (String genre : genreArray) {
+                    switch (genre.trim().toLowerCase()) {
+                        case "rock":
+                            rockCheckBox.setSelected(true);
+                            break;
+                        case "pop":
+                            popCheckBox.setSelected(true);
+                            break;
+                        case "rap":
+                            rapCheckBox.setSelected(true);
+                            break;
+                        case "rnb":
+                            rnbCheckBox.setSelected(true);
+                            break;
+                        case "country":
+                            countryCheckBox.setSelected(true);
+                            break;
+                        case "blues":
+                            bluesCheckBox.setSelected(true);
+                            break;
+                        case "electronic":
+                            electronicCheckBox.setSelected(true);
+                            break;
+                        case "jazz":
+                            jazzCheckBox.setSelected(true);
+                            break;
+                        case "indie":
+                            indieCheckBox.setSelected(true);
+                            break;
+                        case "alternative":
+                            alternativeCheckBox.setSelected(true);
+                            break;
+                        default:
+                            System.out.println("Unknown genre: " + genre);
+                            break;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showErrorMessage("Error loading genres.");
+        }
+    }
+
+
 
     /*@FXML
     private void openCancellationPolicyEditor() {

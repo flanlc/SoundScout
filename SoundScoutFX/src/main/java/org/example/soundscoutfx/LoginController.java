@@ -28,6 +28,29 @@ public class LoginController {
     private final SoundScoutSQLHelper sqlHelper = new SoundScoutSQLHelper();
 
     @FXML
+    public void initialize() {
+        passwordField.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ENTER:
+                    handleLogin();
+                    break;
+                default:
+                    break;
+            }
+        });
+        emailField.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ENTER:
+                    passwordField.requestFocus();
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+
+    @FXML
     protected void handleLogin() {
         String email = emailField.getText();
         String password = passwordField.getText();

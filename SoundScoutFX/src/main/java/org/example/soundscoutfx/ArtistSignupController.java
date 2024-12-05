@@ -135,12 +135,10 @@ public class ArtistSignupController {
             return;
         }
 
-        //geocoding
         String fullAddress = streetAddress + ", " + city + ", " + state + " " + zipCode;
         double latitude = 0.0;
         double longitude = 0.0;
 
-        //grab coordinates
         try {
             double[] coordinates = LocationHelper.getCoordinates(fullAddress);
             latitude = coordinates[0];
@@ -155,11 +153,12 @@ public class ArtistSignupController {
             sqlHelper.establishConnection();
             newArtistID = sqlHelper.CreateArtist(firstName, lastName, stageName, dob, streetAddress, zipCode, city, state, rate, email, password);
             sqlHelper.updateArtistLocation(newArtistID, latitude, longitude);
-            errorMessage.setText("Signup successful!");
 
-            PauseTransition delay = new PauseTransition(Duration.seconds(2)); //2 seconds
-            //delay.setOnFinished(event -> navigateToGenreSelection());
-            delay.play();
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Signup Successful");
+            successAlert.setHeaderText("Account Created");
+            successAlert.setContentText("Congratulations! Your artist account has been successfully created. Proceed to select your genre.");
+            successAlert.showAndWait();
 
             navigateToGenreSelection(newArtistID);
         } catch (Exception e) {

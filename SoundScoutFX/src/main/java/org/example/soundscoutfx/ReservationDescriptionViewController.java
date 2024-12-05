@@ -3,10 +3,12 @@ package org.example.soundscoutfx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /** Reservation Description fxml controller class */
 public class ReservationDescriptionViewController {
-    //member varibales
+    //member variables
     protected String artistName;
     protected String resDate;
     protected String time;
@@ -32,12 +34,27 @@ public class ReservationDescriptionViewController {
 
     public void Populate() {
         nameField.setText(artistName);
-        dateField.setText(resDate);
+        dateField.setText(formatDate(resDate));
         timeField.setText(time);
         durField.setText(duration);
         venueField.setText(venueType);
         addyField.setText(address);
         descriptionBox.setText(description);
+    }
+
+    private String formatDate(String rawDate) {
+        if (rawDate == null || rawDate.isEmpty()) {
+            return "Unknown Date";
+        }
+        try {
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            LocalDate date = LocalDate.parse(rawDate, inputFormatter);
+            return date.format(outputFormatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Invalid Date";
+        }
     }
 
     public String getArtistName() {

@@ -772,5 +772,33 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    public double getArtistRate(int userID) throws SQLException {
+        String query = "SELECT Rate FROM ArtistProfile WHERE ArtistID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("Rate");
+            } else {
+                throw new SQLException("Artist rate not found for user ID: " + userID);
+            }
+        }
+    }
+
+    public String getArtistGenres(int userID) throws SQLException {
+        String query = "SELECT Genre FROM ArtistProfile WHERE ArtistID = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("Genre");
+            } else {
+                throw new SQLException("Artist genres not found for user ID: " + userID);
+            }
+        }
+    }
+
+
+
 
 }

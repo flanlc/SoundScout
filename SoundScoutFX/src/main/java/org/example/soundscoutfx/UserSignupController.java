@@ -94,10 +94,8 @@ public class UserSignupController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        //business-specific information
         String businessAddress = businessRadio.isSelected() ? businessAddressField.getText() : null;
 
-        //simple input validation
         if (firstName.isEmpty() || lastName.isEmpty() || city.isEmpty() || zipCode.isEmpty() || email.isEmpty() || password.isEmpty()) {
             errorMessage.setText("Please fill in all required fields.");
             return;
@@ -108,14 +106,17 @@ public class UserSignupController {
         }
         if (zipCode.length() != 5) {
             errorMessage.setText("Please enter a valid 5-digit ZIP code.");
+            zipCodeField.requestFocus();
             return;
         }
         if (!isValidEmail(email)) {
             errorMessage.setText("Please enter a valid email address.");
+            emailField.requestFocus();
             return;
         }
         if (!isValidPassword(password)) {
             errorMessage.setText("Password must be at least 8 characters, including a number and a special character.");
+            passwordField.requestFocus();
             return;
         }
 
@@ -123,6 +124,7 @@ public class UserSignupController {
             sqlHelper.establishConnection();
             if (sqlHelper.ifEmailExists(email)) {
                 errorMessage.setText("Email is already in use. Please use a different email.");
+                emailField.requestFocus();
                 return;
             }
         } catch (Exception e) {
@@ -131,12 +133,10 @@ public class UserSignupController {
             return;
         }
 
-        //construct for geocoding
         String fullAddress = city + ", " + zipCode;
         double latitude = 0.0;
         double longitude = 0.0;
 
-        //grab coordinates
         try {
             double[] coordinates = LocationHelper.getCoordinates(fullAddress);
             latitude = coordinates[0];
@@ -146,18 +146,24 @@ public class UserSignupController {
             return;
         }
 
-        //call the SQL helper to create a new user
         try {
             sqlHelper.establishConnection();
             sqlHelper.CreateUser(firstName, lastName, accountType, city, zipCode, businessAddress, email, password);
             sqlHelper.updateUserLocation(sqlHelper.getLastInsertedUserID(), latitude, longitude);
-            errorMessage.setText("Signup successful!");
+
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Signup Successful");
+            successAlert.setHeaderText("Account Created");
+            successAlert.setContentText("Success! Your account has been created. You can now log in.");
+            successAlert.showAndWait();
+
             clearForm();
             navigateToLogin();
         } catch (Exception e) {
             errorMessage.setText("Signup failed: " + e.getMessage());
         }
     }
+
 
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";

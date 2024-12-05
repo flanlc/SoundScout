@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ReservationDescriptionInputController {
@@ -40,25 +41,44 @@ public class ReservationDescriptionInputController {
         pubButton.setToggleGroup(venueGroup);
         privateButton.setToggleGroup(venueGroup);
 
+        hourComboBox.getItems().clear();
         hourComboBox.getItems().addAll("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
+
+        minuteComboBox.getItems().clear();
         minuteComboBox.getItems().addAll("00", "15", "30", "45");
+
+        ampmComboBox.getItems().clear();
         ampmComboBox.getItems().addAll("AM", "PM");
 
         hourComboBox.setValue("01");
         minuteComboBox.setValue("00");
         ampmComboBox.setValue("AM");
 
+        durationComboBox.getItems().clear();
         durationComboBox.getItems().addAll(
-                "0.25", "0.50", "0.75", "1.00", "1.25", "1.50", "1.75", "2.00",
-                "2.25", "2.50", "2.75", "3.00", "3.25", "3.50", "3.75", "4.00",
-                "4.25", "4.50", "4.75", "5.00", "5.25", "5.50", "5.75", "6.00",
-                "6.25", "6.50", "6.75", "7.00", "7.25", "7.50", "7.75", "8.00"
+                "1.00", "1.25", "1.50", "1.75",
+                "2.00", "2.25", "2.50", "2.75",
+                "3.00", "3.25", "3.50", "3.75",
+                "4.00", "4.25", "4.50", "4.75",
+                "5.00", "5.25", "5.50", "5.75",
+                "6.00", "6.25", "6.50", "6.75",
+                "7.00", "7.25", "7.50", "7.75", "8.00"
         );
-
     }
 
+
     public void SetLabel() {
-        dateDisplayLabel.setText("Selected Date: " + selectedDate);
+        if (selectedDate != null && !selectedDate.isEmpty()) {
+            try {
+                LocalDate date = LocalDate.parse(selectedDate);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                dateDisplayLabel.setText("Selected Date: " + date.format(formatter));
+            } catch (Exception e) {
+                dateDisplayLabel.setText("Invalid date format.");
+            }
+        } else {
+            dateDisplayLabel.setText("No date selected.");
+        }
     }
 
     /** Creates reservation by populating object and calling sql method */
@@ -77,6 +97,7 @@ public class ReservationDescriptionInputController {
         String venueType = pubButton.isSelected() ? "Public" : privateButton.isSelected() ? "Private" : null;
         String startTime = hourComboBox.getValue() + ":" + minuteComboBox.getValue() + " " + ampmComboBox.getValue();
         String duration = durationComboBox.getValue();
+        String formattedDuration = formatDurationWithUnits(duration);
         String address = addyField.getText().trim();
         String description = descBox.getText().trim();
 
@@ -96,7 +117,7 @@ public class ReservationDescriptionInputController {
         try {
             Reservation reservation = new Reservation(
                     0, currentArtistID, userID, selectedDate, "Pending",
-                    startTime, duration, venueType, address, description, currentArtistStageName
+                    startTime, formattedDuration, venueType, address, description, currentArtistStageName
             );
 
             session.getSql().CreateNewReservation(reservation);
@@ -110,11 +131,35 @@ public class ReservationDescriptionInputController {
                 dashboardController.ReloadDashboard();
             }
 
+            ShowSuccessMessage("Success! Your request has been sent to the artist!");
+
             CloseWindow();
         } catch (Exception e) {
             e.printStackTrace();
             ShowErrorMessage("Failed to create reservation.");
         }
+    }
+
+    private String formatDurationWithUnits(String durationValue) {
+        try {
+            double duration = Double.parseDouble(durationValue);
+            if (duration == 1.00) {
+                return durationValue + " hour";
+            } else {
+                return durationValue + " hours";
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid duration value: " + durationValue);
+            return durationValue;
+        }
+    }
+
+    private void ShowSuccessMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     /** On cancel close */
@@ -134,6 +179,7 @@ public class ReservationDescriptionInputController {
 
     public void setSelectedDate(String selectedDate) {
         this.selectedDate = selectedDate;
+        SetLabel();
     }
 
     public void setReservationDates(List<LocalDate> reservationDates) {

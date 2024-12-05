@@ -13,6 +13,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /** Public Events FXML controller class */
@@ -49,9 +51,10 @@ public class PublicEventsController {
                 if (empty || reservation == null) {
                     setText(null);
                 } else {
+                    String formattedDate = formatDate(reservation.getDate());
                     String displayText = String.format("%s | Date: %s",
                             reservation.getStageName(),
-                            reservation.getDate());
+                            formattedDate);
                     setText(displayText);
                 }
             }
@@ -60,6 +63,15 @@ public class PublicEventsController {
         eventsView.setItems(reservationObservableList);
     }
 
+    private String formatDate(String rawDate) {
+        try {
+            LocalDate date = LocalDate.parse(rawDate);
+            return date.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return rawDate;
+        }
+    }
 
     /** Handles search feature */
     @FXML
@@ -79,6 +91,23 @@ public class PublicEventsController {
 
         eventsView.setItems(filteredReservations);
     }
+
+    @FXML
+    private void handleSortByArtist() {
+        ObservableList<Reservation> sortedList = reservationObservableList.sorted((res1, res2) ->
+                res1.getStageName().compareToIgnoreCase(res2.getStageName())
+        );
+        eventsView.setItems(sortedList);
+    }
+
+    @FXML
+    private void handleSortByDate() {
+        ObservableList<Reservation> sortedList = reservationObservableList.sorted((res1, res2) ->
+                res1.getDate().compareTo(res2.getDate())
+        );
+        eventsView.setItems(sortedList);
+    }
+
 
     /** Displays event description popup */
     @FXML
