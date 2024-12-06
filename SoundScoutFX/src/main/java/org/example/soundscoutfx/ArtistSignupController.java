@@ -125,7 +125,7 @@ public class ArtistSignupController {
 
         try {
             sqlHelper.establishConnection();
-            if (sqlHelper.ifEmailExists(email)) {
+            if (sqlHelper.ifEmailExistsAcrossTables(email)) {
                 errorMessage.setText("Email is already in use. Please use a different email.");
                 return;
             }

@@ -122,7 +122,7 @@ public class UserSignupController {
 
         try {
             sqlHelper.establishConnection();
-            if (sqlHelper.ifEmailExists(email)) {
+            if (sqlHelper.ifEmailExistsAcrossTables(email)) {
                 errorMessage.setText("Email is already in use. Please use a different email.");
                 emailField.requestFocus();
                 return;

@@ -153,7 +153,7 @@ public class LoggedHomeController {
     @FXML
     protected void handleLogout() {
         Session.getInstance().clearSession();
-        navigateTo("hello-view.fxml", "SoundScout");
+        navigateTo("hello-view.fxml", "Sound Scout");
     }
 
     @FXML

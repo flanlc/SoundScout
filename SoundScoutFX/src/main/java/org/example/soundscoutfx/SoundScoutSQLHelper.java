@@ -197,6 +197,16 @@ public class SoundScoutSQLHelper {
         }
     }
 
+    public boolean ifEmailExistsAcrossTables(String email) throws SQLException {
+        String query = "SELECT 1 FROM Users WHERE email = ? UNION SELECT 1 FROM Artist WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, email);
+            stmt.setString(2, email);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
     /** Updates user profile within SQL */
     public void updateUserProfile(int userID, String firstName, String lastName, String email, String city, String zipCode) throws SQLException {
         String updateQuery = "UPDATE Users SET FirstName = ?, LastName = ?, Email = ?, City = ?, ZipCode = ? WHERE UserID = ?";
