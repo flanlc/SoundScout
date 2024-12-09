@@ -30,6 +30,11 @@ public class SoundScoutSQLHelper {
                 status = true;
                 return conn;
             } catch (SQLException e) {
+                if (e.getMessage().contains("Database 'SoundScout' on server 'soundscout' is not currently available")) {
+                    System.out.println("To save costs the Database goes to sleep upon idle. Database not initiated, please try again and it will work Thanks! (:");
+                } else {
+                    e.printStackTrace();
+                }
                 throw new RuntimeException(e);
             }
         }

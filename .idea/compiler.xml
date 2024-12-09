@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="SoundScoutFX" options="--add-exports javafx.graphics/com.sun.javafx.menu=org.example.soundscoutfx" />
+      <module name="SoundScoutFX" options="" />
     </option>
   </component>
 </project>
