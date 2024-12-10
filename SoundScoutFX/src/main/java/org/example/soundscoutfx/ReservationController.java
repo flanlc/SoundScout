@@ -210,10 +210,10 @@ public class ReservationController {
         listView.setItems(reservationsList);
         if ("Artist".equals(Session.getInstance().getUserType())) {
             approveButton.setVisible(false);
-            cancelButton.setVisible(false);
+            cancelButton.setVisible(true);
         } else {
             approveButton.setVisible(false);
-            cancelButton.setVisible(false);
+            cancelButton.setVisible(true);
         }
     }
 
